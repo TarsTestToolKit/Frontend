@@ -1,0 +1,175 @@
+module apitars
+{
+	// 成功响应码
+	const int RespCodeSucc = 0;
+
+	// 测试类型
+	const string FuncTest = "func";
+	const string PerfTest = "perf";
+
+	struct SimpleResp
+	{
+		0 require unsigned int code;   // 返回码，0为成功，非0为失败
+		1 require string msg; // 返回码解释信息
+	};
+
+	// 功能性测试结果信息
+	struct FuncTestDetail
+	{
+		0 require string from; // 发起请求的语言，如:cpp,java
+		1 require string to;   // 接收请求的语言
+		2 require bool isSucc; // 请求是否成功
+	};
+
+	// 功能性测试响应
+	struct FuncTestResp
+	{
+		0 require unsigned int code; // 返回码，0为成功，非0为失败
+		1 require string msg; // 返回码解释信息
+		2 optional vector<FuncTestDetail> rows;
+	};
+
+	// 发起压测请求结构
+	struct PerfTestReq
+	{
+		0 require string lang; // 被测服务语言
+		1 require string servType; // 服务器类型：被测服务器的硬件描述信息
+		2 require unsigned int threadCnt; // 服务端线程数
+		3 require unsigned int cores; // 服务器核数
+		4 require unsigned int connCnt; // 节点连接数
+		5 require unsigned int reqFreq; // 单连接请求速率
+		6 require unsigned int keepAlive; // 压测执行多少秒
+		7 require unsigned int packageLen; // 压测包大小
+	};
+
+	// 压测请求响应结构
+	struct PerfTestResp
+	{
+		0 require unsigned int code; // 返回码，0为成功，非0为失败
+		1 require string msg; // 返回码解释信息
+		2 require unsigned int testID; // 测试ID
+	};
+
+	// 压测详情响应结构
+	struct PerfTestDetail
+	{
+		0 require unsigned int timestamp; // 结果采集时间
+		1 require unsigned int qps; // QPS
+		2 require unsigned int totalReq; // 总请求量
+		3 require unsigned int succ; // 成功请求量
+		4 require unsigned int failed; // 失败请求量
+		5 require string succRate; // 成功率百分比
+		6 require float costMax; // 最大耗时(microsecond)
+		7 require float costMin; // 最小耗时(microsecond)
+		8 require float costAvg; // 平均耗时(microsecond)
+		9 require float p90; // P90（百分之90的请求在多长时间内完成）
+		10 require float p99; // P99（百分之99的请求在多长时间内完成）
+		11 require float p999; // P999（百分之999的请求在多长时间内完成）
+		12 require unsigned int sendByte; // 发送字节数
+		13 require unsigned int recvByte; // 接收字节数
+		14 require map<string, unsigned int> costMap; // 响应耗时和耗时计数的map关系，0~10ms:10, 10~30ms:20
+		15 require map<string, unsigned int> retCodeMap; // 响应code和code次数的map关系, 0:1000, 400:50
+	};
+
+	// 单核CPU使用情况
+	struct CoreUsage
+	{
+		0 require float percent; // cpu单核占用百分比：0.1表示10%
+	};
+
+	// 内存占用情况
+	struct MemUsage
+	{
+		0 require long total; // 总内存大小，单位byte
+		1 require long used;   // 已占用内存大小，单位byte
+	};
+
+	// 压测资源详情信息
+	struct PerfResDetail
+	{
+		0 require unsigned int timestamp; // 资源占用采集时间
+		1 require vector<CoreUsage> cpu; // cpu占用情况，每个核一个node
+		2 require MemUsage mem; // 内存占用情况
+	};
+
+	// 测试详情接口响应结构
+	struct TestDetailResp
+	{
+		0 require unsigned int code;            // 返回码，0为成功，非0为失败
+		1 require string msg;                   // 返回码解释信息
+		2 require vector<PerfTestDetail> perfDetail; // 压测详情
+		3 require vector<PerfResDetail> resUsage; // 资源详情
+	};
+
+	// 查询压测历史信息请求结构
+	struct QueryTestHistoryReq
+	{
+		0 optional unsigned int pageSize; // 页大小
+		1 optional unsigned int page;     // 页码
+	};
+
+	// 测试历史信息
+	struct TestHistory
+	{
+		0 require unsigned int testID; // 测试ID
+		1 require unsigned int startTime;    // 测试开始时间
+		2 require unsigned int endTime;      // 测试结束时间
+		3 require string servType; // 服务器类型
+		4 require string lang; // 被测服务语言名称：cpp
+		5 require unsigned int cores; // 被测服务CPU核数
+		6 require unsigned int threads; // 单节点测试线程数
+		7 require unsigned int connCnt; // 单节点连接数
+		8 require unsigned int keepAlive; // 压测时长（单位秒）
+		9 require unsigned int pkgLen; // 压测包大小
+	};
+
+	// 查询压测历史信息响应结构
+	struct QueryTestHistoryResp
+	{
+		0 require unsigned int code;            // 返回码，0为成功，非0为失败
+		1 require string msg;                   // 返回码解释信息
+		2 require unsigned int total; // 数据总数
+		3 require unsigned int page; // 当前页码
+		4 require vector<TestHistory> histories; // 历史压测列表信息
+	};
+
+	interface api
+	{
+		FuncTestResp doFuncTest(); // 执行功能性测试接口
+		PerfTestResp doPerfTest(PerfTestReq req); // 执行压测接口
+		TestDetailResp getTestDetail(unsigned int testID, unsigned int timestamp); // 获取压测详情接口
+		QueryTestHistoryResp getTestHistories(QueryTestHistoryReq req); // 历史测试列表信息查询
+	};
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
