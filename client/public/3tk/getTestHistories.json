@@ -1,0 +1,23 @@
+{
+    "code": 0,
+    "msg": "succ",
+    "histories": [{
+            "testID": 1,
+            "testType": "func",
+            "startTime": "2021-04-01 10:00:00",
+            "endTime": "2021-04-01 11:00:00"
+        },
+        {
+            "testID": 2,
+            "testType": "func",
+            "startTime": "2021-04-01 12:00:00",
+            "endTime": "2021-04-01 13:00:00"
+        },
+        {
+            "testID": 3,
+            "testType": "perf",
+            "startTime": "2021-04-01 14:00:00",
+            "endTime": "2021-04-01 15:00:00"
+        }
+    ]
+}

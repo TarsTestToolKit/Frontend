@@ -1,0 +1,17 @@
+{
+  "localeCode": "cn",
+  "localeName": "中文",
+  "common": {
+    "noLogin": "您还没有登录",
+    "success": "成功",
+    "failed": "失败",
+    "confirmTitle": "系统提示",
+    "systemError": "系统内部错误",
+    "noPrivilage": "没有权限",
+    "notEmpty": "不能为空",
+    "needNumber": "必须为数字",
+    "needArray": "必须为数组",
+    "needObject": "必须为对象",
+    "needBoolean": "必须为布尔值"
+  }
+}

@@ -1,0 +1,81 @@
+{
+    "code": 0,
+    "msg": "succ",
+    "perfDetail": [{
+            "timeStr": "2021-04-02 20:00:00",
+            "qps": 2000,
+            "totalReq": 10000,
+            "succ": 10000,
+            "failed": 0,
+            "succRate": 1,
+            "costMax": 100,
+            "costMin": 10,
+            "costAvg": 105.57,
+            "p90": 151.60,
+            "p99": 173.50,
+            "p999": 178.40,
+            "sendByte": 111000,
+            "recvByte": 35277,
+            "costMap": {
+                "0~10ms": 10,
+                "10~30ms": 20,
+                "30~50ms": 30
+            },
+            "retCodeMap": {
+                "0": 1000,
+                "400": 50
+            }
+        },
+        {
+            "timeStr": "2021-04-03 20:00:00",
+            "qps": 2000,
+            "totalReq": 10000,
+            "succ": 10000,
+            "failed": 0,
+            "succRate": 1,
+            "costMax": 100,
+            "costMin": 10,
+            "costAvg": 105.57,
+            "p90": 151.60,
+            "p99": 173.50,
+            "p999": 178.40,
+            "sendByte": 111000,
+            "recvByte": 35277,
+            "costMap": {
+                "0~10ms": 10,
+                "10~30ms": 20,
+                "30~50ms": 30
+            },
+            "retCodeMap": {
+                "0": 1000,
+                "400": 50
+            }
+        }
+    ],
+    "resUsage": [{
+        "timeStr": "2021-04-01 00:00:00",
+        "cpu": [{
+                "percent": 0.1
+            },
+            {
+                "percent": 0.2
+            },
+            {
+                "percent": 0.3
+            }
+        ],
+        "mem": [{
+                "total": 120000,
+                "use": 1000
+            },
+            {
+                "total": 120000,
+                "use": 1000
+            },
+            {
+                "total": 120000,
+                "use": 1000
+            }
+        ]
+    }]
+}
