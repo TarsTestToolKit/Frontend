@@ -1,7 +1,7 @@
 
 import PageController from "./controller/PageController";
 import LocaleController from "./controller/LocaleController";
-// import TreeController from "./controller/TreeController";
+import TestController from "./controller/TestController";
 import { confType } from "../midware/type";
 
 const pageConf: Array<confType> = [
@@ -12,7 +12,7 @@ const pageConf: Array<confType> = [
 
 const apiConf: Array<confType> = [
     ["get", "/get_locale", LocaleController, LocaleController.getLocale],
-    // ["get", "/tree", TreeController, TreeController.tree],
+    ["post", "/testFunc", TestController, TestController.testFunc],
     // ["get", "/view", TreeController, TreeController.view],
     // ["get", "/search", TreeController, TreeController.search]
 ];

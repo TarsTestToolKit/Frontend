@@ -73,7 +73,7 @@ const appInitialize = () => {
     // if (webConf.config.login.enableLogin) {
     //     LoginService.initialize();
     // }
-    console.log("initialize markdown");
+    // console.log("initialize markdown");
     // TreeController.initialize();
     // TreeController.loadTree();
 };

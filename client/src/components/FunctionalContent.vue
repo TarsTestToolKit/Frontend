@@ -53,7 +53,7 @@ export default ({
     const  doFuncTest = async () => {
       loading.status=true
       try {
-        const response = await axios.post('http://3tkapi1.zhaoguolei.com:8000/testFunc');
+        const response = await axios.post('/api/testFunc');
         console.log(response);
         DoFuncTestresult.code=response.data.code
         DoFuncTestresult.msg=response.data.msg

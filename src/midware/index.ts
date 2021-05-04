@@ -35,7 +35,7 @@ const pageRouter = new Router();
 getRouter("", pageRouter, pageConf);
 
 const apiRouter = new Router();
-getRouter("/pages/api", apiRouter, apiConf);
+getRouter("/api", apiRouter, apiConf);
 
 // const ssoRouter = new Router();
 // getRouter("/pages/sso", ssoRouter, ssoConf);

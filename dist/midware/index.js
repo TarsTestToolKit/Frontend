@@ -32,4 +32,4 @@ exports.pageRouter = pageRouter;
 getRouter("", pageRouter, index_1.pageConf);
 const apiRouter = new koa_router_1.default();
 exports.apiRouter = apiRouter;
-getRouter("/pages/api", apiRouter, index_1.apiConf);
+getRouter("/api", apiRouter, index_1.apiConf);

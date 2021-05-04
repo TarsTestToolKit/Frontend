@@ -64,7 +64,7 @@ const appInitialize = () => {
     //     LoginService.initialize();
     // }
 
-    console.log("initialize markdown");
+    // console.log("initialize markdown");
     
     // TreeController.initialize();
 
