@@ -4,10 +4,7 @@ import { confType } from "./type";
 
 import { pageConf, apiConf } from "../app/index";
 
-// import { ssoConf } from "../sso/index";
-
 import noCacheMidware from "./noCacheMidware";
-import { paramsDealMidware, paramsCheckMidware } from "./paramsMidware";
 
 //获取路由
 const getRouter = (prefix: string, router: Router, routerConf: any[]) => {
@@ -16,13 +13,11 @@ const getRouter = (prefix: string, router: Router, routerConf: any[]) => {
             const [method, url, obj, controller, checkRule, validParams] = conf;
 
             //前置参数合并校验相关中间件
-            router.register(prefix + url, [method], [paramsDealMidware(validParams), paramsCheckMidware(checkRule), noCacheMidware, async (ctx: Koa.Context, next: Koa.Next) => {
+            router.register(prefix + url, [method], [noCacheMidware, async (ctx: Koa.Context, next: Koa.Next) => {
                
                 await controller.call(obj, ctx);
                 await next();
             }]);
-
-            // console.log(v);
         } catch (e) {
             console.log(e);
         }
@@ -36,8 +31,5 @@ getRouter("", pageRouter, pageConf);
 
 const apiRouter = new Router();
 getRouter("/api", apiRouter, apiConf);
-
-// const ssoRouter = new Router();
-// getRouter("/pages/sso", ssoRouter, ssoConf);
 
 export { pageRouter, apiRouter};

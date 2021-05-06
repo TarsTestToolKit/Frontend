@@ -9,7 +9,7 @@ const webConf = {
             loggerPath: "./log",
             logFileKeepDays: "1",
             defaultLanguage: "cn",
-            title: "文档" 
+            title: "文档"
         }
     }
 

@@ -18,7 +18,7 @@ npm run serve
 - 源码目录: npm install
 - npm run dev
 
-访问: http://localhost:6001/ 即可
+访问: http://localhost:3001/ 即可
 
 开发时修改任何代码, 服务器和客户端都会自动编译和更新.
 
@@ -41,3 +41,9 @@ npm install pm2
 npm run prd
 
 **注意默认开启的是6080端口!!(config/config.json中修改)**
+
+
+# 如何添加命令
+- 修改 src/config/tars.conf 指定主控地址, 如果要部署在tars框架上这里可能还得修改!
+- src/app/index.ts中添加路由
+- src/controller/TestController.ts 中添加调用后台的代码逻辑

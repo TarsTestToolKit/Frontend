@@ -1,1 +1,1 @@
-/usr/local/tars/cpp/tools/tars2node --client api.tars
+/usr/local/tars/cpp/tools/tars2node --client --ts api.tars

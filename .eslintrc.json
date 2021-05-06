@@ -1,0 +1,19 @@
+{
+  "env": {
+    "es6": true,
+    "node": true
+  },
+  "extends": ["eslint-config-alloy/typescript"],
+  "parserOptions": {
+    "ecmaVersion": 2017,
+    "sourceType": "module"
+  },
+  "rules": {
+    "@typescript-eslint/no-loss-of-precision": 0,
+    "@typescript-eslint/no-duplicate-imports": 0,
+    // "indent": ["warn", 4],
+    "linebreak-style": ["error", "unix"],
+    // "quotes": ["error", "double"],
+    "semi": ["error", "always"]
+  }
+}

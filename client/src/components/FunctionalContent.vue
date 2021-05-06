@@ -4,6 +4,7 @@
     <h1>Functional Test</h1>
     <!-- 开始函数测试按钮 -->
     <el-button type="primary" @click="doFuncTest" plain>doFuncTest</el-button>
+    <br>
     <div v-loading="loading.status">
         <!-- 无数据时 -->
         <el-empty description="No Data" v-if="DoFuncTestresult.code==-1"></el-empty>

@@ -14,6 +14,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "@tars/rpc": "^2.0.14",
     "@types/bluebird": "^3.5.33",
     "@types/koa-bodyparser": "^4.3.0",
     "@types/koa-helmet": "^5.2.0",

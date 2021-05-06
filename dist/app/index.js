@@ -5,7 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.apiConf = exports.pageConf = void 0;
 const PageController_1 = __importDefault(require("./controller/PageController"));
-const LocaleController_1 = __importDefault(require("./controller/LocaleController"));
 const TestController_1 = __importDefault(require("./controller/TestController"));
 const pageConf = [
     //首页
@@ -13,7 +12,6 @@ const pageConf = [
 ];
 exports.pageConf = pageConf;
 const apiConf = [
-    ["get", "/get_locale", LocaleController_1.default, LocaleController_1.default.getLocale],
     ["post", "/testFunc", TestController_1.default, TestController_1.default.testFunc],
 ];
 exports.apiConf = apiConf;
