@@ -10,6 +10,7 @@ const pageConf: Array<confType> = [
 
 const apiConf: Array<confType> = [
     ["post", "/testFunc", TestController, TestController.testFunc],
+    ["post", "/testPerf", TestController, TestController.testPerf],
 ];
 
 export { pageConf, apiConf };

@@ -1,6 +1,6 @@
 const path = require("path")
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-const server_port = process.env.SERVER_PORT || '6080'
+const server_port = process.env.SERVER_PORT || '9002'
 module.exports = {
     outputDir: "./dist",
     assetsDir: "static",
