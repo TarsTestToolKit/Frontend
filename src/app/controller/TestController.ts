@@ -9,7 +9,8 @@ export default class TestController {
         try {
             let ret = await rpc.apiPrx.doFuncTest();
 
-            ctx.makeResObj(ret.response.return.toObject());
+            //ctx.makeResObj(ret.response.return.toObject());
+            ctx.body = ret.response.return.toObject();
 
         }catch(e) {
             ctx.makeResObj({code: -1, msg: 'rpc error' + e});
