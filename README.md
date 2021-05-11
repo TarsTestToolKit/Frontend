@@ -20,6 +20,14 @@ npm run serve
 
 访问: http://localhost:3001/ 即可
 
+Client-npm run build:
+
+http://localhost:3001
+
+Client-npm run serve:
+
+http://localhost:6001
+
 开发时修改任何代码, 服务器和客户端都会自动编译和更新.
 
 # 源码如何发布
@@ -47,3 +55,10 @@ npm run prd
 - 修改 src/config/tars.conf 指定主控地址, 如果要部署在tars框架上这里可能还得修改!
 - src/app/index.ts中添加路由
 - src/controller/TestController.ts 中添加调用后台的代码逻辑
+
+
+# 本地远程开发常见问题
+
+## 提示[vue/no-multiple-template-root] The template root requires exactly one element.eslint-plugin-vue
+- 安装Vetur
+- vscode-首选项-设置-搜索"eslint",去掉选项Vetur:Validation:Template
