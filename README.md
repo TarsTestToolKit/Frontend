@@ -18,8 +18,6 @@ npm run serve
 - 源码目录: npm install
 - npm run dev
 
-访问: http://localhost:3001/ 即可
-
 Client-npm run build:
 
 http://localhost:3001
