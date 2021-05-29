@@ -9,7 +9,7 @@ export default class TestController {
             let ret = await rpc.apiPrx.doFuncTest();
             ctx.body = ret.response.return.toObject();
         }catch(e) {
-            ctx.makeResObj({code: -1, msg: 'rpc error' + e});
+            ctx.body=e.response.error
         }
     }
     //性能测试
@@ -28,7 +28,7 @@ export default class TestController {
             let ret = await rpc.apiPrx.doPerfTest(req);
             ctx.body = ret.response.return.toObject();
         }catch(e) {
-            ctx.body={code: -1, msg: 'rpc error'+ e};
+            ctx.body=e.response.error
         }
     }
     //获取历史数据
@@ -40,18 +40,21 @@ export default class TestController {
             let ret = await rpc.apiPrx.getTestHistories(req);
             ctx.body = ret.response.return.toObject();
         }catch(e) {
-            ctx.body={code: -1, msg: 'rpc error'+ e};
+            //console.log(e)
+            ctx.body=e.response.error
         }
     }
     //获取详细信息
     public static async detail(ctx: Koa.Context) {
         try {
             let testID=Number(ctx.query.testID)
+            //let testID=-1
             let timestamp=Number(ctx.query.timestamp)
             let ret = await rpc.apiPrx.getTestDetail(testID,timestamp);
             ctx.body = ret.response.return.toObject();
         }catch(e) {
-            ctx.body={code: -1, msg: 'rpc error'+ e};
+            ctx.body=e.response.error
+            //||{code: -1, msg: 'rpc error'+ e};
         }
     }
 }
