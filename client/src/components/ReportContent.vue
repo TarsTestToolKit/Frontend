@@ -1,7 +1,21 @@
 <template>
   <div class="report">
     <h1 style="text-align: center;">Test Report</h1>
-    <el-button type="primary" @click="GetTestHistories" plain>GetData</el-button>
+    <el-row style="padding-top:20px;">
+      <el-col :span="5">
+        <el-button type="primary" icon="el-icon-circle-plus-outline" @click="StartBenchmark" plain>New Test</el-button>
+      </el-col>
+      <el-col :span="5">
+        <el-button type="primary" icon="el-icon-refresh" @click="GetTestHistories" plain>Get History Data</el-button>
+      </el-col>
+      <el-col :span="5"></el-col>
+      <el-col :span="5"></el-col>
+      <el-col :span="1"></el-col>
+      
+      <el-col :span="1"></el-col>
+    </el-row>
+    
+    
   </div>
   <div v-loading="loading.status">
       <!-- 无数据时 -->
@@ -12,7 +26,7 @@
         <el-col :span="1"></el-col>
         <el-col :span="22">
           <el-table v-if="GetTestHistoriesResult.code!=-1" :default-sort="{prop: 'startTime', order: 'ascending'}" :data="tableData.data" border stripe style="width: 100%;" :header-cell-style="{background:'#F9FAFC'}" >
-            <!-- <el-table-column type="expand" border>
+            <el-table-column type="expand" border>
               <template #default="props">
                 <el-form label-position="left" inline class="demo-table-expand" border>
                   <el-form-item label="testID">
@@ -47,12 +61,20 @@
                   </el-form-item>
                 </el-form>
               </template>
-            </el-table-column> -->
+            </el-table-column>
             <el-table-column prop="testID" label="testID" sortable :sort-orders="['ascending', 'descending']"> </el-table-column>
             <el-table-column prop="startTime" label="startTime" :formatter="formatdate" sortable :sort-orders="['ascending', 'descending']"> </el-table-column>
-            <!-- <el-table-column prop="endTime" label="endTime" :formatter="formatdate"> </el-table-column> -->
+            <el-table-column prop="endTime" label="endTime" :formatter="formatdate"> </el-table-column>
             <!-- <el-table-column prop="lang" label="lang"> </el-table-column> -->
             <el-table-column prop="servType" label="servType" sortable :sort-orders="['ascending', 'descending']"> </el-table-column>
+            <el-table-column prop="finished" label="status" sortable :sort-orders="['ascending', 'descending']">
+              <template #default="scope">
+                  <el-tag
+                    :type="scope.row.finished === 0 ? 'danger' : 'success'"
+                    disable-transitions>{{scope.row.finished===0?'running':'finished'}}
+                  </el-tag>
+              </template>
+            </el-table-column>
             <el-table-column label="DetailInfo" fixed="right">
               <template #default="scope">
                 <el-button @click="handleClick(scope.$index, scope.row)" type="text" size="small">
@@ -65,14 +87,77 @@
         <el-col :span="1"></el-col>
       </el-row>
   </div>
-  
+  <!-- 开始测试表单 -->
+  <el-dialog title="Configure" v-model="dialogFormVisible.data" center top="8vh" width="580px">
+    <el-form :model="startform" ref="PerfTestReqruleForm" :rules="startformrules" label-position="right" label-width="360px">
+      <el-form-item label="lang" :label-width="formLabelWidth" prop="lang">
+        <el-select v-model="startform.lang" placeholder="Please select lang">
+          <el-option label="golang" value="golang"></el-option>
+          <el-option label="java" value="java"></el-option>
+          <el-option label="cpp" value="cpp"></el-option>
+          <el-option label="nodejs" value="nodejs"></el-option>
+          <el-option label="php" value="php"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="servType" :label-width="formLabelWidth" prop="servType">
+        <el-input v-model="startform.servType" autocomplete="off"></el-input>
+      </el-form-item>
+      <el-form-item label="threads" :label-width="formLabelWidth" prop="threads">
+        <el-input v-model="startform.threads" autocomplete="off"></el-input>
+      </el-form-item>
+      <el-form-item label="cores" :label-width="formLabelWidth" prop="cores">
+        <el-input v-model="startform.cores" autocomplete="off"></el-input>
+      </el-form-item>
+      <el-form-item label="connCnt" :label-width="formLabelWidth" prop="connCnt">
+        <el-input v-model="startform.connCnt" autocomplete="off"></el-input>
+      </el-form-item>
+      <el-form-item label="reqFreq" :label-width="formLabelWidth" prop="reqFreq">
+        <el-input v-model="startform.reqFreq" autocomplete="off"></el-input>
+      </el-form-item>
+      <el-form-item label="keepAlive(s)" :label-width="formLabelWidth" prop="keepAlive">
+        <el-input v-model="startform.keepAlive" autocomplete="off"></el-input>
+      </el-form-item>
+      <el-form-item label="pkgLen" :label-width="formLabelWidth" prop="pkgLen">
+        <el-select v-model="startform.pkgLen" placeholder="Please select pkgLen">
+          <el-option label="0K" :value="0"></el-option>
+          <el-option label="1K" :value="1*1024"></el-option>
+          <el-option label="10K" :value="10*1024"></el-option>
+          <el-option label="100K" :value="100*1024"></el-option>
+          <el-option label="1M" :value="1024*1024"></el-option>
+          <el-option label="5M" :value="5*1024*1024"></el-option>
+        </el-select>
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <span class="dialog-footer">
+        <!-- <el-button @click="GetTestDetail">GetDataDemo</el-button> -->
+        <el-button @click="dialogFormVisible.data = false">Cancel</el-button>
+        <el-button type="primary" @click="submitForm">OK</el-button>
+        <el-button @click="resetForm">Reset</el-button>
+      </span>
+    </template>
+  </el-dialog> 
   <el-drawer
     v-model="tabledetail.status"
     direction="btt"
     :append-to-body="true"
     :title="title.data"
-    
+    :before-close="handleClose"
     size="100%">
+    <template #title>
+      
+      
+      <el-row>
+        <el-col :span="2">
+          {{title.data}}
+        </el-col>
+        <el-col :span="6">
+          <el-button :type="title.type" :loading="title.loading" size="mini">{{title.text}}</el-button>
+        </el-col>
+        <el-col :span="14"></el-col>
+      </el-row>
+
+    </template>
     <el-tabs type="border-card">
       <el-tab-pane label="BenchmarkParameter">
         <el-row style="padding-top:20px;">
@@ -205,6 +290,7 @@
             <!-- <el-table-column property="costMap" label="costMap" :formatter="arr2str"></el-table-column>
             <el-table-column property="retCodeMap" label="retCodeMap" :formatter="arr2str"></el-table-column> -->
         </el-table>
+        
       </el-tab-pane>
       <el-tab-pane label="perfDetail-piedata">
         <el-table :data="tabledetailData.perfDetail" border :header-cell-style="{background:'#F9FAFC'}" :default-sort="{prop: 'timestamp', order: 'ascending'}">
@@ -229,7 +315,7 @@
       </el-tab-pane>
       <el-tab-pane label="cpu">
         <el-row>
-              <el-col v-for="(item,index) in cpu_data" :key="index" :span="12">
+              <el-col v-for="(item,index) in cpu_data.data" :key="index" :span="12">
                 <h4>CPU-{{index+1}}</h4>
                 <div :id="`chart${index}`" style="width:100%">
                 </div>
@@ -249,15 +335,27 @@
         </el-row>
       </el-tab-pane>
     </el-tabs>
+    <el-backtop target=".el-drawer__body"></el-backtop>
   </el-drawer>
 </template>
 <script lang="ts">
 //引入axios
 import axios from 'axios'
 import moment from 'moment'
-import {  getCurrentInstance,reactive,ref, toRefs } from "vue";
+import {  getCurrentInstance,onMounted, onUnmounted,reactive,Ref,ref, toRefs } from "vue";
 import { useRouter, useRoute } from 'vue-router'
 import { Area,Line,Pie } from '@antv/g2plot';
+//New Test
+interface PerfTestReqModelRef {
+  lang: string,
+  servType: string,
+  threads?: number,
+  cores?: number,
+  connCnt?: number,
+  reqFreq?: number,
+  keepAlive?: number,
+  pkgLen?: number
+}
 //历史记录
 interface GetTestHistoriesModelRef {
   code: number,
@@ -277,9 +375,146 @@ export default({
   setup() {
     const router = useRouter()
     const route = useRoute()
+
+    //NewTest
+    const PerfTestReqruleForm = ref<any>(null);
+      // 定义变量
+      const startform: PerfTestReqModelRef = reactive<PerfTestReqModelRef>({
+        lang: 'golang',
+        servType: 'testperf',
+        pkgLen:0,
+        threads: 1,
+        cores: 1,
+        connCnt: 1,
+        reqFreq: 1,
+        keepAlive: 60
+        // pkgLen: ''
+      })
+      //正整数验证
+      const integer= async(rule: any, value: string, callback: any): Promise<void> => {
+   　　   const boolean = new RegExp('^[1-9][0-9]*$').test(value)
+  　　     //console.log(boolean)
+  　　    if (!boolean) {
+    　　    callback(new Error('Please enter a positive integer'));
+    　　  }else{
+            callback();
+          }
+   　　 }
+      //正整数与0验证
+      const integer0= async(rule: any, value: string, callback: any): Promise<void> => {
+   　　   const boolean = new RegExp('^[1-9][0-9]*$').test(value)
+          const iszero= Number(value)===0?true:false
+          if(boolean||iszero){
+            callback();
+          }else{
+            callback(new Error('Please enter a positive integer or zero'));
+          }
+   　　 }
+      // 定义验证规则
+      const startformrules = {
+        servName: [
+          { required: true, message: 'Please select a service name', trigger: 'change' },
+          { type: 'string',"min": 1, message: 'The content type is string', trigger: 'blur' }
+        ],
+        servType: [
+          { required: true, message: 'Please fill in the server type: hardware description', trigger: 'blur' },
+          { type: 'string',"min": 1, message: 'The content type is string', trigger: 'blur' }
+        ],
+        threads: [
+          { required: true, message: 'Please fill in the number of server threads', trigger: 'blur' },
+          { type: 'number', trigger: 'blur',validator: integer }
+        ],
+        cores: [
+          { required: true, message: 'Please fill in the server audit', trigger: 'blur'},
+          { type: 'number', trigger: 'blur',validator: integer }
+        ],
+        connCnt: [
+          { required: true, message: 'Please fill in the number of node connections', trigger: 'blur'},
+          { type: 'number', trigger: 'blur',validator: integer }
+        ],
+        reqFreq: [
+          { required: true, message: 'Please fill in the connection request rate', trigger: 'blur'},
+          { type: 'number', trigger: 'blur',validator: integer }
+        ],
+        keepAlive: [
+          { required: true, message: 'Please fill in the number of seconds for pressure measurement', trigger: 'blur'},
+          { type: 'number', trigger: 'blur',validator: integer }
+        ],
+        pkgLen: [
+          { required: true, message: 'Please select the package size', trigger: 'change' },
+          { type: 'number', trigger: 'change',validator: integer0 }
+        ]
+      }
+    // 确认
+      const submitForm = () => {
+        try {
+          (PerfTestReqruleForm.value as any).validate( async (valid: boolean) => {
+            if (valid) {
+              console.log(startform)
+              loading.status=true
+              try {
+                const response = await axios.post('/api/testPerf',{
+                  lang: startform.lang,
+                  servType: startform.servType,
+                  threads:startform.threads,
+                  cores: startform.cores,
+                  connCnt: startform.connCnt,
+                  reqFreq: startform.reqFreq,
+                  keepAlive: startform.keepAlive,
+                  pkgLen:startform.pkgLen
+                });
+                
+                console.log(response);
+                //DoFuncTestresult.code=response.data.code
+                //DoFuncTestresult.msg=response.data.msg
+                //DoFuncTestresult.rows=response.data.rows
+              } catch (error) {
+                console.log(error.message);
+                console.log(error.code);
+                //DoFuncTestresult.code=error.code
+                //DoFuncTestresult.msg=error.message
+                //DoFuncTestresult.rows=error.rows
+              }
+              loading.status=false
+              dialogFormVisible.data=false
+              GetTestHistories()
+              // const { username, password } = ruleForm
+              // if (username === 'admin' && password === '123456') {
+              //   ctx.$message.success('登录成功了~');
+              //   router.push('home')
+              // } else {
+              //   ctx.$message.error('账户或密码有误~');
+              // }
+            }
+          });
+        } catch (error){
+          console.log(error);
+        }
+      }
+      // 重置
+        const resetForm = () => {
+            PerfTestReqruleForm.value?.resetFields();
+        }
+    // 定义表格数据
+    const tableDataDetail = reactive({ 
+      data: []
+    })
+    //Start按钮显示表单
+    const StartBenchmark=()=>{
+      //console.log(dialogFormVisible)
+      dialogFormVisible.data=true
+      console.log(dialogFormVisible)
+    }
+    const dialogFormVisible=reactive({ 
+      data: false
+    })
+
     //详情drawer左上角标题
     const title = reactive({ 
-      data: "" 
+      data: "",
+      type:"primary",
+      text:"loading",
+      loading:true
     })
     
     //详情按钮获取行数据
@@ -301,7 +536,8 @@ export default({
     })
     // 详情按钮加载状态
     const tabledetail = reactive({ 
-      status: false 
+      status: false ,
+      intervalId:-1
     })
     // 历史记录
     const tableData = reactive({ 
@@ -314,6 +550,7 @@ export default({
       cpu:[],
       mem:[]
     })
+    
     // 历史记录
     const GetTestHistoriesResult: GetTestHistoriesModelRef = reactive<GetTestHistoriesModelRef>({
       code: -1,
@@ -333,15 +570,31 @@ export default({
     const  GetTestHistories = async () => {
       loading.status=true
       try {
-        const response = await axios.get('http://3tkapi1.zhaoguolei.com:8000/histories');
+        const response = await axios.get('/api/histories', {
+          params: {
+            page: 0,
+            pageSize:0
+          }});
         console.log(response);
-        GetTestHistoriesResult.code=response.data.code
-        GetTestHistoriesResult.msg=response.data.msg
-        GetTestHistoriesResult.histories=response.data.histories
-        tableData.data=response.data.histories
+        if(response.data.code===-1){
+          ctx.$notify({
+            title: 'error',
+            message: response.data.msg,
+            type: 'error'
+          });
+        }else{
+          GetTestHistoriesResult.code=response.data.code
+          GetTestHistoriesResult.msg=response.data.msg
+          GetTestHistoriesResult.histories=response.data.histories
+          tableData.data=response.data.histories
+        }
+        
+        
+        
       } catch (error) {
         //console.log(error.message);
         //console.log(error.code);
+        
         GetTestHistoriesResult.code=error.code
         GetTestHistoriesResult.msg=error.message
         GetTestHistoriesResult.histories=error.histories
@@ -353,8 +606,15 @@ export default({
       ctx.men_area.destroy();
       done();
     }
+    //详情drawer左上角标题
+    const array_biao = reactive({ 
+      data: [] 
+    })
+    
     //定义CPU数据变量
-    const cpu_data = new Array()
+    const cpu_data = reactive({ 
+      data: [[]] 
+    })
     //详情按钮
     const handleClick=async(index: any, row: any) =>{
         //router.push({ name: 'Detail', params: { testID: row.testID } })
@@ -373,12 +633,36 @@ export default({
         clickrow.pkgLen=row.pkgLen
         loading.status=true
         try {
-          const response = await axios.get('http://3tkapi1.zhaoguolei.com:8000/detail',{
+          const response = await axios.get('/api/detail',{
             params: {
-              test_id: row.testID
+              testID: row.testID
             }
           });
           console.log(response);
+          
+          if(response.data.code===1&&response.data.msg==="succ"){
+            title.type="danger"
+            title.loading=true
+            title.text="running"
+          }else if(response.data.code===0){
+            title.type="success"
+            title.loading=false
+            title.text="finished"
+            if(tabledetail.intervalId!==-1){
+              clearInterval(tabledetail.intervalId);
+              tabledetail.intervalId=-1
+            }
+            
+          }else if(response.data.code===-1||(response.data.code===1&&response.data.message!=="")){
+            ctx.$notify({
+              title: 'error',
+              message: response.data.msg||response.data.message,
+              type: 'error'
+            });
+            tabledetail.status=false
+          }
+          
+          
           GetTestHistoriesdetailResult.code=response.data.code
           GetTestHistoriesdetailResult.msg=response.data.msg
           GetTestHistoriesdetailResult.perfDetail=response.data.perfDetail
@@ -393,27 +677,6 @@ export default({
           let mem_data: { type: string;sort: any; timestamp: any; value: any; }[]=new Array()
           //定义内存局部变量mem_data
           let costmap_data: { type: string; value: any; }[]=new Array()
-          // dataperfdetail.every((val: any, idx: any, array: any) => {
-
-          //   //console.log(val.costMap)
-          //   let tem_key=""
-          //   let tem_val=0
-          //   for(let key in val.costMap){
-          //     //console.log(key)
-          //     //console.log(val.costMap[key])
-          //     tem_key=key
-          //     tem_val=tem_val+val.costMap[key]
-              
-          //   }
-          //   costmap_data.push(
-          //       {
-          //         "type": tem_key,
-          //         "value": tem_val
-          //       }
-          //   )
-          //   return true;
-          // });
-          // console.log(ctx.trans(costmap_data))
           //定义内存局部变量mem_data
           let retcodemap_data: { type: string;sort: any; timestamp: any; value: any; }[]=new Array()
           //加工处理后台接口返回内存数据
@@ -446,67 +709,169 @@ export default({
               return true; // Continues
               // Return false will quit the iteration
           });
-          //2秒后渲染内存多折线图
-          //setTimeout(() => {
-            ctx.rendermem(mem_data)
-          //}, 1000);
-          //2秒后渲染pie饼图
-          // setTimeout(() => {
-          //   ctx.renderpie(tabledetailData.perfDetail)
-          // }, 2000);
+          //渲染内存多折线图
+            ctx.rendermem(mem_data,array_biao)
+          //渲染pie饼图
+            ctx.renderpie(tabledetailData.perfDetail,array_biao)
           //加工处理后台接口返回CPU数据
-          for(let i=0;i<=datatem[0].cpu.length-1;i++){
-            let cpu_data_temp=new Array()
-            datatem.every((val: any, idx: any, array: any) => {
-                // val: 当前值
-                // idx：当前index
-                // array: Array
-                cpu_data_temp.push(
-                  {
-                    "type":"free",
-                    "sort":val.timestamp,
-                    "timestamp": ctx.formatprosdate(val.timestamp),
-                    "value": (1-val.cpu[i].percent)*100
+          //console.log(datatem)
+          if(datatem[0].cpu.length>0){
+            let cpu_data1=new Array()
+            for(let i=0;i<=datatem[0].cpu.length-1;i++){
+              let cpu_data_temp=new Array()
+              datatem.every((val: any, idx: any, array: any) => {
+                  // val: 当前值
+                  // idx：当前index
+                  // array: Array
+                  cpu_data_temp.push(
+                    {
+                      "type":"free",
+                      "sort":val.timestamp,
+                      "timestamp": ctx.formatprosdate(val.timestamp),
+                      "value": (1-val.cpu[i].percent)*100
+                    }
+                  )
+                  cpu_data_temp.push(
+                    {
+                      "type":"used",
+                      "sort":val.timestamp,
+                      "timestamp": ctx.formatprosdate(val.timestamp),
+                      "value": (val.cpu[i].percent)*100
+                    }
+                  )
+                  
+                  if(idx+1==datatem.length){
+                    cpu_data1.push(cpu_data_temp.sort((a, b) =>{
+                      return a.sort - b.sort
+                    } ))
                   }
-                )
-                cpu_data_temp.push(
-                  {
-                    "type":"used",
-                    "sort":val.timestamp,
-                    "timestamp": ctx.formatprosdate(val.timestamp),
-                    "value": (val.cpu[i].percent)*100
-                  }
-                )
-                
-                if(idx+1==datatem.length){
-                  cpu_data.push(cpu_data_temp.sort((a, b) =>{
-                    return a.sort - b.sort
-                  } ))
-                }
-                return true; // Continues
-                // Return false will quit the iteration
-            });
+                  return true; // Continues
+                  // Return false will quit the iteration
+              });
+            }
+            //cpu_data.data.push(cpu_data1)
+            cpu_data.data=cpu_data1
+            //console.log(cpu_data1)
+            //2秒后渲染CPU百分比面积图
+            setTimeout(() => {
+              ctx.rendercpu(cpu_data1,array_biao)
+            }, 1000);
           }
-          //console.log(cpu_data)
-          //2秒后渲染CPU百分比面积图
-          setTimeout(() => {
-            ctx.rendercpu(cpu_data)
-          }, 2000);
           
-          //加工处理后台接口返回costMap
-          //console.log(tabledetailData.perfDetail)
-          // let costMap_data = ctx.tabledetailData.perfDetail.costMap
-          // costMap_data.every((val: any, idx: any, array: any) => {
-          //       // val: 当前值
-          //       // idx：当前index
-          //       // array: Array
-          //       console.log(val)
-          //       console.log(idx)
-          //       console.log(array)
-          //       return true; // Continues
-          //       // Return false will quit the iteration
-          //   });
-            
+          
+          //如果在running中
+          if(response.data.code===1&&response.data.msg==="succ"){
+            //创建定时器，每5000ms获取一次数据
+            tabledetail.intervalId=window.setInterval(async() => {
+              //请求明细接口
+              const response_new = await axios.get('/api/detail',{
+                params: {
+                  testID: row.testID
+                }
+              });
+              //console.log(response_new);
+              //返回code为0，结束定时器
+              if(response_new.data.code===0&&response_new.data.msg==="succ"){
+                  //详情页标题，状态按钮type
+                  title.type="success"
+                  //详情页标题，状态按钮loading
+                  title.loading=false
+                  //详情页标题，状态按钮text
+                  title.text="finished"
+                  //清空定时器
+                  if(tabledetail.intervalId!==-1){
+                    clearInterval(tabledetail.intervalId);
+                    tabledetail.intervalId=-1
+                  }
+              }
+              //更新性能数据
+              tabledetailData.perfDetail=response_new.data.perfDetail
+              //更新性CPU、内存数据
+              tabledetailData.resUsage=response_new.data.resUsage
+              //更新图数据
+              //定义内存局部变量mem_data_new
+              let mem_data_new: { type: string;sort: any; timestamp: any; value: any; }[]=new Array()
+              let datatem_new = ctx.tabledetailData.resUsage
+               //加工处理后台接口返回内存数据
+              datatem_new.every((val: any, idx: any, array: any) => {
+                  // val: 当前值
+                  // idx：当前index
+                  // array: Array
+                  // 内存数据转换单位为GB
+                  let total_num: number = val.mem.total/1024/1024/1024; 
+                  let total_str: string = total_num.toFixed(2);
+                  let used_num: number = val.mem.used/1024/1024/1024; 
+                  let used_str: string = used_num.toFixed(2);
+                  mem_data_new.push(
+                    {
+                      "type": "total ( GB )",
+                      "sort":val.timestamp,
+                      "timestamp": ctx.formatprosdate(val.timestamp),
+                      "value": parseFloat(total_str)
+                    }
+                  )
+                  mem_data_new.push(
+                    {
+                      "type": "used ( GB )",
+                      "sort":val.timestamp,
+                      "timestamp": ctx.formatprosdate(val.timestamp),
+                      "value": parseFloat(used_str)
+                    }
+                  )
+                  return true; // Continues
+                  // Return false will quit the iteration
+              });
+              //更新内存多折线图
+              ctx.rendermem_update(mem_data_new,array_biao)
+              //更新饼图数据
+              ctx.renderpie_update(tabledetailData.perfDetail,array_biao)
+              //console.log(datatem_new[0].cpu)
+              //更新CPU数据
+              if(datatem_new[0].cpu.length>0){
+                let cpu_data1_new=new Array()
+                for(let i=0;i<=datatem_new[0].cpu.length-1;i++){
+                  let cpu_data_temp=new Array()
+                  datatem_new.every((val: any, idx: any, array: any) => {
+                      // val: 当前值
+                      // idx：当前index
+                      // array: Array
+                      cpu_data_temp.push(
+                        {
+                          "type":"free",
+                          "sort":val.timestamp,
+                          "timestamp": ctx.formatprosdate(val.timestamp),
+                          "value": (1-val.cpu[i].percent)*100
+                        }
+                      )
+                      cpu_data_temp.push(
+                        {
+                          "type":"used",
+                          "sort":val.timestamp,
+                          "timestamp": ctx.formatprosdate(val.timestamp),
+                          "value": (val.cpu[i].percent)*100
+                        }
+                      )
+                      
+                      if(idx+1==datatem_new.length){
+                        cpu_data1_new.push(cpu_data_temp.sort((a, b) =>{
+                          return a.sort - b.sort
+                        } ))
+                      }
+                      return true; // Continues
+                      // Return false will quit the iteration
+                  });
+                }
+                //console.log(cpu_data1_new)
+                cpu_data.data=cpu_data1_new
+                //更新CPU百分比面积图
+                setTimeout(() => {
+                  ctx.rendercpu_update(cpu_data1_new,array_biao)
+                }, 1000);
+              }
+              
+            }, 5000);
+          }
+          
         } catch (error) {
           //console.log(error);
           //console.log(error.message);
@@ -516,8 +881,36 @@ export default({
         }
         loading.status=false
     }
-    
+    const handleClose=(done: () => void)=>{
+      //const { ctx }: any = getCurrentInstance();
+      //line_mem.value.destroy();
+      array_biao.data.every((val: any, idx: any, array: any) => {
+        console.log(val.value)
+        val.value.destroy();
+        return true;
+      });
+      array_biao.data=[]
+      title.data=""
+      title.type="primary"
+      title.text="loading"
+      title.loading=true
+      if(tabledetail.intervalId!==-1){
+        console.log(tabledetail.intervalId)
+        clearInterval(tabledetail.intervalId);
+        tabledetail.intervalId=-1
+      }
+      done();
+    }
     return {
+      startform,
+      startformrules,
+      submitForm,
+      PerfTestReqruleForm,
+      tableDataDetail,
+      resetForm,
+      StartBenchmark,
+      formLabelWidth:'30%',
+      dialogFormVisible,
       GetTestHistories,
       GetTestHistoriesResult,
       loading,
@@ -529,10 +922,20 @@ export default({
       title,
       clickrow,
       drawerhandleClose,
-      cpu_data
+      cpu_data,
+      array_biao,
+      handleClose
     }
   },
   methods: {
+    formatfinished(row: any, column: any, cellValue: any, index: any){
+      if(cellValue===1){
+        return "finished"
+      }
+      if(cellValue===0){
+        return "running"
+      }
+    },
     //Table用 时间戳转换为日期
     formatdate(row: any, column: any, cellValue: any, index: any){
         //console.log(row);
@@ -553,21 +956,15 @@ export default({
       return JSON.stringify(cellValue)
     },
     //渲染CPU图表
-    rendercpu(cpu_data: any[]){
+    rendercpu(cpu_data: any[],array_biao: any){
         cpu_data.forEach((val, index) => {
             //console.log(val)
             //console.log(index)
             let data=val
-            //折线图
-            // const line = new Line(`chart${index}`, {
-            //   data,
-            //   xField: 'timestamp',
-            //   yField: 'value',
-            //   seriesField: 'type'
-            // });
-            // line.render();
             //百分比
-            const area = new Area(`chart${index}`, {
+            const are_cpu = ref({}) as Ref<Area>;
+            array_biao.data.push(are_cpu)
+            are_cpu.value = new Area(`chart${index}`, {
               data,
               xField: 'timestamp',
               yField: 'value',
@@ -590,41 +987,374 @@ export default({
                 end: 1,
               }
             });
-            area.render();
+            are_cpu.value.render();
+          }) 
+    },
+    rendercpu_update(cpu_data: any[],array_biao: any){
+        //console.log(array_biao)
+        cpu_data.forEach((val, index) => {
+            //console.log(val)
+            //console.log(index)//0开始
+            let data=val
+            //折线图
+            if(array_biao.data[3+index]===undefined){
+              //console.log(array_biao.data[3+index])
+              let are_cpu = ref({}) as Ref<Area>;
+              array_biao.data.push(are_cpu)
+              are_cpu.value = new Area(`chart${index}`, {
+                data,
+                xField: 'timestamp',
+                yField: 'value',
+                seriesField: 'type',
+                color: ['#B8E1FF', '#FF6836'],
+                areaStyle: {
+                  fillOpacity: 0.7,
+                },
+                appendPadding: 10,
+                isPercent: true,
+                        yAxis: {
+                  label: {
+                    formatter: (v) => {
+                      return parseFloat(v) * 100;
+                    }
+                  },
+                },
+                slider: {
+                  start: 0,
+                  end: 1,
+                }
+              });
+              are_cpu.value.render();
+            }else{
+              if(array_biao.data[3+index].value){
+                  array_biao.data[3+index].value.changeData(data);
+              }
+            }
           }) 
     },
     //渲染内存图表
-    rendermem(mem_data: any[]){
+    rendermem(mem_data: any[],array_biao: any){
       //console.log(mem_data)
       let data=mem_data.sort((a, b) =>{
         return a.sort - b.sort
       } )
-      const line = new Line('container_mem', {
-        data,
-        xField: 'timestamp',
-        yField: 'value',
-        seriesField: 'type',
-        color: ['#57D1A1', '#FF6836'],
-        smooth: true,
-        slider: {
-          start: 0,
-          end: 1,
-        }
+      const line_mem = ref({}) as Ref<Line>;
+      array_biao.data.push(line_mem)
+      line_mem.value = new Line('container_mem', {
+          data,
+          xField: 'timestamp',
+          yField: 'value',
+          seriesField: 'type',
+          color: ['#57D1A1', '#FF6836'],
+          smooth: true,
+          slider: {
+            start: 0,
+            end: 1,
+          }
       });
-      line.render();
+      line_mem.value.render();
     },
-    renderpie(perdetail:any[]){
+    //渲染内存图表
+    rendermem_update(mem_data_new: any[],array_biao: any){
+      //console.log(mem_data)
+      let data=mem_data_new.sort((a, b) =>{
+        return a.sort - b.sort
+      } )
+      array_biao.data[0].value.changeData(data);
+    },
+    renderpie(perdetail:any[],array_biao: any){
        //console.log(perdetail)
+       let costmap={
+          "0~10ms":0,
+          "10~30ms":0,
+          "30~50ms":0,
+          "50~100ms":0,
+          "100~500ms":0,
+          "0.5~3s":0,
+          "3~5s":0,
+          "5~100s":0,
+          "<100s":0
+       }
+       let retcodemap={
+          "SUCCESS":0,
+          // "1":0,
+          // "2":0,
+          // "3":0,
+          // "4":0,
+          // "5":0,
+          // "6":0,
+          // "7":0,
+          // "8":0,
+          // "9":0,
+          "EXCEPTION":0,
+          "INIT_PARAM_ERROR":0,
+          "URL_ERROR":0,
+          "PACKET_ENCODE_ERROR":0,
+          "PACKET_DECODE_ERROR":0,
+          "PACKET_PARAM_ERROR":0,
+          "SOCK_ERROR":0,
+          "SOCK_INVALID":0,
+          "SOCK_CONN_ERROR":0,
+          "SOCK_CONN_TIMEOUT":0,
+          "SOCK_SEND_ERROR":0,
+          "SOCK_RECV_ERROR":0,
+          "SOCK_RECV_TIMEOUT":0
+       }
        perdetail.every((val: any, idx: any, array: any) => {
             // val: 当前值
             // idx：当前index
             // array: Array
-            console.log(val)
-            console.log(idx)
-            console.log(array)
+            //console.log(val.costMap)
+            //console.log(val.retCodeMap)
+            // val.costMap.every((val1: any, idx1: any, array1: any) => {
+
+            // });
+            costmap['0~10ms']=costmap['0~10ms']+val.costMap['0~10ms']
+            costmap['10~30ms']=costmap['10~30ms']+val.costMap['10~30ms']
+            costmap['30~50ms']=costmap['30~50ms']+val.costMap['30~50ms']
+            costmap['50~100ms']=costmap['50~100ms']+val.costMap['50~100ms']
+            costmap['100~500ms']=costmap['100~500ms']+val.costMap['100~500ms']
+            costmap['0.5~3s']=costmap['0.5~3s']+val.costMap['0.5~3s']
+            costmap['3~5s']=costmap['3~5s']+val.costMap['3~5s']
+            costmap['5~100s']=costmap['5~100s']+val.costMap['5~100s']
+            costmap['<100s']=costmap['<100s']+val.costMap['<100s']
+
+
+            for(let [key, val1] of Object.entries(val.retCodeMap)){
+              // console.log(key)
+              // console.log(val1)
+              if(key==="SUCCESS"){
+                retcodemap['SUCCESS']=retcodemap['SUCCESS']+Number(val1)
+              }
+              if(key==="EXCEPTION"){
+                retcodemap["EXCEPTION"]=retcodemap["EXCEPTION"]+Number(val1)
+              }
+              if(key==="INIT_PARAM_ERROR"){
+                retcodemap['INIT_PARAM_ERROR']=retcodemap['INIT_PARAM_ERROR']+Number(val1)
+              }
+              if(key==="URL_ERROR"){
+                retcodemap['URL_ERROR']=retcodemap['URL_ERROR']+Number(val1)
+              }
+              if(key==="PACKET_ENCODE_ERROR"){
+                retcodemap['PACKET_ENCODE_ERROR']=retcodemap['PACKET_ENCODE_ERROR']+Number(val1)
+              }
+              if(key==="PACKET_DECODE_ERROR"){
+                retcodemap['PACKET_DECODE_ERROR']=retcodemap['PACKET_DECODE_ERROR']+Number(val1)
+              }
+              if(key==="PACKET_PARAM_ERROR"){
+                retcodemap['PACKET_PARAM_ERROR']=retcodemap['PACKET_PARAM_ERROR']+Number(val1)
+              }
+              if(key==="SOCK_ERROR"){
+                retcodemap['SOCK_ERROR']=retcodemap['SOCK_ERROR']+Number(val1)
+              }
+              if(key==="SOCK_INVALID"){
+                retcodemap['SOCK_INVALID']=retcodemap['SOCK_INVALID']+Number(val1)
+              }
+              if(key==="SOCK_CONN_ERROR"){
+                retcodemap['SOCK_CONN_ERROR']=retcodemap['SOCK_CONN_ERROR']+Number(val1)
+              }
+              if(key==="SOCK_CONN_TIMEOUT"){
+                retcodemap['SOCK_CONN_TIMEOUT']=retcodemap['SOCK_CONN_TIMEOUT']+Number(val1)
+              }
+              if(key==="SOCK_SEND_ERROR"){
+                retcodemap['SOCK_SEND_ERROR']=retcodemap['SOCK_SEND_ERROR']+Number(val1)
+              }
+              if(key==="SOCK_RECV_ERROR"){
+                retcodemap['SOCK_RECV_ERROR']=retcodemap['SOCK_RECV_ERROR']+Number(val1)
+              }
+              if(key==="SOCK_RECV_TIMEOUT"){
+                retcodemap['SOCK_RECV_TIMEOUT']=retcodemap['SOCK_RECV_TIMEOUT']+Number(val1)
+              }
+            }
             return true; // Continues
             // Return false will quit the iteration
         });
+        //耗时分布饼图
+        let retcostmap=[]
+        for(let [key, val] of Object.entries(costmap)){
+          retcostmap.push({
+            "type": key,
+            "value": val
+          })
+        }
+        //console.log(retcostmap)
+        let data=retcostmap
+        const pie_cost = ref({}) as Ref<Pie>;
+        array_biao.data.push(pie_cost)
+        pie_cost.value = new Pie('container_time_interval', {
+          appendPadding: 20,
+          data:data,
+          angleField: 'value',
+          colorField: 'type',
+          radius: 0.75,
+          label: {
+            type: 'spider',
+            labelHeight: 28,
+            content: '{name}:{percentage}:{value}',
+            //content: '{name}\n{percentage}\n{value}',
+          },
+          interactions: [ { type: 'element-active' }],
+        });
+        pie_cost.value.render();
+        //返回值分布饼图
+        let retcodemap1=[]
+        for(let [key, val] of Object.entries(retcodemap)){
+          if(val!==0){
+            retcodemap1.push({
+              "type": key,
+              "value": val
+            })
+          }
+        }
+        let data1=retcodemap1
+        const pie_retcode = ref({}) as Ref<Pie>;
+        array_biao.data.push(pie_retcode)
+        pie_retcode.value = new Pie('container_return_value', {
+          appendPadding: 20,
+          data:data1,
+          angleField: 'value',
+          colorField: 'type',
+          radius: 0.75,
+          label: {
+            type: 'spider',
+            labelHeight: 28,
+            content: '{name}:{percentage}:{value}',
+            //content: '{name}\n{percentage}\n{value}',
+          },
+          interactions: [ { type: 'element-active' }],
+        });
+        pie_retcode.value.render();
+    },
+    renderpie_update(perdetail:any[],array_biao: any){
+       //console.log(perdetail)
+       let costmap={
+          "0~10ms":0,
+          "10~30ms":0,
+          "30~50ms":0,
+          "50~100ms":0,
+          "100~500ms":0,
+          "0.5~3s":0,
+          "3~5s":0,
+          "5~100s":0,
+          "<100s":0
+       }
+       let retcodemap={
+          "SUCCESS":0,
+          // "1":0,
+          // "2":0,
+          // "3":0,
+          // "4":0,
+          // "5":0,
+          // "6":0,
+          // "7":0,
+          // "8":0,
+          // "9":0,
+          "EXCEPTION":0,
+          "INIT_PARAM_ERROR":0,
+          "URL_ERROR":0,
+          "PACKET_ENCODE_ERROR":0,
+          "PACKET_DECODE_ERROR":0,
+          "PACKET_PARAM_ERROR":0,
+          "SOCK_ERROR":0,
+          "SOCK_INVALID":0,
+          "SOCK_CONN_ERROR":0,
+          "SOCK_CONN_TIMEOUT":0,
+          "SOCK_SEND_ERROR":0,
+          "SOCK_RECV_ERROR":0,
+          "SOCK_RECV_TIMEOUT":0
+       }
+       perdetail.every((val: any, idx: any, array: any) => {
+            // val: 当前值
+            // idx：当前index
+            // array: Array
+            //console.log(val.costMap)
+            //console.log(val.retCodeMap)
+            // val.costMap.every((val1: any, idx1: any, array1: any) => {
+
+            // });
+            costmap['0~10ms']=costmap['0~10ms']+val.costMap['0~10ms']
+            costmap['10~30ms']=costmap['10~30ms']+val.costMap['10~30ms']
+            costmap['30~50ms']=costmap['30~50ms']+val.costMap['30~50ms']
+            costmap['50~100ms']=costmap['50~100ms']+val.costMap['50~100ms']
+            costmap['100~500ms']=costmap['100~500ms']+val.costMap['100~500ms']
+            costmap['0.5~3s']=costmap['0.5~3s']+val.costMap['0.5~3s']
+            costmap['3~5s']=costmap['3~5s']+val.costMap['3~5s']
+            costmap['5~100s']=costmap['5~100s']+val.costMap['5~100s']
+            costmap['<100s']=costmap['<100s']+val.costMap['<100s']
+
+
+            for(let [key, val1] of Object.entries(val.retCodeMap)){
+              // console.log(key)
+              // console.log(val1)
+              if(key==="SUCCESS"){
+                retcodemap['SUCCESS']=retcodemap['SUCCESS']+Number(val1)
+              }
+              if(key==="EXCEPTION"){
+                retcodemap["EXCEPTION"]=retcodemap["EXCEPTION"]+Number(val1)
+              }
+              if(key==="INIT_PARAM_ERROR"){
+                retcodemap['INIT_PARAM_ERROR']=retcodemap['INIT_PARAM_ERROR']+Number(val1)
+              }
+              if(key==="URL_ERROR"){
+                retcodemap['URL_ERROR']=retcodemap['URL_ERROR']+Number(val1)
+              }
+              if(key==="PACKET_ENCODE_ERROR"){
+                retcodemap['PACKET_ENCODE_ERROR']=retcodemap['PACKET_ENCODE_ERROR']+Number(val1)
+              }
+              if(key==="PACKET_DECODE_ERROR"){
+                retcodemap['PACKET_DECODE_ERROR']=retcodemap['PACKET_DECODE_ERROR']+Number(val1)
+              }
+              if(key==="PACKET_PARAM_ERROR"){
+                retcodemap['PACKET_PARAM_ERROR']=retcodemap['PACKET_PARAM_ERROR']+Number(val1)
+              }
+              if(key==="SOCK_ERROR"){
+                retcodemap['SOCK_ERROR']=retcodemap['SOCK_ERROR']+Number(val1)
+              }
+              if(key==="SOCK_INVALID"){
+                retcodemap['SOCK_INVALID']=retcodemap['SOCK_INVALID']+Number(val1)
+              }
+              if(key==="SOCK_CONN_ERROR"){
+                retcodemap['SOCK_CONN_ERROR']=retcodemap['SOCK_CONN_ERROR']+Number(val1)
+              }
+              if(key==="SOCK_CONN_TIMEOUT"){
+                retcodemap['SOCK_CONN_TIMEOUT']=retcodemap['SOCK_CONN_TIMEOUT']+Number(val1)
+              }
+              if(key==="SOCK_SEND_ERROR"){
+                retcodemap['SOCK_SEND_ERROR']=retcodemap['SOCK_SEND_ERROR']+Number(val1)
+              }
+              if(key==="SOCK_RECV_ERROR"){
+                retcodemap['SOCK_RECV_ERROR']=retcodemap['SOCK_RECV_ERROR']+Number(val1)
+              }
+              if(key==="SOCK_RECV_TIMEOUT"){
+                retcodemap['SOCK_RECV_TIMEOUT']=retcodemap['SOCK_RECV_TIMEOUT']+Number(val1)
+              }
+            }
+            return true; // Continues
+            // Return false will quit the iteration
+        });
+        //耗时分布饼图
+        let retcostmap=[]
+        for(let [key, val] of Object.entries(costmap)){
+          retcostmap.push({
+            "type": key,
+            "value": val
+          })
+        }
+        //console.log(retcostmap)
+        let data=retcostmap
+        array_biao.data[1].value.changeData(data);
+        //返回值分布饼图
+        let retcodemap1=[]
+        for(let [key, val] of Object.entries(retcodemap)){
+          if(val!==0){
+            retcodemap1.push({
+              "type": key,
+              "value": val
+            })
+          }
+        }
+        let data1=retcodemap1
+        array_biao.data[2].value.changeData(data1);
     },
     trans (arr: { name: any; value: any; }[]) {
       let obj:any = {}
@@ -644,7 +1374,32 @@ export default({
         }
       })
       return result
-    }
+    },
+    // formatTime(time: number) {
+    //   const SECOND = 1000;
+    //   const MINUTE = 60 * SECOND;
+    //   const HOUR = 60 * MINUTE;
+    //   const DAY = 24 * HOUR;
+
+    //   const format = time => this.padTwo(Math.floor(time));
+
+    //   const days = Math.floor(time / DAY);
+    //   const hours = format((time % DAY) / HOUR);
+    //   const minutes = format((time % HOUR) / MINUTE);
+    //   const seconds = format((time % MINUTE) / SECOND);
+    //   const millisecond = format(time % SECOND);
+
+    //   return {
+    //     days,
+    //     hours,
+    //     minutes,
+    //     seconds,
+    //     millisecond
+    //   };
+    // },
+    // padTwo(t: string) {
+    //   return Number(t) >= 10 ? t.toString().slice(0, 2) : "0" + t;
+    // }
       
   },
   mounted () {
@@ -715,4 +1470,19 @@ border-radius: 10px;
 .el-drawer__header{
   font-weight:bold;
 }
+.el-drawer__close{
+  background-color: #E7EAED;
+}
+  .el-dialog .el-dialog__header{
+    text-align: left;
+  }
+  .el-input{
+    width: 217px;
+  }
+  .el-dialog{
+    width: 580px;
+  }
+  .el-table__header col[name="gutter"] {
+    display: table-cell !important;
+  }
 </style>
