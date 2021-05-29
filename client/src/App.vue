@@ -34,6 +34,10 @@
                 <i class="el-icon-document"></i>
                 <template #title>Test Report</template>
               </el-menu-item>
+              <el-menu-item index="/history">
+                <i class="el-icon-document"></i>
+                <template #title>Historical Report</template>
+              </el-menu-item>
             </el-menu>
           </el-col>
         </el-row>
