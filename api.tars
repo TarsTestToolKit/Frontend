@@ -122,6 +122,7 @@ module apitars
         8 require unsigned int keepAlive; // 压测时长（单位秒）
         9 require unsigned int reqFreq;   // 请求频率
         10 require unsigned int pkgLen;   // 压测包大小
+        11 require unsigned int finished;   // 是否完成，0为进行中,1为完成
     };
 
     // 查询压测历史信息响应结构
