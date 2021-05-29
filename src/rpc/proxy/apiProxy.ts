@@ -945,6 +945,7 @@ export namespace apitars {
         keepAlive: number = 0;
         reqFreq: number = 0;
         pkgLen: number = 0;
+        finished: number = 0;
 
         protected _proto_struct_name_ = "";
         protected _classname = "apitars.TestHistory";
@@ -964,6 +965,7 @@ export namespace apitars {
             tmp.keepAlive = is.readUInt32(8, true, 0);
             tmp.reqFreq = is.readUInt32(9, true, 0);
             tmp.pkgLen = is.readUInt32(10, true, 0);
+            tmp.finished = is.readUInt32(11, true, 0);
             return tmp;
         }
 
@@ -979,6 +981,7 @@ export namespace apitars {
             os.writeUInt32(8, this.keepAlive);
             os.writeUInt32(9, this.reqFreq);
             os.writeUInt32(10, this.pkgLen);
+            os.writeUInt32(11, this.finished);
         }
 
         protected _equal() {
@@ -1004,7 +1007,8 @@ export namespace apitars {
                 connCnt: this.connCnt,
                 keepAlive: this.keepAlive,
                 reqFreq: this.reqFreq,
-                pkgLen: this.pkgLen
+                pkgLen: this.pkgLen,
+                finished: this.finished
             };
         }
 
@@ -1020,6 +1024,7 @@ export namespace apitars {
             _hasOwnProperty.call(json, "keepAlive") && (this.keepAlive = json.keepAlive);
             _hasOwnProperty.call(json, "reqFreq") && (this.reqFreq = json.reqFreq);
             _hasOwnProperty.call(json, "pkgLen") && (this.pkgLen = json.pkgLen);
+            _hasOwnProperty.call(json, "finished") && (this.pkgLen = json.finished);
             return this;
         }
 
@@ -1051,6 +1056,7 @@ export namespace apitars {
             keepAlive: number;
             reqFreq: number;
             pkgLen: number;
+            finished:number;
         }
     }
 
