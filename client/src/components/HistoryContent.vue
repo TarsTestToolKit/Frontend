@@ -111,9 +111,9 @@
       </el-row>
   </div>
   <!-- 开始测试表单 -->
-  <el-dialog title="Performance Test Configure" v-model="doPerfTestdialogFormVisible.data" center top="8vh" width="580px">
-    <el-form :model="startform" ref="PerfTestReqruleForm" :rules="startformrules" label-position="right" label-width="360px">
-      <el-form-item label="lang" :label-width="formLabelWidth" prop="lang">
+  <el-dialog title="Performance Test Configure" v-model="doPerfTestdialogFormVisible.data" center top="8vh" width="640px">
+    <el-form :model="startform" ref="PerfTestReqruleForm" :rules="startformrules" label-position="right">
+      <el-form-item label="被测服务语言" :label-width="formLabelWidth" prop="lang">
         <el-select v-model="startform.lang" placeholder="Please select lang">
           <el-option label="golang" value="golang"></el-option>
           <el-option label="java" value="java"></el-option>
@@ -122,25 +122,25 @@
           <el-option label="php" value="php"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="servType" :label-width="formLabelWidth" prop="servType">
-        <el-input v-model="startform.servType" autocomplete="off"></el-input>
+      <el-form-item label="被测服务器硬件描述信息" :label-width="formLabelWidth" prop="servType" label-width="200px">
+        <el-input v-model="startform.servType" autocomplete="off" placeholder="eg.16C8G"></el-input>
       </el-form-item>
-      <el-form-item label="threads" :label-width="formLabelWidth" prop="threads">
+      <el-form-item label="服务端线程数" :label-width="formLabelWidth" prop="threads">
         <el-input v-model="startform.threads" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item label="cores" :label-width="formLabelWidth" prop="cores">
+      <el-form-item label="服务器核数" :label-width="formLabelWidth" prop="cores">
         <el-input v-model="startform.cores" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item label="connCnt" :label-width="formLabelWidth" prop="connCnt">
+      <el-form-item label="节点连接数" :label-width="formLabelWidth" prop="connCnt">
         <el-input v-model="startform.connCnt" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item label="reqFreq" :label-width="formLabelWidth" prop="reqFreq">
+      <el-form-item label="单连接请求速率" :label-width="formLabelWidth" prop="reqFreq">
         <el-input v-model="startform.reqFreq" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item label="keepAlive(s)" :label-width="formLabelWidth" prop="keepAlive">
+      <el-form-item label="压测执行多少秒(s)" :label-width="formLabelWidth" prop="keepAlive">
         <el-input v-model="startform.keepAlive" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item label="pkgLen" :label-width="formLabelWidth" prop="pkgLen">
+      <el-form-item label="压测包大小" :label-width="formLabelWidth" prop="pkgLen">
         <el-select v-model="startform.pkgLen" placeholder="Please select pkgLen">
           <el-option label="0K" :value="0"></el-option>
           <el-option label="1K" :value="1*1024"></el-option>
@@ -171,10 +171,13 @@
         <el-col :span="2">
           {{title.data}}
         </el-col>
-        <el-col :span="6">
+        <el-col :span="2">
           <el-button :type="title.type" :loading="title.loading" size="mini">{{title.text}}</el-button>
         </el-col>
-        <el-col :span="14"></el-col>
+        <el-col :span="6">
+          <el-progress :text-inside="true" :stroke-width="28" :percentage="title.percentage" :status="title.percentagestatus" :format="percentageformat"></el-progress>
+        </el-col>
+        <el-col :span="12"></el-col>
       </el-row>
     </template>
     <el-tabs type="border-card">
@@ -326,6 +329,7 @@
 import axios from 'axios'
 import moment from 'moment'
 import {  getCurrentInstance,reactive,Ref,ref} from "vue";
+import { ElNotification } from 'element-plus';
 //import { useRouter, useRoute } from 'vue-router'
 import { Area,Line,Pie } from '@antv/g2plot';
 //函数测试接口定义
@@ -376,12 +380,12 @@ export default({
     const startform: PerfTestReqModelRef = reactive<PerfTestReqModelRef>({
       lang: 'cpp',
       servType: '',
-      pkgLen:0
-      // threads: 1,
-      // cores: 1,
-      // connCnt: 1,
-      // reqFreq: 1,
-      // keepAlive: 0
+      pkgLen:0,
+      threads: 10,
+      cores: 10,
+      connCnt: 10,
+      reqFreq: 10,
+      keepAlive: 60
       // pkgLen: ''
     })
     //正整数验证
@@ -405,36 +409,32 @@ export default({
     }
     // 定义验证规则
     const startformrules = {
-      servName: [
-        { required: true, message: 'Please select a service name', trigger: 'change' },
-        { type: 'string',"min": 1, message: 'The content type is string', trigger: 'blur' }
-      ],
       servType: [
-        { required: true, message: 'Please fill in the server type: hardware description', trigger: 'blur' },
+        { required: true, message: '请填写被测服务器硬件描述信息', trigger: 'blur' },
         { type: 'string',"min": 1, message: 'The content type is string', trigger: 'blur' }
       ],
       threads: [
-        { required: true, message: 'Please fill in the number of server threads', trigger: 'blur' },
+        { required: true, message: '请填写服务端线程数', trigger: 'blur' },
         { type: 'number', trigger: 'blur',validator: integer }
       ],
       cores: [
-        { required: true, message: 'Please fill in the server audit', trigger: 'blur'},
+        { required: true, message: '请填写服务器核数', trigger: 'blur'},
         { type: 'number', trigger: 'blur',validator: integer }
       ],
       connCnt: [
-        { required: true, message: 'Please fill in the number of node connections', trigger: 'blur'},
+        { required: true, message: '请填写节点连接数', trigger: 'blur'},
         { type: 'number', trigger: 'blur',validator: integer }
       ],
       reqFreq: [
-        { required: true, message: 'Please fill in the connection request rate', trigger: 'blur'},
+        { required: true, message: '请填写单连接请求速率', trigger: 'blur'},
         { type: 'number', trigger: 'blur',validator: integer }
       ],
       keepAlive: [
-        { required: true, message: 'Please fill in the number of seconds for pressure measurement', trigger: 'blur'},
+        { required: true, message: '请填写压测执行多少秒', trigger: 'blur'},
         { type: 'number', trigger: 'blur',validator: integer }
       ],
       pkgLen: [
-        { required: true, message: 'Please select the package size', trigger: 'change' },
+        { required: true, message: '请选择压测包大小', trigger: 'change' },
         { type: 'number', trigger: 'change',validator: integer0 }
       ]
     }
@@ -447,7 +447,10 @@ export default({
       data: "",
       type:"primary",
       text:"loading",
-      loading:true
+      loading:true,
+      percentage:0,
+      percentagestatus:"exception",
+      remaintime:0
     })
     
     //详情按钮获取行数据
@@ -461,6 +464,8 @@ export default({
       reqFreq: "",
       keepAlive: "",
       pkgLen: "",
+      startTime:0,
+      endTime:0
     })
     const { ctx }: any = getCurrentInstance();
     // 历史记录按钮加载状态
@@ -528,7 +533,7 @@ export default({
           }});
         console.log(response);
         if(response.data.code===-1){
-          ctx.$notify({
+          ElNotification({
             title: 'error',
             message: response.data.msg,
             type: 'error'
@@ -589,18 +594,18 @@ export default({
                 keepAlive: startform.keepAlive,
                 pkgLen:startform.pkgLen
               });
-              console.log(response);
+              //console.log(response);
               //DoFuncTestresult.code=response.data.code
               //DoFuncTestresult.msg=response.data.msg
               //DoFuncTestresult.rows=response.data.rows
               if(response.data.code!==0){
-                ctx.$notify({
+                ElNotification({
                   title: 'error',
                   message: response.data.message,
                   type: 'error'
                 });
               }else{
-                ctx.$notify({
+                ElNotification({
                   title: 'success',
                   message: response.data.msg+" testID:"+response.data.testID,
                   type: 'success'
@@ -614,13 +619,15 @@ export default({
                   reqFreq: startform.reqFreq,
                   keepAlive: startform.keepAlive,
                   pkgLen:startform.pkgLen,
-                  testID:response.data.testID
+                  testID:response.data.testID,
+                  startTime:moment().unix(),
+                  endTime:moment().add(Number(startform.keepAlive),'second').unix()
                 }
 
                 handleClick(0, reqtest)
               }
             } catch (error) {
-              ctx.$notify({
+              ElNotification({
                 title: 'error',
                 message: error.message,
                 type: 'error'
@@ -655,6 +662,8 @@ export default({
         clickrow.reqFreq=row.reqFreq
         clickrow.keepAlive=row.keepAlive
         clickrow.pkgLen=row.pkgLen
+        clickrow.startTime=row.startTime
+        clickrow.endTime=row.endTime
         loading.status=true
         try {
           const response = await axios.get('/api/detail',{
@@ -662,7 +671,7 @@ export default({
               testID: row.testID
             }
           });
-          console.log(response);
+          //console.log(response);
           
           if(response.data.code===1&&response.data.msg==="succ"){
             title.type="danger"
@@ -672,6 +681,8 @@ export default({
             title.type="success"
             title.loading=false
             title.text="finished"
+            title.percentage=100
+            title.percentagestatus="success"
             //清除定时器，并初始化
             if(tabledetail.intervalId!==-1){
               clearInterval(tabledetail.intervalId);
@@ -679,7 +690,7 @@ export default({
             }
             
           }else if(response.data.code===-1||(response.data.code===1&&response.data.message!=="")){
-            ctx.$notify({
+            ElNotification({
               title: 'error',
               message: response.data.msg||response.data.message,
               type: 'error'
@@ -788,12 +799,32 @@ export default({
                   title.loading=false
                   //详情页标题，状态按钮text
                   title.text="finished"
+                  title.percentage=100
+                  title.percentagestatus="success"
                   //清空定时器
                   if(tabledetail.intervalId!==-1){
                     clearInterval(tabledetail.intervalId);
                     tabledetail.intervalId=-1
                   }
+                  return true
               }
+              let timestamparray:Array<number>=[]
+              response_new.data.perfDetail.every((val: any, idx: any, array: any) => {
+                    timestamparray.push(val.timestamp)
+                    return true; // Continues
+              });
+              //console.log(Math.max(...timestamparray))
+              //console.log(clickrow.startTime)
+              //console.log(clickrow.endTime)
+              //当前运行时间
+              //console.log(Math.max(...timestamparray)-Number(clickrow.startTime))
+              //console.log((Math.max(...timestamparray)-Number(clickrow.startTime))/Number(clickrow.keepAlive)*100)
+              title.percentage=(Math.max(...timestamparray)-Number(clickrow.startTime))/Number(clickrow.keepAlive)*100
+              //console.log(moment(Math.max(...timestamparray)*1000).diff(moment(Number(clickrow.startTime)*1000), 'seconds'))
+              //console.log(Math.max(...timestamparray)-Number(clickrow.startTime)/Number(clickrow.keepAlive)*100)
+              //title.percentage=Math.max(...timestamparray)-clickrow.startTime/Number(clickrow.keepAlive)*100
+              title.percentagestatus="exception"
+              title.remaintime=Number(clickrow.endTime)-Math.max(...timestamparray)
               //更新性能数据
               tabledetailData.perfDetail=response_new.data.perfDetail
               //更新性CPU、内存数据
@@ -899,6 +930,8 @@ export default({
       title.type="primary"
       title.text="loading"
       title.loading=true
+      title.percentage=0
+      title.percentagestatus="exception"
       //清除定时器，并初始化
       if(tabledetail.intervalId!==-1){
         clearInterval(tabledetail.intervalId);
@@ -1299,8 +1332,13 @@ export default({
         let data1=retcodemap1
         array_biao.data[2].value.changeData(data1);
     }
+    const percentageformat=(percentage:any)=>{
+      //console.log(percentage)
+      return percentage === 100 ? `${percentage.toFixed(2)}%`: `${percentage.toFixed(2)}% countdown ( `+title.remaintime+` s )`
+    }
     return {
       //变量
+      ctx,
       handleSizeChange,
       handleCurrentChange,
       paginationData,
@@ -1335,36 +1373,9 @@ export default({
       rendermem,
       rendermem_update,
       renderpie,
-      renderpie_update
+      renderpie_update,
+      percentageformat
     }
-  },
-  methods: {
-    // formatTime(time: number) {
-    //   const SECOND = 1000;
-    //   const MINUTE = 60 * SECOND;
-    //   const HOUR = 60 * MINUTE;
-    //   const DAY = 24 * HOUR;
-
-    //   const format = time => this.padTwo(Math.floor(time));
-
-    //   const days = Math.floor(time / DAY);
-    //   const hours = format((time % DAY) / HOUR);
-    //   const minutes = format((time % HOUR) / MINUTE);
-    //   const seconds = format((time % MINUTE) / SECOND);
-    //   const millisecond = format(time % SECOND);
-
-    //   return {
-    //     days,
-    //     hours,
-    //     minutes,
-    //     seconds,
-    //     millisecond
-    //   };
-    // },
-    // padTwo(t: string) {
-    //   return Number(t) >= 10 ? t.toString().slice(0, 2) : "0" + t;
-    // }
-      
   }
 });
 </script>
