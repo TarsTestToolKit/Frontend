@@ -531,7 +531,7 @@ export default({
             page: currentpage,
             pageSize:currentpagesize
           }});
-        console.log(response);
+        //console.log(response);
         if(response.data.code===-1){
           ElNotification({
             title: 'error',
