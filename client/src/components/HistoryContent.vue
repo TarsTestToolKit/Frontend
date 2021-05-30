@@ -3,10 +3,10 @@
     <h1 style="text-align: center;">Historical Report</h1>
     <el-row style="padding-top:20px;">
       <el-col :span="5">
-        <el-button type="primary" icon="el-icon-circle-plus-outline" @click="StartBenchmark" plain>doPerTest</el-button>
+        <el-button type="primary" icon="el-icon-circle-plus-outline" @click="StartBenchmark" plain>Performance Test</el-button>
       </el-col>
       <el-col :span="5">
-        <el-button type="primary" icon="el-icon-circle-plus-outline" @click="doFuncTest" plain>doFuncTest</el-button>
+        <el-button type="primary" icon="el-icon-circle-plus-outline" @click="doFuncTest" plain>Functional Test</el-button>
       </el-col>
       <el-col :span="5"></el-col>
       <el-col :span="5"></el-col>
@@ -36,47 +36,16 @@
           </el-card>
           <div v-if="GetTestHistoriesResult.code!=-1">
             <el-table :default-sort="{prop: 'testID', order: 'ascending'}" :data="tableData.data" border stripe style="width: 100%;" :header-cell-style="{background:'#F9FAFC'}" >
-              <el-table-column type="expand" border>
-                <template #default="props">
-                  <el-form label-position="left" inline class="demo-table-expand" border>
-                    <el-form-item label="testID">
-                      <span>{{ props.row.testID }}</span>
-                    </el-form-item>
-                    <el-form-item label="lang">
-                      <span>{{ props.row.lang }}</span>
-                    </el-form-item>
-                    <el-form-item label="startTime">
-                      <span>{{ formatprosdate(props.row.startTime) }}</span>
-                    </el-form-item>
-                    <el-form-item label="endTime">
-                      <span>{{ formatprosdate(props.row.endTime) }}</span>
-                    </el-form-item>
-                    <el-form-item label="servType">
-                      <span>{{ props.row.servType }}</span>
-                    </el-form-item>
-                    <el-form-item label="connCnt">
-                      <span>{{ props.row.connCnt }}</span>
-                    </el-form-item>
-                    <el-form-item label="cores">
-                      <span>{{ props.row.cores }}</span>
-                    </el-form-item>
-                    <el-form-item label="keepAlive">
-                      <span>{{ props.row.keepAlive }}</span>
-                    </el-form-item>
-                    <el-form-item label="pkgLen">
-                      <span>{{ props.row.pkgLen }}</span>
-                    </el-form-item>
-                    <el-form-item label="threads">
-                      <span>{{ props.row.threads }}</span>
-                    </el-form-item>
-                  </el-form>
-                </template>
-              </el-table-column>
               <el-table-column prop="testID" label="testID" sortable :sort-orders="[ 'ascending','descending']"> </el-table-column>
               <el-table-column prop="startTime" label="startTime" :formatter="formatdate" sortable :sort-orders="['ascending', 'descending']"> </el-table-column>
               <el-table-column prop="endTime" label="endTime" :formatter="formatdate"> </el-table-column>
-              <!-- <el-table-column prop="lang" label="lang"> </el-table-column> -->
               <el-table-column prop="servType" label="servType" sortable :sort-orders="['ascending', 'descending']"> </el-table-column>
+              <el-table-column prop="lang" label="lang"> </el-table-column>
+              <el-table-column prop="connCnt" label="connCnt"> </el-table-column>
+              <el-table-column prop="cores" label="cores"> </el-table-column>
+              <el-table-column prop="keepAlive" label="keepAlive"> </el-table-column>
+              <el-table-column prop="pkgLen" label="pkgLen"> </el-table-column>
+              <el-table-column prop="threads" label="threads"> </el-table-column>
               <el-table-column prop="finished" label="status" sortable :sort-orders="['ascending', 'descending']">
                 <template #default="scope">
                     <el-tag
@@ -111,7 +80,7 @@
       </el-row>
   </div>
   <!-- 开始测试表单 -->
-  <el-dialog title="Performance Test Configure" v-model="doPerfTestdialogFormVisible.data" center top="8vh" width="640px">
+  <el-dialog title="压测参数配置" v-model="doPerfTestdialogFormVisible.data" center top="8vh" width="640px">
     <el-form :model="startform" ref="PerfTestReqruleForm" :rules="startformrules" label-position="right">
       <el-form-item label="被测服务语言" :label-width="formLabelWidth" prop="lang">
         <el-select v-model="startform.lang" placeholder="Please select lang">
@@ -153,9 +122,9 @@
     </el-form>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="doPerfTestdialogFormVisible.data = false">Cancel</el-button>
-        <el-button type="primary" @click="submitForm">OK</el-button>
-        <el-button @click="resetForm">Reset</el-button>
+        <el-button @click="doPerfTestdialogFormVisible.data = false">取消</el-button>
+        <el-button type="primary" @click="submitForm">提交</el-button>
+        <el-button @click="resetForm">重置</el-button>
       </span>
     </template>
   </el-dialog> 
@@ -531,6 +500,7 @@ export default({
             page: currentpage,
             pageSize:currentpagesize
           }});
+        console.log(response);
         if(response.data.code===-1){
           ElNotification({
             title: 'error',
@@ -546,6 +516,8 @@ export default({
           tableData.data=response.data.histories
         }
       } catch (error) {
+        //console.log(error.message);
+        //console.log(error.code);
         GetTestHistoriesResult.code=error.code
         GetTestHistoriesResult.msg=error.message
         GetTestHistoriesResult.histories=error.histories
@@ -577,6 +549,7 @@ export default({
       try {
         (PerfTestReqruleForm.value as any).validate( async (valid: boolean) => {
           if (valid) {
+            //console.log(startform)
             doPerfTestdialogFormVisible.data=false
             loading.status=true
             try {
@@ -590,6 +563,10 @@ export default({
                 keepAlive: startform.keepAlive,
                 pkgLen:startform.pkgLen
               });
+              //console.log(response);
+              //DoFuncTestresult.code=response.data.code
+              //DoFuncTestresult.msg=response.data.msg
+              //DoFuncTestresult.rows=response.data.rows
               if(response.data.code!==0){
                 ElNotification({
                   title: 'error',
@@ -597,7 +574,11 @@ export default({
                   type: 'error'
                 });
               }else{
-                
+                ElNotification({
+                  title: 'success',
+                  message: response.data.msg+" testID:"+response.data.testID,
+                  type: 'success'
+                });
                 let reqtest={
                   lang: startform.lang,
                   servType: startform.servType,
@@ -613,14 +594,6 @@ export default({
                 }
 
                 handleClick(0, reqtest)
-                setTimeout(() => {
-                  ElNotification({
-                    title: 'success',
-                    message: response.data.msg+" testID:"+response.data.testID,
-                    type: 'success'
-                  });
-                }, 500);
-                
               }
             } catch (error) {
               ElNotification({
@@ -644,7 +617,10 @@ export default({
     }
     //详情按钮
     const handleClick=async(index: any, row: any) =>{
+        //router.push({ name: 'Detail', params: { testID: row.testID } })
         tabledetail.status=true
+        //console.log(index);
+        //console.log(row.testID)
         title.data="testID:"+row.testID;
         clickrow.testID=row.testID
         clickrow.lang=row.lang
@@ -664,6 +640,7 @@ export default({
               testID: row.testID
             }
           });
+          //console.log(response);
           
           if(response.data.code===1&&response.data.msg==="succ"){
             title.type="danger"
@@ -805,11 +782,17 @@ export default({
                     timestamparray.push(val.timestamp)
                     return true; // Continues
               });
-              //执行时间百分百
+              //console.log(Math.max(...timestamparray))
+              //console.log(clickrow.startTime)
+              //console.log(clickrow.endTime)
+              //当前运行时间
+              //console.log(Math.max(...timestamparray)-Number(clickrow.startTime))
+              //console.log((Math.max(...timestamparray)-Number(clickrow.startTime))/Number(clickrow.keepAlive)*100)
               title.percentage=(Math.max(...timestamparray)-Number(clickrow.startTime))/Number(clickrow.keepAlive)*100
-              //执行进度条颜色
+              //console.log(moment(Math.max(...timestamparray)*1000).diff(moment(Number(clickrow.startTime)*1000), 'seconds'))
+              //console.log(Math.max(...timestamparray)-Number(clickrow.startTime)/Number(clickrow.keepAlive)*100)
+              //title.percentage=Math.max(...timestamparray)-clickrow.startTime/Number(clickrow.keepAlive)*100
               title.percentagestatus="exception"
-              //执行剩余时间
               title.remaintime=Number(clickrow.endTime)-Math.max(...timestamparray)
               //更新性能数据
               tabledetailData.perfDetail=response_new.data.perfDetail
@@ -896,6 +879,9 @@ export default({
           }
           
         } catch (error) {
+          //console.log(error);
+          //console.log(error.message);
+          //console.log(error.code);
           GetTestHistoriesdetailResult.code=error.code
           GetTestHistoriesdetailResult.msg=error.message
         }
@@ -915,7 +901,6 @@ export default({
       title.loading=true
       title.percentage=0
       title.percentagestatus="exception"
-      title.remaintime=0
       //清除定时器，并初始化
       if(tabledetail.intervalId!==-1){
         clearInterval(tabledetail.intervalId);
@@ -1317,7 +1302,8 @@ export default({
         array_biao.data[2].value.changeData(data1);
     }
     const percentageformat=(percentage:any)=>{
-      return percentage === 100 ? `${percentage.toFixed(2)}%`: `${percentage.toFixed(2)}% ( `+title.remaintime+` s )`
+      //console.log(percentage)
+      return percentage === 100 ? `${percentage.toFixed(2)}%`: `${percentage.toFixed(2)}% countdown ( `+title.remaintime+` s )`
     }
     return {
       //变量

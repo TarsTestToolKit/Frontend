@@ -10,8 +10,10 @@
         </el-col>
       </el-row>
     </el-header>
-    <el-container>
-      <!-- 侧边菜单 -->
+    <el-main>
+        <router-view />
+    </el-main>
+    <!-- <el-container>
       <el-aside width="200px">
         <el-row>
           <el-col :span="24">
@@ -30,11 +32,10 @@
           </el-col>
         </el-row>
       </el-aside>
-      <!-- main -->
       <el-main>
           <router-view />
       </el-main>
-    </el-container>
+    </el-container> -->
   </el-container>
 </template>
 <script lang="ts">
