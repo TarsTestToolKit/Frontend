@@ -4,25 +4,12 @@ import router from './router'
 //完整引入elementplus组件
 import ElementPlus from 'element-plus'
 import 'element-plus/lib/theme-chalk/index.css';
-//import './reset.css'
-
-
-
-//引入axios
-//import axios from 'axios'
 
 const app=createApp(App)
-
-
-
 
 app.use(ElementPlus)
 app.use(router)
 app.mount('#app')
-
-
-
-
 
 
 //https://g2plot.antv.vision/zh
