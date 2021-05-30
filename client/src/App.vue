@@ -23,19 +23,7 @@
               @select="handleSelect"
             >
               <el-menu-item index="/">
-                <i class="el-icon-finished"></i>
-                <template #title>Functional Test</template>
-              </el-menu-item>
-              <el-menu-item index="/performance">
                 <i class="el-icon-cpu"></i>
-                <template #title>Performance Test</template>
-              </el-menu-item>
-              <el-menu-item index="/report">
-                <i class="el-icon-document"></i>
-                <template #title>Test Report</template>
-              </el-menu-item>
-              <el-menu-item index="/history">
-                <i class="el-icon-document"></i>
                 <template #title>Historical Report</template>
               </el-menu-item>
             </el-menu>
