@@ -4,7 +4,7 @@
     <el-header style="border-bottom: 1px solid #dcdfe6">
       <el-row>
         <el-col :span="4">
-          <router-link to="/about"
+          <router-link to="/"
             ><img src="@/assets/tars.png" style="height: 50px"
           /></router-link>
         </el-col>
