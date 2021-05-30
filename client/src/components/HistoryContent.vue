@@ -531,7 +531,6 @@ export default({
             page: currentpage,
             pageSize:currentpagesize
           }});
-        //console.log(response);
         if(response.data.code===-1){
           ElNotification({
             title: 'error',
@@ -547,8 +546,6 @@ export default({
           tableData.data=response.data.histories
         }
       } catch (error) {
-        //console.log(error.message);
-        //console.log(error.code);
         GetTestHistoriesResult.code=error.code
         GetTestHistoriesResult.msg=error.message
         GetTestHistoriesResult.histories=error.histories
@@ -580,7 +577,6 @@ export default({
       try {
         (PerfTestReqruleForm.value as any).validate( async (valid: boolean) => {
           if (valid) {
-            //console.log(startform)
             doPerfTestdialogFormVisible.data=false
             loading.status=true
             try {
@@ -594,10 +590,6 @@ export default({
                 keepAlive: startform.keepAlive,
                 pkgLen:startform.pkgLen
               });
-              //console.log(response);
-              //DoFuncTestresult.code=response.data.code
-              //DoFuncTestresult.msg=response.data.msg
-              //DoFuncTestresult.rows=response.data.rows
               if(response.data.code!==0){
                 ElNotification({
                   title: 'error',
@@ -648,10 +640,7 @@ export default({
     }
     //详情按钮
     const handleClick=async(index: any, row: any) =>{
-        //router.push({ name: 'Detail', params: { testID: row.testID } })
         tabledetail.status=true
-        //console.log(index);
-        //console.log(row.testID)
         title.data="testID:"+row.testID;
         clickrow.testID=row.testID
         clickrow.lang=row.lang
@@ -671,7 +660,6 @@ export default({
               testID: row.testID
             }
           });
-          //console.log(response);
           
           if(response.data.code===1&&response.data.msg==="succ"){
             title.type="danger"
@@ -813,17 +801,11 @@ export default({
                     timestamparray.push(val.timestamp)
                     return true; // Continues
               });
-              //console.log(Math.max(...timestamparray))
-              //console.log(clickrow.startTime)
-              //console.log(clickrow.endTime)
-              //当前运行时间
-              //console.log(Math.max(...timestamparray)-Number(clickrow.startTime))
-              //console.log((Math.max(...timestamparray)-Number(clickrow.startTime))/Number(clickrow.keepAlive)*100)
+              //执行时间百分百
               title.percentage=(Math.max(...timestamparray)-Number(clickrow.startTime))/Number(clickrow.keepAlive)*100
-              //console.log(moment(Math.max(...timestamparray)*1000).diff(moment(Number(clickrow.startTime)*1000), 'seconds'))
-              //console.log(Math.max(...timestamparray)-Number(clickrow.startTime)/Number(clickrow.keepAlive)*100)
-              //title.percentage=Math.max(...timestamparray)-clickrow.startTime/Number(clickrow.keepAlive)*100
+              //执行进度条颜色
               title.percentagestatus="exception"
+              //执行剩余时间
               title.remaintime=Number(clickrow.endTime)-Math.max(...timestamparray)
               //更新性能数据
               tabledetailData.perfDetail=response_new.data.perfDetail
@@ -910,9 +892,6 @@ export default({
           }
           
         } catch (error) {
-          //console.log(error);
-          //console.log(error.message);
-          //console.log(error.code);
           GetTestHistoriesdetailResult.code=error.code
           GetTestHistoriesdetailResult.msg=error.message
         }
@@ -1333,7 +1312,6 @@ export default({
         array_biao.data[2].value.changeData(data1);
     }
     const percentageformat=(percentage:any)=>{
-      //console.log(percentage)
       return percentage === 100 ? `${percentage.toFixed(2)}%`: `${percentage.toFixed(2)}% countdown ( `+title.remaintime+` s )`
     }
     return {
