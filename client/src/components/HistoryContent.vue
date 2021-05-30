@@ -911,6 +911,7 @@ export default({
       title.loading=true
       title.percentage=0
       title.percentagestatus="exception"
+      title.remaintime=0
       //清除定时器，并初始化
       if(tabledetail.intervalId!==-1){
         clearInterval(tabledetail.intervalId);
@@ -1312,7 +1313,7 @@ export default({
         array_biao.data[2].value.changeData(data1);
     }
     const percentageformat=(percentage:any)=>{
-      return percentage === 100 ? `${percentage.toFixed(2)}%`: `${percentage.toFixed(2)}% countdown ( `+title.remaintime+` s )`
+      return percentage === 100 ? `${percentage.toFixed(2)}%`: `${percentage.toFixed(2)}% ( `+title.remaintime+` s )`
     }
     return {
       //变量
