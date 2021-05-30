@@ -597,11 +597,7 @@ export default({
                   type: 'error'
                 });
               }else{
-                ElNotification({
-                  title: 'success',
-                  message: response.data.msg+" testID:"+response.data.testID,
-                  type: 'success'
-                });
+                
                 let reqtest={
                   lang: startform.lang,
                   servType: startform.servType,
@@ -617,6 +613,11 @@ export default({
                 }
 
                 handleClick(0, reqtest)
+                ElNotification({
+                  title: 'success',
+                  message: response.data.msg+" testID:"+response.data.testID,
+                  type: 'success'
+                });
               }
             } catch (error) {
               ElNotification({
