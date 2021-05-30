@@ -1,6 +1,6 @@
 <template>
   <div class="report">
-    <h1 style="text-align: center;">Historical Report</h1>
+    <h1 style="text-align: center;">TarsTestToolKit</h1>
     <el-row style="padding-top:20px;">
       <el-col :span="5">
         <el-button type="primary" icon="el-icon-circle-plus-outline" @click="StartBenchmark" plain>Performance Test</el-button>
@@ -12,12 +12,22 @@
       <el-col :span="5"></el-col>
       
       <el-col :span="2">
-        <el-button type="primary" icon="el-icon-refresh" @click="GetTestHistories(paginationData.currentpage,paginationData.currentpagesize)" plain>GetReport</el-button>
+        <!-- <el-button type="primary" icon="el-icon-refresh" @click="GetTestHistories(paginationData.currentpage,paginationData.currentpagesize)" plain>GetReport</el-button> -->
       </el-col>
     </el-row>
     
     
   </div>
+  <el-dialog title="Functional Test Result" v-model="FunctionaldialogTableVisible.data">
+    <el-card class="box-card" shadow="always" v-if="DoFuncTestresult.code!=-1">
+        <div  class="text item">
+          <div v-for="item in DoFuncTestresult.rows" :key="item.key" style="padding-top:20px">
+              <el-tag type="success" v-if="item.isSucc==true">{{item.from}} -> {{item.to}} : Succeed</el-tag>
+              <el-tag type="danger" v-if="item.isSucc==false">{{item.from}} -> {{item.to}} : Fail</el-tag>
+          </div>
+        </div>
+    </el-card>
+  </el-dialog>
   <div v-loading="loading.status">
       <!-- 无数据时 -->
       <el-empty description="No Data" v-if="GetTestHistoriesResult.code==-1&&DoFuncTestresult.code==-1"></el-empty>
@@ -26,16 +36,53 @@
       <el-row style="padding-top:20px;">
         <el-col :span="1"></el-col>
         <el-col :span="22">
-          <el-card class="box-card" shadow="always" v-if="DoFuncTestresult.code!=-1">
+          <!-- <el-card class="box-card" shadow="always" v-if="DoFuncTestresult.code!=-1">
               <div  class="text item">
                 <div v-for="item in DoFuncTestresult.rows" :key="item.key" style="padding-top:20px">
                     <el-tag type="success" v-if="item.isSucc==true">{{item.from}} -> {{item.to}} : Succeed</el-tag>
                     <el-tag type="danger" v-if="item.isSucc==false">{{item.from}} -> {{item.to}} : Fail</el-tag>
                 </div>
               </div>
-          </el-card>
+          </el-card> -->
+          
           <div v-if="GetTestHistoriesResult.code!=-1">
             <el-table :default-sort="{prop: 'testID', order: 'ascending'}" :data="tableData.data" border stripe style="width: 100%;" :header-cell-style="{background:'#F9FAFC'}" >
+              <!-- <el-table-column type="expand" border>
+                <template #default="props">
+                  <el-form label-position="left" inline class="demo-table-expand" border>
+                    <el-form-item label="testID">
+                      <span>{{ props.row.testID }}</span>
+                    </el-form-item>
+                    <el-form-item label="lang">
+                      <span>{{ props.row.lang }}</span>
+                    </el-form-item>
+                    <el-form-item label="startTime">
+                      <span>{{ formatprosdate(props.row.startTime) }}</span>
+                    </el-form-item>
+                    <el-form-item label="endTime">
+                      <span>{{ formatprosdate(props.row.endTime) }}</span>
+                    </el-form-item>
+                    <el-form-item label="servType">
+                      <span>{{ props.row.servType }}</span>
+                    </el-form-item>
+                    <el-form-item label="connCnt">
+                      <span>{{ props.row.connCnt }}</span>
+                    </el-form-item>
+                    <el-form-item label="cores">
+                      <span>{{ props.row.cores }}</span>
+                    </el-form-item>
+                    <el-form-item label="keepAlive">
+                      <span>{{ props.row.keepAlive }}</span>
+                    </el-form-item>
+                    <el-form-item label="pkgLen">
+                      <span>{{ props.row.pkgLen }}</span>
+                    </el-form-item>
+                    <el-form-item label="threads">
+                      <span>{{ props.row.threads }}</span>
+                    </el-form-item>
+                  </el-form>
+                </template>
+              </el-table-column> -->
               <el-table-column prop="testID" label="testID" sortable :sort-orders="[ 'ascending','descending']"> </el-table-column>
               <el-table-column prop="startTime" label="startTime" :formatter="formatdate" sortable :sort-orders="['ascending', 'descending']"> </el-table-column>
               <el-table-column prop="endTime" label="endTime" :formatter="formatdate"> </el-table-column>
@@ -248,13 +295,13 @@
             <el-table-column property="sendByte" label="sendByte"></el-table-column>
             <el-table-column property="recvByte" label="recvByte"></el-table-column>
             <el-table-column property="qps" label="qps"></el-table-column>
-            <el-table-column property="p90" label="p90"></el-table-column>
-            <el-table-column property="p99" label="p99"></el-table-column>
-            <el-table-column property="p999" label="p999"></el-table-column>
+            <el-table-column property="p90" label="p90" :formatter="format2dot"></el-table-column>
+            <el-table-column property="p99" label="p99" :formatter="format2dot"></el-table-column>
+            <el-table-column property="p999" label="p999" :formatter="format2dot"></el-table-column>
             <el-table-column property="failed" label="failed"></el-table-column>
             <el-table-column property="costMax" label="costMax"></el-table-column>
             <el-table-column property="costMin" label="costMin"></el-table-column>
-            <el-table-column property="costAvg" label="costAvg"></el-table-column>
+            <el-table-column property="costAvg" label="costAvg" :formatter="format2dot"></el-table-column>
         </el-table>
         <el-row style="height:100px;">&nbsp;</el-row>
         </el-scrollbar>
@@ -407,6 +454,10 @@ export default({
         { type: 'number', trigger: 'change',validator: integer0 }
       ]
     }
+    //函数测试结果窗口
+    const FunctionaldialogTableVisible=reactive({ 
+      data: false
+    })
     //压测提交窗口是否可见
     const doPerfTestdialogFormVisible=reactive({ 
       data: false
@@ -500,7 +551,6 @@ export default({
             page: currentpage,
             pageSize:currentpagesize
           }});
-        console.log(response);
         if(response.data.code===-1){
           ElNotification({
             title: 'error',
@@ -516,8 +566,6 @@ export default({
           tableData.data=response.data.histories
         }
       } catch (error) {
-        //console.log(error.message);
-        //console.log(error.code);
         GetTestHistoriesResult.code=error.code
         GetTestHistoriesResult.msg=error.message
         GetTestHistoriesResult.histories=error.histories
@@ -526,7 +574,8 @@ export default({
     }
     //函数测试按钮
     const  doFuncTest = async () => {
-      GetTestHistoriesResult.code=-1
+      FunctionaldialogTableVisible.data=true
+      //GetTestHistoriesResult.code=-1
       loading.status=true
       try {
         const response = await axios.post('/api/testFunc');
@@ -549,7 +598,6 @@ export default({
       try {
         (PerfTestReqruleForm.value as any).validate( async (valid: boolean) => {
           if (valid) {
-            //console.log(startform)
             doPerfTestdialogFormVisible.data=false
             loading.status=true
             try {
@@ -563,10 +611,6 @@ export default({
                 keepAlive: startform.keepAlive,
                 pkgLen:startform.pkgLen
               });
-              //console.log(response);
-              //DoFuncTestresult.code=response.data.code
-              //DoFuncTestresult.msg=response.data.msg
-              //DoFuncTestresult.rows=response.data.rows
               if(response.data.code!==0){
                 ElNotification({
                   title: 'error',
@@ -617,10 +661,7 @@ export default({
     }
     //详情按钮
     const handleClick=async(index: any, row: any) =>{
-        //router.push({ name: 'Detail', params: { testID: row.testID } })
         tabledetail.status=true
-        //console.log(index);
-        //console.log(row.testID)
         title.data="testID:"+row.testID;
         clickrow.testID=row.testID
         clickrow.lang=row.lang
@@ -640,7 +681,6 @@ export default({
               testID: row.testID
             }
           });
-          //console.log(response);
           
           if(response.data.code===1&&response.data.msg==="succ"){
             title.type="danger"
@@ -759,7 +799,6 @@ export default({
                   testID: row.testID
                 }
               });
-              //console.log(response_new);
               //返回code为0，结束定时器
               if(response_new.data.code===0&&response_new.data.msg==="succ"){
                   //详情页标题，状态按钮type
@@ -782,17 +821,11 @@ export default({
                     timestamparray.push(val.timestamp)
                     return true; // Continues
               });
-              //console.log(Math.max(...timestamparray))
-              //console.log(clickrow.startTime)
-              //console.log(clickrow.endTime)
-              //当前运行时间
-              //console.log(Math.max(...timestamparray)-Number(clickrow.startTime))
-              //console.log((Math.max(...timestamparray)-Number(clickrow.startTime))/Number(clickrow.keepAlive)*100)
+              //运行时间百分百
               title.percentage=(Math.max(...timestamparray)-Number(clickrow.startTime))/Number(clickrow.keepAlive)*100
-              //console.log(moment(Math.max(...timestamparray)*1000).diff(moment(Number(clickrow.startTime)*1000), 'seconds'))
-              //console.log(Math.max(...timestamparray)-Number(clickrow.startTime)/Number(clickrow.keepAlive)*100)
-              //title.percentage=Math.max(...timestamparray)-clickrow.startTime/Number(clickrow.keepAlive)*100
+              //进度条颜色
               title.percentagestatus="exception"
+              //剩余时间
               title.remaintime=Number(clickrow.endTime)-Math.max(...timestamparray)
               //更新性能数据
               tabledetailData.perfDetail=response_new.data.perfDetail
@@ -1302,9 +1335,14 @@ export default({
         array_biao.data[2].value.changeData(data1);
     }
     const percentageformat=(percentage:any)=>{
-      //console.log(percentage)
-      return percentage === 100 ? `${percentage.toFixed(2)}%`: `${percentage.toFixed(2)}% countdown ( `+title.remaintime+` s )`
+      return percentage === 100 ? `${percentage.toFixed(2)}%`: `${percentage.toFixed(2)}% ( `+title.remaintime+` s )`
     }
+    //保留2位小数
+    const format2dot=(row: any, column: any, cellValue: any, index: any)=>{
+        if(cellValue == undefined){return ''};
+        return cellValue.toFixed(2);
+    }
+    GetTestHistories(paginationData.currentpage,paginationData.currentpagesize)
     return {
       //变量
       ctx,
@@ -1316,6 +1354,7 @@ export default({
       startformrules,
       PerfTestReqruleForm,
       formLabelWidth:'30%',
+      FunctionaldialogTableVisible,
       doPerfTestdialogFormVisible,
       GetTestHistoriesResult,
       loading,
@@ -1343,7 +1382,8 @@ export default({
       rendermem_update,
       renderpie,
       renderpie_update,
-      percentageformat
+      percentageformat,
+      format2dot
     }
   }
 });
