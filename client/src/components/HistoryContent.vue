@@ -613,11 +613,14 @@ export default({
                 }
 
                 handleClick(0, reqtest)
-                ElNotification({
-                  title: 'success',
-                  message: response.data.msg+" testID:"+response.data.testID,
-                  type: 'success'
-                });
+                setTimeout(() => {
+                  ElNotification({
+                    title: 'success',
+                    message: response.data.msg+" testID:"+response.data.testID,
+                    type: 'success'
+                  });
+                }, 500);
+                
               }
             } catch (error) {
               ElNotification({
