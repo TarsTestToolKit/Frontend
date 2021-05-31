@@ -19,14 +19,14 @@
     
   </div>
   <el-dialog title="测试结果" v-model="FunctionaldialogTableVisible.data">
-    <el-card class="box-card" shadow="always" v-if="DoFuncTestresult.code!=-1">
-        <div  class="text item">
+    <!-- <el-card class="box-card" shadow="always" v-if="DoFuncTestresult.code!=-1"> -->
+        <div  class="text item" v-if="DoFuncTestresult.code!=-1">
           <div v-for="item in DoFuncTestresult.rows" :key="item.key" style="padding-top:20px">
               <el-tag type="success" v-if="item.isSucc==true">{{item.from}} -> {{item.to}} : Succeed</el-tag>
               <el-tag type="danger" v-if="item.isSucc==false">{{item.from}} -> {{item.to}} : Fail</el-tag>
           </div>
         </div>
-    </el-card>
+    <!-- </el-card> -->
   </el-dialog>
   <div v-loading="loading.status">
       <!-- 无数据时 -->
