@@ -26,8 +26,8 @@
       <el-table-column property="isSucc" label="结果">
         <template #default="scope">
           <el-tag
-            :type="scope.row.isSucc === 'true' ? 'success' : 'danger'"
-            disable-transitions>{{scope.row.isSucc === 'true' ? 'Succeed' : 'Fail'}}
+            :type="scope.row.isSucc === true ? 'success' : 'danger'"
+            disable-transitions>{{scope.row.isSucc === true ? 'Succeed' : 'Fail'}}
           </el-tag>
         </template>
       </el-table-column>
