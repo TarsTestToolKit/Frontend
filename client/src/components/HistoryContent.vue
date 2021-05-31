@@ -49,7 +49,7 @@
               <el-table-column prop="connCnt" label="节点连接数"> </el-table-column>
               <el-table-column prop="reqFreq" label="单连接请求速率"> </el-table-column>
               <el-table-column prop="keepAlive" label="压测时长"> </el-table-column>
-              <el-table-column prop="pkgLen" label="压测包大小"> </el-table-column>
+              <el-table-column prop="pkgLen" label="压测包大小" :formatter="formatpkgLen"> </el-table-column>
               <el-table-column prop="finished" label="状态" sortable :sort-orders="['ascending', 'descending']">
                 <template #default="scope">
                     <el-tag
@@ -278,7 +278,7 @@
         </el-row>
         <el-row>
           <el-col :span="24">
-              <h4>Memory</h4>
+              <h4>内存</h4>
               <div id="container_mem"></div>
           </el-col>
         </el-row>
@@ -1301,6 +1301,28 @@ export default({
         if(cellValue == undefined){return ''};
         return cellValue.toFixed(2);
     }
+    //格式化压测包大小
+    const formatpkgLen=(row: any, column: any, cellValue: any, index: any)=>{
+        if(cellValue===undefined){return ''};
+        if(cellValue===0){
+          return "0K"
+        }
+        if(cellValue===1*1024){
+          return "1K"
+        }
+        if(cellValue===10*1024){
+          return "10K"
+        }
+        if(cellValue===100*1024){
+          return "100K"
+        }
+        if(cellValue===1024*1024){
+          return "1M"
+        }
+        if(cellValue===5*1024*1024){
+          return "5M"
+        }
+    }
     GetTestHistories(paginationData.currentpage,paginationData.currentpagesize)
     return {
       //变量
@@ -1342,7 +1364,8 @@ export default({
       renderpie,
       renderpie_update,
       percentageformat,
-      format2dot
+      format2dot,
+      formatpkgLen
     }
   }
 });
