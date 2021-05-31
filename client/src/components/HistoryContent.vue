@@ -568,7 +568,7 @@ export default({
           if (valid) {
             doPerfTestdialogFormVisible.data=false
             loading.status=true
-            const loadingall = ElLoading.service({
+            let loadingall = ElLoading.service({
               lock: true,
               text: 'Loading',
               spinner: 'el-icon-loading',
