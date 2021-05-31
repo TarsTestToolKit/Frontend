@@ -18,7 +18,7 @@
     
     
   </div>
-  <el-dialog title="测试结果" v-model="FunctionaldialogTableVisible.data">
+  <el-dialog title="测试结果" v-model="FunctionaldialogTableVisible.data" width="30%">
     <!-- <el-card class="box-card" shadow="always" v-if="DoFuncTestresult.code!=-1"> -->
         <div  class="text item" v-if="DoFuncTestresult.code!=-1">
           <div v-for="item in DoFuncTestresult.rows" :key="item.key" style="padding-top:20px">
