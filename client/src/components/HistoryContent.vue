@@ -47,53 +47,18 @@
           
           <div v-if="GetTestHistoriesResult.code!=-1">
             <el-table :default-sort="{prop: 'testID', order: 'ascending'}" :data="tableData.data" border stripe style="width: 100%;" :header-cell-style="{background:'#F9FAFC'}" >
-              <!-- <el-table-column type="expand" border>
-                <template #default="props">
-                  <el-form label-position="left" inline class="demo-table-expand" border>
-                    <el-form-item label="testID">
-                      <span>{{ props.row.testID }}</span>
-                    </el-form-item>
-                    <el-form-item label="lang">
-                      <span>{{ props.row.lang }}</span>
-                    </el-form-item>
-                    <el-form-item label="startTime">
-                      <span>{{ formatprosdate(props.row.startTime) }}</span>
-                    </el-form-item>
-                    <el-form-item label="endTime">
-                      <span>{{ formatprosdate(props.row.endTime) }}</span>
-                    </el-form-item>
-                    <el-form-item label="servType">
-                      <span>{{ props.row.servType }}</span>
-                    </el-form-item>
-                    <el-form-item label="connCnt">
-                      <span>{{ props.row.connCnt }}</span>
-                    </el-form-item>
-                    <el-form-item label="cores">
-                      <span>{{ props.row.cores }}</span>
-                    </el-form-item>
-                    <el-form-item label="keepAlive">
-                      <span>{{ props.row.keepAlive }}</span>
-                    </el-form-item>
-                    <el-form-item label="pkgLen">
-                      <span>{{ props.row.pkgLen }}</span>
-                    </el-form-item>
-                    <el-form-item label="threads">
-                      <span>{{ props.row.threads }}</span>
-                    </el-form-item>
-                  </el-form>
-                </template>
-              </el-table-column> -->
               <el-table-column prop="testID" label="testID" sortable :sort-orders="[ 'ascending','descending']"> </el-table-column>
-              <el-table-column prop="startTime" label="startTime" :formatter="formatdate" sortable :sort-orders="['ascending', 'descending']"> </el-table-column>
-              <el-table-column prop="endTime" label="endTime" :formatter="formatdate"> </el-table-column>
-              <el-table-column prop="servType" label="servType" sortable :sort-orders="['ascending', 'descending']"> </el-table-column>
-              <el-table-column prop="lang" label="lang"> </el-table-column>
-              <el-table-column prop="connCnt" label="connCnt"> </el-table-column>
-              <el-table-column prop="cores" label="cores"> </el-table-column>
-              <el-table-column prop="keepAlive" label="keepAlive"> </el-table-column>
-              <el-table-column prop="pkgLen" label="pkgLen"> </el-table-column>
-              <el-table-column prop="threads" label="threads"> </el-table-column>
-              <el-table-column prop="finished" label="status" sortable :sort-orders="['ascending', 'descending']">
+              <el-table-column prop="startTime" label="开始时间" :formatter="formatdate" sortable :sort-orders="['ascending', 'descending']"> </el-table-column>
+              <el-table-column prop="endTime" label="结束时间" :formatter="formatdate"> </el-table-column>
+              <el-table-column prop="lang" label="被测服务语言"> </el-table-column>
+              <el-table-column prop="servType" label="硬件描述信息" sortable :sort-orders="['ascending', 'descending']"> </el-table-column>
+              <el-table-column prop="threads" label="服务端线程数"> </el-table-column>
+              <el-table-column prop="cores" label="服务端核数"> </el-table-column>
+              <el-table-column prop="connCnt" label="节点连接数"> </el-table-column>
+              <el-table-column prop="reqFreq" label="单连接请求速率"> </el-table-column>
+              <el-table-column prop="keepAlive" label="压测时间"> </el-table-column>
+              <el-table-column prop="pkgLen" label="压测包大小"> </el-table-column>
+              <el-table-column prop="finished" label="状态" sortable :sort-orders="['ascending', 'descending']">
                 <template #default="scope">
                     <el-tag
                       :type="scope.row.finished === 0 ? 'danger' : 'success'"
@@ -101,7 +66,7 @@
                     </el-tag>
                 </template>
               </el-table-column>
-              <el-table-column label="DetailInfo" fixed="right">
+              <el-table-column label="详情" fixed="right">
                 <template #default="scope">
                   <el-button @click="handleClick(scope.$index, scope.row)" type="text" size="small">
                     Detail
