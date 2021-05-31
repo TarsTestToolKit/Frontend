@@ -307,7 +307,7 @@
 import axios from 'axios'
 import moment from 'moment'
 import {  getCurrentInstance,reactive,Ref,ref} from "vue";
-import { ElNotification } from 'element-plus';
+import { ElNotification,ElLoading  } from 'element-plus';
 import { Area,Line,Pie } from '@antv/g2plot';
 //函数测试接口定义
 interface DoFuncTestModelRef {
@@ -568,6 +568,12 @@ export default({
           if (valid) {
             doPerfTestdialogFormVisible.data=false
             loading.status=true
+            const loadingall = ElLoading.service({
+              lock: true,
+              text: 'Loading',
+              spinner: 'el-icon-loading',
+              background: 'rgba(0, 0, 0, 0.7)'
+            });
             try {
               const response = await axios.post('/api/testPerf',{
                 lang: startform.lang,
@@ -617,7 +623,7 @@ export default({
               });
             }
             loading.status=false
-            
+            loadingall.close();
             GetTestHistories(paginationData.currentpage,paginationData.currentpagesize)
           }
         });
