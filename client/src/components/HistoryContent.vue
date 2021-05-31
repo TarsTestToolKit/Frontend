@@ -23,7 +23,7 @@
       <el-table-column type="index" width="50"></el-table-column>
       <el-table-column property="from" label="发起方"></el-table-column>
       <el-table-column property="to" label="接收方"></el-table-column>
-      <el-table-column property="isSucc" label="结果"></el-table-column>
+      <el-table-column property="isSucc" label="结果" :formatter="formatsuccess"></el-table-column>
     </el-table>
   </el-dialog>
   <div v-loading="loading.status">
@@ -1340,6 +1340,16 @@ export default({
           return "5M"
         }
     }
+    //保留2位小数
+    const formatsuccess=(row: any, column: any, cellValue: any, index: any)=>{
+        if(cellValue == undefined){return ''};
+        if(cellValue==="true"){
+          return "<el-result icon='success'></el-result>"
+        }
+        if(cellValue==="false"){
+          return "<el-result icon='error'></el-result>"
+        }
+    }
     GetTestHistories(paginationData.currentpage,paginationData.currentpagesize)
     return {
       //变量
@@ -1382,7 +1392,8 @@ export default({
       renderpie_update,
       percentageformat,
       format2dot,
-      formatpkgLen
+      formatpkgLen,
+      formatsuccess
     }
   }
 });
