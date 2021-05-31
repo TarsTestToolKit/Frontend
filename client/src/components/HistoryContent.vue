@@ -23,7 +23,14 @@
       <el-table-column type="index" width="50"></el-table-column>
       <el-table-column property="from" label="发起方"></el-table-column>
       <el-table-column property="to" label="接收方"></el-table-column>
-      <el-table-column property="isSucc" label="结果" :formatter="formatsuccess"></el-table-column>
+      <el-table-column property="isSucc" label="结果">
+        <template #default="scope">
+          <el-tag
+            :type="scope.row.isSucc === 'true' ? 'success' : 'danger'"
+            disable-transitions>{{scope.row.isSucc === 'true' ? 'Succeed' : 'Fail'}}
+          </el-tag>
+        </template>
+      </el-table-column>
     </el-table>
   </el-dialog>
   <div v-loading="loading.status">
@@ -245,18 +252,18 @@
         <el-table :data="tabledetailData.perfDetail" border :header-cell-style="{background:'#F9FAFC'}" :default-sort="{prop: 'timestamp', order: 'ascending'}">
             <el-table-column property="timestamp" label="时间" :formatter="formatdate" sortable :sort-orders="['ascending', 'descending']"></el-table-column>
             <el-table-column property="totalReq" label="总请求量"></el-table-column>
-            <el-table-column property="succRate" label="成功率"></el-table-column>
             <el-table-column property="succ" label="成功数"></el-table-column>
-            <el-table-column property="sendByte" label="发送包"></el-table-column>
-            <el-table-column property="recvByte" label="接收包"></el-table-column>
+            <el-table-column property="succRate" label="成功率"></el-table-column>
+            <el-table-column property="failed" label="失败数"></el-table-column>
             <el-table-column property="qps" label="QPS"></el-table-column>
+            <el-table-column property="costMin" label="最小耗时"></el-table-column>
+            <el-table-column property="costMax" label="最大耗时"></el-table-column>
+            <el-table-column property="costAvg" label="平均耗时" :formatter="format2dot"></el-table-column>
             <el-table-column property="p90" label="P90" :formatter="format2dot"></el-table-column>
             <el-table-column property="p99" label="P99" :formatter="format2dot"></el-table-column>
             <el-table-column property="p999" label="P999" :formatter="format2dot"></el-table-column>
-            <el-table-column property="failed" label="失败数"></el-table-column>
-            <el-table-column property="costMax" label="最大耗时"></el-table-column>
-            <el-table-column property="costMin" label="最小耗时"></el-table-column>
-            <el-table-column property="costAvg" label="平均耗时" :formatter="format2dot"></el-table-column>
+            <el-table-column property="sendByte" label="发送包"></el-table-column>
+            <el-table-column property="recvByte" label="接收包"></el-table-column>
         </el-table>
         <el-row style="height:100px;">&nbsp;</el-row>
         </el-scrollbar>
@@ -1340,16 +1347,6 @@ export default({
           return "5M"
         }
     }
-    //保留2位小数
-    const formatsuccess=(row: any, column: any, cellValue: any, index: any)=>{
-        if(cellValue == undefined){return ''};
-        if(cellValue==="true"){
-          return "<el-result icon='success'></el-result>"
-        }
-        if(cellValue==="false"){
-          return "<el-result icon='error'></el-result>"
-        }
-    }
     GetTestHistories(paginationData.currentpage,paginationData.currentpagesize)
     return {
       //变量
@@ -1392,8 +1389,7 @@ export default({
       renderpie_update,
       percentageformat,
       format2dot,
-      formatpkgLen,
-      formatsuccess
+      formatpkgLen
     }
   }
 });
