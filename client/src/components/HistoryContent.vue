@@ -159,7 +159,7 @@
       </el-row>
     </template>
     <el-tabs type="border-card">
-      <el-tab-pane label="详细指标">
+      <el-tab-pane label="详细指标" class="pane1">
         <el-scrollbar class="tabcontent">
         <el-row style="padding-top:20px;">
           <el-col :span="2"></el-col>
@@ -269,7 +269,7 @@
         </el-scrollbar>
       </el-tab-pane>
       
-      <el-tab-pane label="区间分布">
+      <el-tab-pane label="区间分布" class="pane2">
         <el-scrollbar class="tabcontent">
         <el-row>
           <el-col :span="12">
