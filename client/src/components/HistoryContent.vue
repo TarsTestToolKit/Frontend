@@ -58,10 +58,10 @@
                     </el-tag>
                 </template>
               </el-table-column>
-              <el-table-column label="详情" fixed="right">
+              <el-table-column label="操作" fixed="right">
                 <template #default="scope">
                   <el-button @click="handleClick(scope.$index, scope.row)" type="text" size="small">
-                    Detail
+                    详情
                   </el-button>
                 </template>
               </el-table-column>
@@ -640,7 +640,26 @@ export default({
         clickrow.connCnt=row.connCnt
         clickrow.reqFreq=row.reqFreq
         clickrow.keepAlive=row.keepAlive
-        clickrow.pkgLen=row.pkgLen
+        //clickrow.pkgLen=row.pkgLen
+        if(row.pkgLen===0){
+          clickrow.pkgLen="0K"
+        }
+        if(row.pkgLen===1*1024){
+          clickrow.pkgLen="1K"
+        }
+        if(row.pkgLen===10*1024){
+          clickrow.pkgLen="10K"
+        }
+        if(row.pkgLen===100*1024){
+          clickrow.pkgLen="100K"
+        }
+        if(row.pkgLen===1024*1024){
+          clickrow.pkgLen="1M"
+        }
+        if(row.pkgLen===5*1024*1024){
+          clickrow.pkgLen="5M"
+        }
+
         clickrow.startTime=row.startTime
         clickrow.endTime=row.endTime
         loading.status=true
