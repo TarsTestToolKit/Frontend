@@ -583,11 +583,6 @@ export default({
                   type: 'error'
                 });
               }else{
-                ElNotification({
-                  title: 'success',
-                  message: response.data.msg+" testID:"+response.data.testID,
-                  type: 'success'
-                });
                 let reqtest={
                   lang: startform.lang,
                   servType: startform.servType,
@@ -601,8 +596,15 @@ export default({
                   startTime:moment().unix(),
                   endTime:moment().add(Number(startform.keepAlive),'second').unix()
                 }
-
                 handleClick(0, reqtest)
+                setTimeout(() => {
+                  ElNotification({
+                    title: 'success',
+                    message: response.data.msg+" testID:"+response.data.testID,
+                    type: 'success'
+                  });
+                }, 500);
+                
               }
             } catch (error) {
               ElNotification({
@@ -877,9 +879,6 @@ export default({
           }
           
         } catch (error) {
-          //console.log(error);
-          //console.log(error.message);
-          //console.log(error.code);
           GetTestHistoriesdetailResult.code=error.code
           GetTestHistoriesdetailResult.msg=error.message
         }
