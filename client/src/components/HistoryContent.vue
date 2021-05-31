@@ -299,7 +299,8 @@
       </el-tab-pane>
       
     </el-tabs>
-    <el-backtop target=".el-scrollbar__wrap"></el-backtop>
+    <el-backtop target=".pane1 .tabcontent .el-scrollbar__wrap"></el-backtop>
+    <el-backtop target=".pane2 .tabcontent .el-scrollbar__wrap"></el-backtop>
   </el-drawer>
 </template>
 <script lang="ts">
