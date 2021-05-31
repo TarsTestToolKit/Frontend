@@ -48,10 +48,10 @@
           <div v-if="GetTestHistoriesResult.code!=-1">
             <el-table :default-sort="{prop: 'testID', order: 'ascending'}" :data="tableData.data" border stripe style="width: 100%;" :header-cell-style="{background:'#F9FAFC'}" >
               <el-table-column prop="testID" label="testID" sortable :sort-orders="[ 'ascending','descending']"> </el-table-column>
-              <el-table-column prop="startTime" label="开始时间" :formatter="formatdate" sortable :sort-orders="['ascending', 'descending']"> </el-table-column>
+              <el-table-column prop="startTime" label="开始时间" :formatter="formatdate"> </el-table-column>
               <el-table-column prop="endTime" label="结束时间" :formatter="formatdate"> </el-table-column>
               <el-table-column prop="lang" label="被测服务语言"> </el-table-column>
-              <el-table-column prop="servType" label="硬件描述信息" sortable :sort-orders="['ascending', 'descending']"> </el-table-column>
+              <el-table-column prop="servType" label="硬件描述信息"> </el-table-column>
               <el-table-column prop="threads" label="服务端线程数"> </el-table-column>
               <el-table-column prop="cores" label="服务端核数"> </el-table-column>
               <el-table-column prop="connCnt" label="节点连接数"> </el-table-column>
