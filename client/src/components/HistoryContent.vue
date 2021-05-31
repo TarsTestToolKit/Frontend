@@ -3,10 +3,10 @@
     <h1 style="text-align: center;">TarsTestToolKit</h1>
     <el-row style="padding-top:20px;">
       <el-col :span="5">
-        <el-button type="primary" icon="el-icon-circle-plus-outline" @click="StartBenchmark" plain>Performance Test</el-button>
+        <el-button type="primary" icon="el-icon-circle-plus-outline" @click="StartBenchmark" plain>性能测试</el-button>
       </el-col>
       <el-col :span="5">
-        <el-button type="primary" icon="el-icon-circle-plus-outline" @click="doFuncTest" plain>Functional Test</el-button>
+        <el-button type="primary" icon="el-icon-circle-plus-outline" @click="doFuncTest" plain>功能测试</el-button>
       </el-col>
       <el-col :span="5"></el-col>
       <el-col :span="5"></el-col>
@@ -18,7 +18,7 @@
     
     
   </div>
-  <el-dialog title="Functional Test Result" v-model="FunctionaldialogTableVisible.data">
+  <el-dialog title="测试结果" v-model="FunctionaldialogTableVisible.data">
     <el-card class="box-card" shadow="always" v-if="DoFuncTestresult.code!=-1">
         <div  class="text item">
           <div v-for="item in DoFuncTestresult.rows" :key="item.key" style="padding-top:20px">
@@ -36,14 +36,6 @@
       <el-row style="padding-top:20px;">
         <el-col :span="1"></el-col>
         <el-col :span="22">
-          <!-- <el-card class="box-card" shadow="always" v-if="DoFuncTestresult.code!=-1">
-              <div  class="text item">
-                <div v-for="item in DoFuncTestresult.rows" :key="item.key" style="padding-top:20px">
-                    <el-tag type="success" v-if="item.isSucc==true">{{item.from}} -> {{item.to}} : Succeed</el-tag>
-                    <el-tag type="danger" v-if="item.isSucc==false">{{item.from}} -> {{item.to}} : Fail</el-tag>
-                </div>
-              </div>
-          </el-card> -->
           
           <div v-if="GetTestHistoriesResult.code!=-1">
             <el-table :default-sort="{prop: 'testID', order: 'ascending'}" :data="tableData.data" border stripe style="width: 100%;" :header-cell-style="{background:'#F9FAFC'}" >
@@ -56,7 +48,7 @@
               <el-table-column prop="cores" label="服务端核数"> </el-table-column>
               <el-table-column prop="connCnt" label="节点连接数"> </el-table-column>
               <el-table-column prop="reqFreq" label="单连接请求速率"> </el-table-column>
-              <el-table-column prop="keepAlive" label="压测时间"> </el-table-column>
+              <el-table-column prop="keepAlive" label="压测时长"> </el-table-column>
               <el-table-column prop="pkgLen" label="压测包大小"> </el-table-column>
               <el-table-column prop="finished" label="状态" sortable :sort-orders="['ascending', 'descending']">
                 <template #default="scope">
@@ -118,7 +110,7 @@
       <el-form-item label="单连接请求速率" :label-width="formLabelWidth" prop="reqFreq">
         <el-input v-model="startform.reqFreq" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item label="压测执行多少秒(s)" :label-width="formLabelWidth" prop="keepAlive">
+      <el-form-item label="压测时长(s)" :label-width="formLabelWidth" prop="keepAlive">
         <el-input v-model="startform.keepAlive" autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item label="压测包大小" :label-width="formLabelWidth" prop="pkgLen">
@@ -162,12 +154,12 @@
       </el-row>
     </template>
     <el-tabs type="border-card">
-      <el-tab-pane label="Detailed Indicators">
+      <el-tab-pane label="详细指标">
         <el-scrollbar class="tabcontent">
         <el-row style="padding-top:20px;">
           <el-col :span="2"></el-col>
           <el-col :span="4">
-              lang
+              被测服务语言
               <div class="pdt10">
                 <el-input
                   v-model="clickrow.lang"
@@ -177,7 +169,7 @@
           </el-col>
           <el-col :span="1"></el-col>
           <el-col :span="4">
-              servType
+              被测服务器硬件描述信息
               <div class="pdt10">
                 <el-input
                   v-model="clickrow.servType"
@@ -187,7 +179,7 @@
           </el-col>
           <el-col :span="1"></el-col>
           <el-col :span="4">
-              threads
+              服务端线程数
               <div class="pdt10">
                 <el-input
                   v-model="clickrow.threads"
@@ -197,7 +189,7 @@
           </el-col>
           <el-col :span="1"></el-col>
           <el-col :span="4">
-              cores
+              服务器核数
               <div class="pdt10">
                 <el-input
                   v-model="clickrow.cores"
@@ -211,7 +203,7 @@
         <el-row style="padding-top:20px;padding-bottom:20px;">
           <el-col :span="2"></el-col>
           <el-col :span="4">
-              connCnt
+              节点连接数
               <div class="pdt10">
                 <el-input
                   v-model="clickrow.connCnt"
@@ -221,7 +213,7 @@
           </el-col>
           <el-col :span="1"></el-col>
           <el-col :span="4">
-              reqFreq
+              单连接请求速率
               <div class="pdt10">
                 <el-input
                   v-model="clickrow.reqFreq"
@@ -231,7 +223,7 @@
           </el-col>
           <el-col :span="1"></el-col>
           <el-col :span="4">
-              keepAlive
+              压测时长(s)
               <div class="pdt10">
                 <el-input
                   v-model="clickrow.keepAlive"
@@ -241,7 +233,7 @@
           </el-col>
           <el-col :span="1"></el-col>
           <el-col :span="4">
-              pkgLen
+              压测包大小
               <div class="pdt10">
                 <el-input
                   v-model="clickrow.pkgLen"
@@ -253,34 +245,34 @@
           <el-col :span="2"></el-col>
         </el-row>
         <el-table :data="tabledetailData.perfDetail" border :header-cell-style="{background:'#F9FAFC'}" :default-sort="{prop: 'timestamp', order: 'ascending'}">
-            <el-table-column property="timestamp" label="timestamp" :formatter="formatdate" sortable :sort-orders="['ascending', 'descending']"></el-table-column>
-            <el-table-column property="totalReq" label="totalReq"></el-table-column>
-            <el-table-column property="succRate" label="succRate"></el-table-column>
-            <el-table-column property="succ" label="succ"></el-table-column>
-            <el-table-column property="sendByte" label="sendByte"></el-table-column>
-            <el-table-column property="recvByte" label="recvByte"></el-table-column>
-            <el-table-column property="qps" label="qps"></el-table-column>
-            <el-table-column property="p90" label="p90" :formatter="format2dot"></el-table-column>
-            <el-table-column property="p99" label="p99" :formatter="format2dot"></el-table-column>
-            <el-table-column property="p999" label="p999" :formatter="format2dot"></el-table-column>
-            <el-table-column property="failed" label="failed"></el-table-column>
-            <el-table-column property="costMax" label="costMax"></el-table-column>
-            <el-table-column property="costMin" label="costMin"></el-table-column>
-            <el-table-column property="costAvg" label="costAvg" :formatter="format2dot"></el-table-column>
+            <el-table-column property="timestamp" label="时间" :formatter="formatdate" sortable :sort-orders="['ascending', 'descending']"></el-table-column>
+            <el-table-column property="totalReq" label="总请求量"></el-table-column>
+            <el-table-column property="succRate" label="成功率"></el-table-column>
+            <el-table-column property="succ" label="成功数"></el-table-column>
+            <el-table-column property="sendByte" label="发送包"></el-table-column>
+            <el-table-column property="recvByte" label="接收包"></el-table-column>
+            <el-table-column property="qps" label="QPS"></el-table-column>
+            <el-table-column property="p90" label="P90" :formatter="format2dot"></el-table-column>
+            <el-table-column property="p99" label="P99" :formatter="format2dot"></el-table-column>
+            <el-table-column property="p999" label="P999" :formatter="format2dot"></el-table-column>
+            <el-table-column property="failed" label="失败数"></el-table-column>
+            <el-table-column property="costMax" label="最大耗时"></el-table-column>
+            <el-table-column property="costMin" label="最小耗时"></el-table-column>
+            <el-table-column property="costAvg" label="平均耗时" :formatter="format2dot"></el-table-column>
         </el-table>
         <el-row style="height:100px;">&nbsp;</el-row>
         </el-scrollbar>
       </el-tab-pane>
       
-      <el-tab-pane label="Interval Distribution">
+      <el-tab-pane label="区间分布">
         <el-scrollbar class="tabcontent">
         <el-row>
           <el-col :span="12">
-              <h4>Return value distribution</h4>
+              <h4>返回值分布</h4>
               <div id="container_return_value" style="width:100%"></div>
           </el-col>  
           <el-col :span="12">
-              <h4>Time interval distribution</h4>
+              <h4>耗时区间分布</h4>
               <div id="container_time_interval" style="width:100%"></div>
           </el-col>
         </el-row>
@@ -311,7 +303,6 @@ import axios from 'axios'
 import moment from 'moment'
 import {  getCurrentInstance,reactive,Ref,ref} from "vue";
 import { ElNotification } from 'element-plus';
-//import { useRouter, useRoute } from 'vue-router'
 import { Area,Line,Pie } from '@antv/g2plot';
 //函数测试接口定义
 interface DoFuncTestModelRef {
@@ -347,8 +338,6 @@ interface GetTestHistoriesdetailModelRef {
 }
 export default({
   setup() {
-    //const router = useRouter()
-    //const route = useRoute()
     // 定义函数测试结果
     const DoFuncTestresult: DoFuncTestModelRef = reactive<DoFuncTestModelRef>({
       code: -1,
@@ -367,7 +356,6 @@ export default({
       connCnt: 10,
       reqFreq: 10,
       keepAlive: 60
-      // pkgLen: ''
     })
     //正整数验证
     const integer= async(rule: any, value: string, callback: any): Promise<void> => {
@@ -437,7 +425,6 @@ export default({
       percentagestatus:"exception",
       remaintime:0
     })
-    
     //详情按钮获取行数据
     const clickrow = reactive({ 
       testID: "",
@@ -452,6 +439,7 @@ export default({
       startTime:0,
       endTime:0
     })
+    // 获取当前实例
     const { ctx }: any = getCurrentInstance();
     // 历史记录按钮加载状态
     const loading = reactive({ 
@@ -531,6 +519,11 @@ export default({
           tableData.data=response.data.histories
         }
       } catch (error) {
+        ElNotification({
+          title: 'error',
+          message: error.message,
+          type: 'error'
+        });
         GetTestHistoriesResult.code=error.code
         GetTestHistoriesResult.msg=error.message
         GetTestHistoriesResult.histories=error.histories
@@ -548,6 +541,11 @@ export default({
         DoFuncTestresult.msg=response.data.msg
         DoFuncTestresult.rows=response.data.rows
       } catch (error) {
+        ElNotification({
+          title: 'error',
+          message: error.message,
+          type: 'error'
+        });
         DoFuncTestresult.code=error.code
         DoFuncTestresult.msg=error.message
         DoFuncTestresult.rows=error.rows
@@ -619,7 +617,11 @@ export default({
           }
         });
       } catch (error){
-        console.log(error);
+        ElNotification({
+          title: 'error',
+          message: error.message,
+          type: 'error'
+        });
       }
     }
     //重置按钮
@@ -722,9 +724,6 @@ export default({
             for(let i=0;i<=datatem[0].cpu.length-1;i++){
               let cpu_data_temp=new Array()
               datatem.every((val: any, idx: any, array: any) => {
-                  // val: 当前值
-                  // idx：当前index
-                  // array: Array
                   cpu_data_temp.push(
                     {
                       "type":"free",
@@ -804,9 +803,6 @@ export default({
               let datatem_new = response_new.data.resUsage
                //加工处理后台接口返回内存数据
               datatem_new.every((val: any, idx: any, array: any) => {
-                  // val: 当前值
-                  // idx：当前index
-                  // array: Array
                   // 内存数据转换单位为GB
                   let total_num: number = val.mem.total/1024/1024/1024; 
                   let total_str: string = total_num.toFixed(2);
@@ -840,9 +836,6 @@ export default({
                 for(let i=0;i<=datatem_new[0].cpu.length-1;i++){
                   let cpu_data_temp=new Array()
                   datatem_new.every((val: any, idx: any, array: any) => {
-                      // val: 当前值
-                      // idx：当前index
-                      // array: Array
                       cpu_data_temp.push(
                         {
                           "type":"free",
@@ -879,6 +872,11 @@ export default({
           }
           
         } catch (error) {
+          ElNotification({
+            title: 'error',
+            message: error.message,
+            type: 'error'
+          });
           GetTestHistoriesdetailResult.code=error.code
           GetTestHistoriesdetailResult.msg=error.message
         }
@@ -1215,9 +1213,6 @@ export default({
           "SOCK_RECV_TIMEOUT":0
        }
        perdetail.every((val: any, idx: any, array: any) => {
-            // val: 当前值
-            // idx：当前index
-            // array: Array
             costmap['0~10ms']=costmap['0~10ms']+val.costMap['0~10ms']
             costmap['10~30ms']=costmap['10~30ms']+val.costMap['10~30ms']
             costmap['30~50ms']=costmap['30~50ms']+val.costMap['30~50ms']

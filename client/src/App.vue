@@ -13,29 +13,6 @@
     <el-main>
         <router-view />
     </el-main>
-    <!-- <el-container>
-      <el-aside width="200px">
-        <el-row>
-          <el-col :span="24">
-            <el-menu
-              :default-active="$route.path"
-              router
-              @open="handleOpen"
-              @close="handleClose"
-              @select="handleSelect"
-            >
-              <el-menu-item index="/">
-                <i class="el-icon-cpu"></i>
-                <template #title>Historical Report</template>
-              </el-menu-item>
-            </el-menu>
-          </el-col>
-        </el-row>
-      </el-aside>
-      <el-main>
-          <router-view />
-      </el-main>
-    </el-container> -->
   </el-container>
 </template>
 <script lang="ts">
