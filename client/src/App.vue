@@ -14,6 +14,7 @@
         <router-view />
     </el-main>
   </el-container>
+  <el-backtop target=".el-main"></el-backtop>
 </template>
 <script lang="ts">
 export default {
