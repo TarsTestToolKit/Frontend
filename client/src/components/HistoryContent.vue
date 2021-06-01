@@ -610,7 +610,7 @@ export default({
                 setTimeout(() => {
                   ElNotification({
                     title: 'success',
-                    message: response.data.msg+" testID:"+response.data.testID,
+                    message: "测试ID:"+response.data.testID,
                     type: 'success'
                   });
                 }, 500);
@@ -643,7 +643,7 @@ export default({
     //详情按钮
     const handleClick=async(index: any, row: any) =>{
         tabledetail.status=true
-        title.data="testID:"+row.testID;
+        title.data="测试ID:"+row.testID;
         clickrow.testID=row.testID
         clickrow.lang=row.lang
         clickrow.servType=row.servType
