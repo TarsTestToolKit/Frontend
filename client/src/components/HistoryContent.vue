@@ -35,14 +35,14 @@
   </el-dialog>
   <div v-loading="loading.status">
       <!-- 无数据时 -->
-      <el-empty description="No Data" v-if="GetTestHistoriesResult.total===0"></el-empty>
+      <!-- <el-empty description="No Data" v-if="GetTestHistoriesResult.total===0"></el-empty> -->
       <!-- 有数据时 -->
       <!-- 自适应栅格 -->
       <el-row style="padding-top:20px;">
         <el-col :span="1"></el-col>
         <el-col :span="22">
           
-          <div v-if="GetTestHistoriesResult.total>0">
+          <!-- <div v-if="GetTestHistoriesResult.total>0"> -->
             <el-table :default-sort="{prop: 'testID', order: 'ascending'}" :data="tableData.data" border stripe style="width: 100%;" :header-cell-style="{background:'#F9FAFC'}" >
               <el-table-column prop="testID" label="测试ID"> </el-table-column>
               <el-table-column prop="startTime" label="开始时间" :formatter="formatdate"> </el-table-column>
@@ -83,7 +83,7 @@
                 :total="GetTestHistoriesResult.total">
               </el-pagination>
             </div>
-          </div>
+          <!-- </div> -->
         </el-col>
         <el-col :span="1"></el-col>
       </el-row>
