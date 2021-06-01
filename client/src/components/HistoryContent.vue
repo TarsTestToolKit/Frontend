@@ -44,7 +44,7 @@
           
           <div v-if="GetTestHistoriesResult.code!=-1">
             <el-table :default-sort="{prop: 'testID', order: 'ascending'}" :data="tableData.data" border stripe style="width: 100%;" :header-cell-style="{background:'#F9FAFC'}" >
-              <el-table-column prop="testID" label="testID" sortable :sort-orders="[ 'ascending','descending']"> </el-table-column>
+              <el-table-column prop="testID" label="测试ID"> </el-table-column>
               <el-table-column prop="startTime" label="开始时间" :formatter="formatdate"> </el-table-column>
               <el-table-column prop="endTime" label="结束时间" :formatter="formatdate"> </el-table-column>
               <el-table-column prop="lang" label="被测服务语言"> </el-table-column>
@@ -55,7 +55,7 @@
               <el-table-column prop="reqFreq" label="单连接请求速率"> </el-table-column>
               <el-table-column prop="keepAlive" label="压测时长"> </el-table-column>
               <el-table-column prop="pkgLen" label="压测包大小" :formatter="formatpkgLen"> </el-table-column>
-              <el-table-column prop="finished" label="状态" sortable :sort-orders="['ascending', 'descending']">
+              <el-table-column prop="finished" label="状态">
                 <template #default="scope">
                     <el-tag
                       :type="scope.row.finished === 0 ? 'danger' : 'success'"
