@@ -849,7 +849,7 @@ export default({
               //更新图数据
               //定义内存局部变量mem_data_new
               let mem_data_new: { type: string;sort: any; timestamp: any; value: any; }[]=new Array()
-              let datatem_new = tabledetailData.resUsage
+              let datatem_new = response_new.data.resUsage
                //加工处理后台接口返回内存数据
               datatem_new.every((val: any, idx: any, array: any) => {
                   // 内存数据转换单位为GB
