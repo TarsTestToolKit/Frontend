@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "dev": "cross-env NODE_ENV=dev ./node_modules/.bin/nodemon --exec ./node_modules/.bin/ts-node ./src/bin/www.ts --watch ./src -e ts,tsx ",
-    "build": "npm run eslint && tsc; cp -rf ./src/config/*.json dist/config/; cp -rf ./src/locale dist",
+    "build": "npm run eslint && tsc; cp -rf ./src/config/* dist/config/; cp -rf ./src/locale dist",
     "eslint": "./node_modules/.bin/eslint src --ext .ts",
     "upload": "npm run eslint && ./node_modules/.bin/tsc && nodetools upload",
     "start": "node dist/bin/www.js",
