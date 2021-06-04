@@ -429,7 +429,8 @@ export default({
       loading:true,
       percentage:0,
       percentagestatus:"exception",
-      remaintime:0
+      remaintime:0,
+      maxtimestamp:0
     })
     //详情按钮获取行数据
     const clickrow = reactive({ 
@@ -457,11 +458,11 @@ export default({
       intervalId:-1
     })
     // 历史记录
-    const tableData = reactive({ 
+    const tableData:any = reactive({ 
       data: []
     })
     // 详情按钮数据
-    const tabledetailData = reactive({ 
+    const tabledetailData:any = reactive({ 
       perfDetail: [],
       resUsage:[],
       cpu:[],
@@ -494,8 +495,8 @@ export default({
       data: [] 
     })
     //定义CPU数据变量
-    const cpu_data = reactive({ 
-      data: [[]] 
+    const cpu_data:any = reactive({ 
+      data: [] 
     })
     //methods
     //历史记录按钮
@@ -689,6 +690,7 @@ export default({
             title.text="finished"
             title.percentage=100
             title.percentagestatus="success"
+            title.maxtimestamp=0
             //清除定时器，并初始化
             if(tabledetail.intervalId!==-1){
               clearInterval(tabledetail.intervalId);
@@ -790,7 +792,8 @@ export default({
               //获取指定testID的详情接口
               const response_new = await axios.get('/api/detail',{
                 params: {
-                  testID: row.testID
+                  testID: row.testID,
+                  timestamp:title.maxtimestamp
                 }
               });
               //返回code为0，结束定时器
@@ -803,6 +806,7 @@ export default({
                   title.text="finished"
                   title.percentage=100
                   title.percentagestatus="success"
+                  title.maxtimestamp=0
                   //清空定时器
                   if(tabledetail.intervalId!==-1){
                     clearInterval(tabledetail.intervalId);
@@ -815,20 +819,37 @@ export default({
                     timestamparray.push(val.timestamp)
                     return true; // Continues
               });
+              //maxtimestamp
+              title.maxtimestamp=Math.max(...timestamparray)
               //运行时间百分百
               title.percentage=(Math.max(...timestamparray)-Number(clickrow.startTime))/Number(clickrow.keepAlive)*100
               //进度条颜色
               title.percentagestatus="exception"
               //剩余时间
               title.remaintime=Number(clickrow.endTime)-Math.max(...timestamparray)
-              //更新性能数据
-              tabledetailData.perfDetail=response_new.data.perfDetail
-              //更新性CPU、内存数据
-              tabledetailData.resUsage=response_new.data.resUsage
+              //增量更新性能数据
+              if(tabledetailData.perfDetail.length===0){
+                tabledetailData.perfDetail=response_new.data.perfDetail
+              }else{
+                response_new.data.perfDetail.every((val: any, idx: any, array: any) => {
+                  tabledetailData.perfDetail.push(val)
+                  return true; // Continues
+                });
+              }
+              
+              //增量更新性CPU、内存数据
+              if(tabledetailData.resUsage.length===0){
+                tabledetailData.resUsage=response_new.data.resUsage
+              }else{
+                response_new.data.resUsage.every((val: any, idx: any, array: any) => {
+                    tabledetailData.resUsage.push(val)
+                    return true; // Continues
+                });
+              }
               //更新图数据
               //定义内存局部变量mem_data_new
               let mem_data_new: { type: string;sort: any; timestamp: any; value: any; }[]=new Array()
-              let datatem_new = response_new.data.resUsage
+              let datatem_new = tabledetailData.resUsage
                //加工处理后台接口返回内存数据
               datatem_new.every((val: any, idx: any, array: any) => {
                   // 内存数据转换单位为GB
@@ -924,6 +945,7 @@ export default({
       title.loading=true
       title.percentage=0
       title.percentagestatus="exception"
+      title.maxtimestamp=0
       //清除定时器，并初始化
       if(tabledetail.intervalId!==-1){
         clearInterval(tabledetail.intervalId);
