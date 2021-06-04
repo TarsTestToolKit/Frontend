@@ -8,9 +8,8 @@
     "dev": "cross-env NODE_ENV=dev ./node_modules/.bin/nodemon --exec ./node_modules/.bin/ts-node ./src/bin/www.ts --watch ./src -e ts,tsx ",
     "build": "npm run eslint && tsc; cp -rf ./src/config/*.json dist/config/; cp -rf ./src/locale dist",
     "eslint": "./node_modules/.bin/eslint src --ext .ts",
+    "upload": "npm run eslint && ./node_modules/.bin/tsc && nodetools upload",
     "start": "node dist/bin/www.js",
-    "tar": "sh package.sh",
-    "prd": "pm2 start dist/bin/www.js --name=gitbook",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
@@ -48,6 +47,7 @@
     "validator": "^9.4.1"
   },
   "devDependencies": {
+    "@tars/nodetools-cli": "^0.0.10",
     "@types/fs-extra": "^8.1.1",
     "@types/koa": "^2.11.6",
     "@types/koa-router": "^7.4.1",
@@ -61,5 +61,11 @@
     "nodemon": "^1.19.4",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.7"
+  },
+  "tars": {
+    "tarsurl": "http://10.0.0.42:3001",
+    "app": "TarsTestToolKit",
+    "service": "Frontend",
+    "token": "ce36992fbec4b451fc623c18605ba940e9abcc49"
   }
 }

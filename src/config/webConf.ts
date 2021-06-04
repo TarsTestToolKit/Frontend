@@ -5,7 +5,7 @@ const webConf = {
     
     config: {
         webConf: {
-            port: 6080,
+            port: 3000,
             loggerPath: "./log",
             logFileKeepDays: "1",
             defaultLanguage: "cn",

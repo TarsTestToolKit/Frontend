@@ -778,6 +778,7 @@ var apitars;
             this.keepAlive = 0;
             this.reqFreq = 0;
             this.pkgLen = 0;
+            this.finished = 0;
             this._proto_struct_name_ = "";
             this._classname = "apitars.TestHistory";
         }
@@ -796,6 +797,7 @@ var apitars;
             tmp.keepAlive = is.readUInt32(8, true, 0);
             tmp.reqFreq = is.readUInt32(9, true, 0);
             tmp.pkgLen = is.readUInt32(10, true, 0);
+            tmp.finished = is.readUInt32(11, true, 0);
             return tmp;
         }
         _writeTo(os) {
@@ -810,6 +812,7 @@ var apitars;
             os.writeUInt32(8, this.keepAlive);
             os.writeUInt32(9, this.reqFreq);
             os.writeUInt32(10, this.pkgLen);
+            os.writeUInt32(11, this.finished);
         }
         _equal() {
             assert.fail("this structure not define key operation");
@@ -832,7 +835,8 @@ var apitars;
                 connCnt: this.connCnt,
                 keepAlive: this.keepAlive,
                 reqFreq: this.reqFreq,
-                pkgLen: this.pkgLen
+                pkgLen: this.pkgLen,
+                finished: this.finished
             };
         }
         readFromObject(json) {
@@ -847,6 +851,7 @@ var apitars;
             _hasOwnProperty.call(json, "keepAlive") && (this.keepAlive = json.keepAlive);
             _hasOwnProperty.call(json, "reqFreq") && (this.reqFreq = json.reqFreq);
             _hasOwnProperty.call(json, "pkgLen") && (this.pkgLen = json.pkgLen);
+            _hasOwnProperty.call(json, "finished") && (this.pkgLen = json.finished);
             return this;
         }
         toBinBuffer() {
