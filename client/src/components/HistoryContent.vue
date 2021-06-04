@@ -497,8 +497,6 @@ export default({
     const cpu_data = reactive({ 
       data: [[]] 
     })
-
-
     //methods
     //历史记录按钮
     const  GetTestHistories = async (currentpage:number,currentpagesize:number) => {
@@ -671,7 +669,6 @@ export default({
         if(row.pkgLen===5*1024*1024){
           clickrow.pkgLen="5M"
         }
-
         clickrow.startTime=row.startTime
         clickrow.endTime=row.endTime
         loading.status=true
@@ -1106,7 +1103,6 @@ export default({
             costmap['3~5s']=costmap['3~5s']+val.costMap['3~5s']
             costmap['5~100s']=costmap['5~100s']+val.costMap['5~100s']
             costmap['<100s']=costmap['<100s']+val.costMap['<100s']
-
             for(let [key, val1] of Object.entries(val.retCodeMap)){
               if(key==="SUCCESS"){
                 retcodemap['SUCCESS']=retcodemap['SUCCESS']+Number(val1)
@@ -1253,8 +1249,6 @@ export default({
             costmap['3~5s']=costmap['3~5s']+val.costMap['3~5s']
             costmap['5~100s']=costmap['5~100s']+val.costMap['5~100s']
             costmap['<100s']=costmap['<100s']+val.costMap['<100s']
-
-
             for(let [key, val1] of Object.entries(val.retCodeMap)){
               if(key==="SUCCESS"){
                 retcodemap['SUCCESS']=retcodemap['SUCCESS']+Number(val1)
