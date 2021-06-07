@@ -52,7 +52,7 @@
               <el-table-column prop="threads" label="服务端线程数"> </el-table-column>
               <!-- <el-table-column prop="cores" label="服务端核数"> </el-table-column> -->
               <el-table-column prop="connCnt" label="节点连接数"> </el-table-column>
-              <el-table-column prop="reqFreq" label="单连接请求速率"> </el-table-column>
+              <el-table-column prop="reqFreq" label="请求速率"> </el-table-column>
               <el-table-column prop="keepAlive" label="压测时长"> </el-table-column>
               <el-table-column prop="pkgLen" label="压测包大小" :formatter="formatpkgLen"> </el-table-column>
               <el-table-column prop="finished" label="状态">
@@ -112,7 +112,7 @@
       <el-form-item label="节点连接数" :label-width="formLabelWidth" prop="connCnt">
         <el-input v-model="startform.connCnt" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item label="单连接请求速率" :label-width="formLabelWidth" prop="reqFreq">
+      <el-form-item label="请求速率" :label-width="formLabelWidth" prop="reqFreq">
         <el-input v-model="startform.reqFreq" autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item label="压测时长(s)" :label-width="formLabelWidth" prop="keepAlive">
@@ -218,7 +218,7 @@
           </el-col>
           <el-col :span="1"></el-col>
           <el-col :span="4">
-              单连接请求速率
+              请求速率
               <div class="pdt10">
                 <el-input
                   v-model="clickrow.reqFreq"
@@ -256,9 +256,9 @@
             <el-table-column property="succRate" label="成功率"></el-table-column>
             <el-table-column property="failed" label="失败数"></el-table-column>
             <el-table-column property="qps" label="QPS"></el-table-column>
-            <el-table-column property="costMin" label="最小耗时"></el-table-column>
-            <el-table-column property="costMax" label="最大耗时"></el-table-column>
-            <el-table-column property="costAvg" label="平均耗时" :formatter="format2dot"></el-table-column>
+            <el-table-column property="costMin" label="最小耗时(ms)"></el-table-column>
+            <el-table-column property="costMax" label="最大耗时(ms)"></el-table-column>
+            <el-table-column property="costAvg" label="平均耗时(ms)" :formatter="format2dot"></el-table-column>
             <el-table-column property="p90" label="P90" :formatter="format2dot"></el-table-column>
             <el-table-column property="p99" label="P99" :formatter="format2dot"></el-table-column>
             <el-table-column property="p999" label="P999" :formatter="format2dot"></el-table-column>
@@ -401,7 +401,7 @@ export default({
         { type: 'number', trigger: 'blur',validator: integer }
       ],
       reqFreq: [
-        { required: true, message: '请填写单连接请求速率', trigger: 'blur'},
+        { required: true, message: '请填写请求速率', trigger: 'blur'},
         { type: 'number', trigger: 'blur',validator: integer }
       ],
       keepAlive: [
