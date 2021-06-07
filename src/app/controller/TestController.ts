@@ -14,13 +14,13 @@ export default class TestController {
     }
     //性能测试
     public static async testPerf(ctx: Koa.Context) {
-        let ctx_body = ctx.request.body;
+        let ctx_body:any = ctx.request.body;
         try {
             let req = new apitars.PerfTestReq();
             req.lang = ctx_body.lang;
             req.servType = ctx_body.servType;
             req.threads = ctx_body.threads;
-            req.cores = ctx_body.cores;
+            //req.cores = ctx_body.cores;
             req.connCnt = ctx_body.connCnt;
             req.reqFreq = ctx_body.reqFreq;
             req.keepAlive = ctx_body.keepAlive;
