@@ -52,7 +52,7 @@
               <el-table-column prop="threads" label="服务端线程数"> </el-table-column>
               <!-- <el-table-column prop="cores" label="服务端核数"> </el-table-column> -->
               <el-table-column prop="connCnt" label="节点连接数"> </el-table-column>
-              <el-table-column prop="reqFreq" label="请求速率(个/秒)）"> </el-table-column>
+              <el-table-column prop="reqFreq" label="请求速率(个/秒)"> </el-table-column>
               <el-table-column prop="keepAlive" label="压测时长(s)"> </el-table-column>
               <el-table-column prop="pkgLen" label="压测包大小" :formatter="formatpkgLen"> </el-table-column>
               <el-table-column prop="finished" label="状态">
