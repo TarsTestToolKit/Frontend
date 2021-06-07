@@ -50,7 +50,7 @@
               <el-table-column prop="lang" label="被测服务语言"> </el-table-column>
               <el-table-column prop="servType" label="硬件描述信息"> </el-table-column>
               <el-table-column prop="threads" label="服务端线程数"> </el-table-column>
-              <el-table-column prop="cores" label="服务端核数"> </el-table-column>
+              <!-- <el-table-column prop="cores" label="服务端核数"> </el-table-column> -->
               <el-table-column prop="connCnt" label="节点连接数"> </el-table-column>
               <el-table-column prop="reqFreq" label="单连接请求速率"> </el-table-column>
               <el-table-column prop="keepAlive" label="压测时长"> </el-table-column>
@@ -106,9 +106,9 @@
       <el-form-item label="服务端线程数" :label-width="formLabelWidth" prop="threads">
         <el-input v-model="startform.threads" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item label="服务器核数" :label-width="formLabelWidth" prop="cores">
+      <!-- <el-form-item label="服务器核数" :label-width="formLabelWidth" prop="cores">
         <el-input v-model="startform.cores" autocomplete="off"></el-input>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="节点连接数" :label-width="formLabelWidth" prop="connCnt">
         <el-input v-model="startform.connCnt" autocomplete="off"></el-input>
       </el-form-item>
@@ -194,13 +194,13 @@
           </el-col>
           <el-col :span="1"></el-col>
           <el-col :span="4">
-              服务器核数
+              <!-- 服务器核数
               <div class="pdt10">
                 <el-input
                   v-model="clickrow.cores"
                   :disabled="true">
                 </el-input>
-              </div>
+              </div> -->
           </el-col>
           <el-col :span="1"></el-col>
           <el-col :span="2"></el-col>
@@ -321,7 +321,7 @@ interface PerfTestReqModelRef {
   lang: string,
   servType: string,
   threads?: number,
-  cores?: number,
+  //cores?: number,
   connCnt?: number,
   reqFreq?: number,
   keepAlive?: number,
@@ -358,7 +358,7 @@ export default({
       servType: '',
       pkgLen:0,
       threads: 10,
-      cores: 10,
+      //cores: 10,
       connCnt: 10,
       reqFreq: 10,
       keepAlive: 60
@@ -392,10 +392,10 @@ export default({
         { required: true, message: '请填写服务端线程数', trigger: 'blur' },
         { type: 'number', trigger: 'blur',validator: integer }
       ],
-      cores: [
-        { required: true, message: '请填写服务器核数', trigger: 'blur'},
-        { type: 'number', trigger: 'blur',validator: integer }
-      ],
+      // cores: [
+      //   { required: true, message: '请填写服务器核数', trigger: 'blur'},
+      //   { type: 'number', trigger: 'blur',validator: integer }
+      // ],
       connCnt: [
         { required: true, message: '请填写节点连接数', trigger: 'blur'},
         { type: 'number', trigger: 'blur',validator: integer }
@@ -438,7 +438,7 @@ export default({
       lang:"",
       servType: "",
       threads: "",
-      cores: "",
+      //cores: "",
       connCnt: "",
       reqFreq: "",
       keepAlive: "",
@@ -579,7 +579,7 @@ export default({
                 lang: startform.lang,
                 servType: startform.servType,
                 threads:startform.threads,
-                cores: startform.cores,
+                //cores: startform.cores,
                 connCnt: startform.connCnt,
                 reqFreq: startform.reqFreq,
                 keepAlive: startform.keepAlive,
@@ -596,7 +596,7 @@ export default({
                   lang: startform.lang,
                   servType: startform.servType,
                   threads:startform.threads,
-                  cores: startform.cores,
+                  //cores: startform.cores,
                   connCnt: startform.connCnt,
                   reqFreq: startform.reqFreq,
                   keepAlive: startform.keepAlive,
@@ -647,7 +647,7 @@ export default({
         clickrow.lang=row.lang
         clickrow.servType=row.servType
         clickrow.threads=row.threads
-        clickrow.cores=row.cores
+        //clickrow.cores=row.cores
         clickrow.connCnt=row.connCnt
         clickrow.reqFreq=row.reqFreq
         clickrow.keepAlive=row.keepAlive
