@@ -52,7 +52,7 @@
               <el-table-column prop="threads" label="服务端线程数"> </el-table-column>
               <!-- <el-table-column prop="cores" label="服务端核数"> </el-table-column> -->
               <el-table-column prop="connCnt" label="节点连接数"> </el-table-column>
-              <el-table-column prop="reqFreq" label="请求速率(秒/个)）"> </el-table-column>
+              <el-table-column prop="reqFreq" label="请求速率(个/秒)）"> </el-table-column>
               <el-table-column prop="keepAlive" label="压测时长(s)"> </el-table-column>
               <el-table-column prop="pkgLen" label="压测包大小" :formatter="formatpkgLen"> </el-table-column>
               <el-table-column prop="finished" label="状态">
@@ -112,7 +112,7 @@
       <el-form-item label="节点连接数" :label-width="formLabelWidth" prop="connCnt">
         <el-input v-model="startform.connCnt" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item label="请求速率(秒/个)" :label-width="formLabelWidth" prop="reqFreq">
+      <el-form-item label="请求速率(个/秒)" :label-width="formLabelWidth" prop="reqFreq">
         <el-input v-model="startform.reqFreq" autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item label="压测时长(s)" :label-width="formLabelWidth" prop="keepAlive">
@@ -215,7 +215,7 @@
         <el-row style="padding-top:20px;padding-bottom:20px;">
           <el-col :span="2"></el-col>
           <el-col :span="4">
-              请求速率(秒/个)
+              请求速率(个/秒)
               <div class="pdt10">
                 <el-input
                   v-model="clickrow.reqFreq"
@@ -402,7 +402,7 @@ export default({
         { type: 'number', trigger: 'blur',validator: integer }
       ],
       reqFreq: [
-        { required: true, message: '请填写请求速率(秒/个)', trigger: 'blur'},
+        { required: true, message: '请填写请求速率(个/秒)', trigger: 'blur'},
         { type: 'number', trigger: 'blur',validator: integer }
       ],
       keepAlive: [
