@@ -24,7 +24,7 @@ class TestController {
             req.lang = ctx_body.lang;
             req.servType = ctx_body.servType;
             req.threads = ctx_body.threads;
-            req.cores = ctx_body.cores;
+            //req.cores = ctx_body.cores;
             req.connCnt = ctx_body.connCnt;
             req.reqFreq = ctx_body.reqFreq;
             req.keepAlive = ctx_body.keepAlive;
