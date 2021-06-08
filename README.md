@@ -1,6 +1,6 @@
 # 代码说明
 
-整体代码采用nodejs + vue + element-ui实现, 分两部分:
+整体代码采用nodejs + vue3 + Element Plus实现, 分两部分:
 - 客户端部分: 客户端表示vue页面这部分, 在client目录下
 - 服务器端部分: 服务器代码在src目录下
 
