@@ -54,7 +54,7 @@ export default class TestController {
             let ret = await rpc.apiPrx.getTestDetail(testID,timestamp);
             ctx.body = ret.response.return.toObject();
         }catch(e) {
-            ctx.body = e.response.error;
+            ctx.body = e.response;
             //||{code: -1, msg: 'rpc error'+ e};
         }
     }
