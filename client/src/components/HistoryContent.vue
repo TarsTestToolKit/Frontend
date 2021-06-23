@@ -873,32 +873,33 @@ export default({
                   }
                   return true
               }
+              console.log(response_new)
               if(response_new.data.perfDetail!=[]){
-              let timestamparray:Array<number>=[]
-              response_new.data.perfDetail.every((val: any, idx: any, array: any) => {
-                console.log(val.timestamp)
-                    timestamparray.push(val.timestamp)
-                    return true; // Continues
-              });
-              console.log(timestamparray)
-              console.log(Math.max(...timestamparray))
-              //maxtimestamp
-              title.maxtimestamp=Math.max(...timestamparray)
-              //运行时间百分百
-              title.percentage=(Math.max(...timestamparray)-Number(clickrow.startTime))/Number(clickrow.keepAlive)*100
-              //进度条颜色
-              title.percentagestatus="exception"
-              //剩余时间
-              title.remaintime=Number(clickrow.endTime)-Math.max(...timestamparray)
-              //增量更新性能数据
-              if(tabledetailData.perfDetail.length===0){
-                tabledetailData.perfDetail=response_new.data.perfDetail
-              }else{
+                let timestamparray:Array<number>=[]
                 response_new.data.perfDetail.every((val: any, idx: any, array: any) => {
-                  tabledetailData.perfDetail.push(val)
-                  return true; // Continues
+                  console.log(val.timestamp)
+                      timestamparray.push(val.timestamp)
+                      return true; // Continues
                 });
-              }
+                console.log(timestamparray)
+                console.log(Math.max(...timestamparray))
+                //maxtimestamp
+                title.maxtimestamp=Math.max(...timestamparray)
+                //运行时间百分百
+                title.percentage=(Math.max(...timestamparray)-Number(clickrow.startTime))/Number(clickrow.keepAlive)*100
+                //进度条颜色
+                title.percentagestatus="exception"
+                //剩余时间
+                title.remaintime=Number(clickrow.endTime)-Math.max(...timestamparray)
+                //增量更新性能数据
+                if(tabledetailData.perfDetail.length===0){
+                  tabledetailData.perfDetail=response_new.data.perfDetail
+                }else{
+                  response_new.data.perfDetail.every((val: any, idx: any, array: any) => {
+                    tabledetailData.perfDetail.push(val)
+                    return true; // Continues
+                  });
+                }
               }
               //增量更新性CPU、内存数据
               if(tabledetailData.resUsage.length===0){
