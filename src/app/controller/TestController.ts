@@ -4,7 +4,7 @@ import { apitars } from "../../rpc/proxy/apiProxy";
 
 export default class TestController {
     //函数测试
-    public static async testFunc(ctx: Koa.Context) {
+    public static async doFuncTest(ctx: Koa.Context) {
         try {
             let ret = await rpc.apiPrx.doFuncTest();
             ctx.body = ret.response.return.toObject();
@@ -13,7 +13,7 @@ export default class TestController {
         }
     }
     //性能测试
-    public static async testPerf(ctx: Koa.Context) {
+    public static async doPerfTest(ctx: Koa.Context) {
         let ctx_body:any = ctx.request.body;
         try {
             let req = new apitars.PerfTestReq();
@@ -32,7 +32,7 @@ export default class TestController {
         }
     }
     //获取历史数据
-    public static async histories(ctx: Koa.Context) {
+    public static async getTestHistories(ctx: Koa.Context) {
         try {
             let req = new apitars.QueryTestHistoryReq();
             req.page = Number(ctx.query.page);
@@ -45,8 +45,9 @@ export default class TestController {
         }
     }
     //获取详细信息
-    public static async detail(ctx: Koa.Context) {
+    public static async getTestDetail(ctx: Koa.Context) {
         try {
+            
             let testID = Number(ctx.query.testID);
             //let testID=-1
             let timestamp = Number(ctx.query.timestamp);
@@ -55,6 +56,18 @@ export default class TestController {
         }catch(e) {
             ctx.body = e.response.error;
             //||{code: -1, msg: 'rpc error'+ e};
+        }
+    }
+    //查询压测是否已存在
+    public static async isPerfExists(ctx: Koa.Context) {
+        let ctx_body:any = ctx.request.body;
+        try {
+            let req = new apitars.IsPerfExistsReq();
+            req.servType = ctx_body.servType;
+            let ret = await rpc.apiPrx.isPerfExists(req);
+            ctx.body = ret.response.return.toObject();
+        }catch(e) {
+            ctx.body = e.response.error;
         }
     }
 }

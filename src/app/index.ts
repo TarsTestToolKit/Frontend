@@ -9,10 +9,11 @@ const pageConf: Array<confType> = [
 ];
 
 const apiConf: Array<confType> = [
-    ["post", "/testFunc", TestController, TestController.testFunc],
-    ["post", "/testPerf", TestController, TestController.testPerf],
-    ["get", "/histories", TestController, TestController.histories],
-    ["get", "/detail", TestController, TestController.detail]
+    ["post", "/doFuncTest", TestController, TestController.doFuncTest],
+    ["post", "/doPerfTest", TestController, TestController.doPerfTest],
+    ["get", "/getTestHistories", TestController, TestController.getTestHistories],
+    ["get", "/getTestDetail", TestController, TestController.getTestDetail],
+    ["post", "/isPerfExists", TestController, TestController.isPerfExists]
 ];
 
 export { pageConf, apiConf };

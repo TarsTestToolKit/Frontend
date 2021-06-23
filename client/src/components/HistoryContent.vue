@@ -505,7 +505,7 @@ export default({
       DoFuncTestresult.code=-1
       loading.status=true
       try {
-        const response = await axios.get('/api/histories', {
+        const response = await axios.get('/api/getTestHistories', {
           params: {
             page: currentpage,
             pageSize:currentpagesize
@@ -542,7 +542,7 @@ export default({
       //GetTestHistoriesResult.code=-1
       loading.status=true
       try {
-        const response = await axios.post('/api/testFunc');
+        const response = await axios.post('/api/doFuncTest');
         DoFuncTestresult.code=response.data.code
         DoFuncTestresult.msg=response.data.msg
         DoFuncTestresult.rows=response.data.rows
@@ -576,7 +576,7 @@ export default({
               background: 'rgba(0, 0, 0, 0.7)'
             });
             try {
-              const response = await axios.post('/api/testPerf',{
+              const response = await axios.post('/api/doPerfTest',{
                 lang: startform.lang,
                 servType: startform.servType,
                 threads:startform.threads,
@@ -675,7 +675,7 @@ export default({
         clickrow.endTime=row.endTime
         loading.status=true
         try {
-          const response = await axios.get('/api/detail',{
+          const response = await axios.get('/api/getTestDetail',{
             params: {
               testID: row.testID
             }
@@ -791,7 +791,7 @@ export default({
             //创建定时器，每5000ms获取一次数据
             tabledetail.intervalId=window.setInterval(async() => {
               //获取指定testID的详情接口
-              const response_new = await axios.get('/api/detail',{
+              const response_new = await axios.get('/api/getTestDetail',{
                 params: {
                   testID: row.testID,
                   timestamp:title.maxtimestamp

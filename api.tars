@@ -33,13 +33,15 @@ module apitars
     struct PerfTestReq
     {
         0 require string       lang;      // 被测服务语言
-        1 require string       servType;  // 服务器类型：被测服务器的硬件描述信息
+        1 require string       servType;  // 被测服务器的硬件描述信息或压测名称
         2 require unsigned int threads;   // 服务端线程数
         3 require unsigned int cores;     // 服务器核数
         4 require unsigned int connCnt;   // 节点连接数
         5 require unsigned int reqFreq;   // 单连接请求速率
         6 require unsigned int keepAlive; // 压测执行多少秒
         7 require unsigned int pkgLen;    // 压测包大小
+        8 optional string memo;           // 备注
+        9 optional unsigned int warmUp;   // 预热时间
     };
 
     // 压测请求响应结构
@@ -111,18 +113,20 @@ module apitars
     // 测试历史信息
     struct TestHistory
     {
-        0 require unsigned int testID;    // 测试ID
-        1 require unsigned int startTime; // 测试开始时间
-        2 require unsigned int endTime;   // 测试结束时间
-        3 require string       servType;  // 服务器类型
-        4 require string       lang;      // 被测服务语言名称：cpp
-        5 require unsigned int cores;     // 被测服务CPU核数
-        6 require unsigned int threads;   // 单节点测试线程数
-        7 require unsigned int connCnt;   // 单节点连接数
-        8 require unsigned int keepAlive; // 压测时长（单位秒）
-        9 require unsigned int reqFreq;   // 请求频率
-        10 require unsigned int pkgLen;   // 压测包大小
-        11 require unsigned int finished;   // 是否完成，0为进行中,1为完成
+        0  require unsigned int testID;    // 测试ID
+        1  require unsigned int startTime; // 测试开始时间
+        2  require unsigned int endTime;   // 测试结束时间
+        3  require string       servType;  // 服务器类型，或压测名称
+        4  require string       lang;      // 被测服务语言名称：cpp
+        5  require unsigned int cores;     // 被测服务CPU核数
+        6  require unsigned int threads;   // 单节点测试线程数
+        7  require unsigned int connCnt;   // 单节点连接数
+        8  require unsigned int keepAlive; // 压测时长（单位秒）
+        9  require unsigned int reqFreq;   // 请求频率
+        10 require unsigned int pkgLen;    // 压测包大小
+        11 require unsigned int finished;  // 是否完成，0为进行中，1为完成
+        12 optional string memo;           // 备注
+        13 optional unsigned int warmUp;   // 预热时间
     };
 
     // 查询压测历史信息响应结构
@@ -135,12 +139,26 @@ module apitars
         4 require vector<TestHistory> histories; // 历史压测列表信息
     };
 
-    interface api
+    // 查询压测是否已存在请求结构
+    struct IsPerfExistsReq
+    {
+        0 require string servType; // 服务器类型，或压测名称
+    };
+
+    // 查询压测是否已存在响应结构
+    struct IsPerfExistsResp
+    {
+        0 require unsigned int        code;      // 返回码，0为成功，非0为失败
+        1 require string              msg;       // 返回码解释信息
+    };
+
+   interface api
     {
         FuncTestResp doFuncTest(); // 执行功能性测试接口
         PerfTestResp doPerfTest(PerfTestReq req); // 执行压测接口
         TestDetailResp getTestDetail(unsigned int testID, unsigned int timestamp); // 获取压测详情接口
         QueryTestHistoryResp getTestHistories(QueryTestHistoryReq req); // 历史测试列表信息查询
+        IsPerfExistsResp isPerfExists(IsPerfExistsReq req); // 查询压测是否已存在
     };
 };
 
