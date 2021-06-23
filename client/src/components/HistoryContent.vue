@@ -48,7 +48,7 @@
               <el-table-column prop="startTime" label="开始时间" :formatter="formatdate"> </el-table-column>
               <el-table-column prop="endTime" label="结束时间" :formatter="formatdate"> </el-table-column>
               <el-table-column prop="lang" label="被测服务语言"> </el-table-column>
-              <el-table-column prop="servType" label="硬件描述信息"> </el-table-column>
+              <el-table-column prop="servType" label="压测名称"> </el-table-column>
               <el-table-column prop="threads" label="服务端线程数"> </el-table-column>
               <!-- <el-table-column prop="cores" label="服务端核数"> </el-table-column> -->
               <el-table-column prop="connCnt" label="节点连接数"> </el-table-column>
@@ -100,7 +100,7 @@
           <el-option label="php" value="php"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="被测服务器硬件描述信息" :label-width="formLabelWidth" prop="servType" label-width="200px">
+      <el-form-item label="压测名称" :label-width="formLabelWidth" prop="servType" label-width="200px">
         <el-input v-model="startform.servType" autocomplete="off" placeholder="eg.16C8G"></el-input>
       </el-form-item>
       <el-form-item label="服务端线程数" :label-width="formLabelWidth" prop="threads">
@@ -126,6 +126,20 @@
           <el-option label="100K" :value="100*1024"></el-option>
           <el-option label="1M" :value="1024*1024"></el-option>
           <el-option label="5M" :value="5*1024*1024"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="备注" :label-width="formLabelWidth" prop="memo">
+        <el-input v-model="startform.memo" autocomplete="off"></el-input>
+      </el-form-item>
+      <el-form-item label="预热时间(s)" :label-width="formLabelWidth" prop="warmUp">
+        <el-select v-model="startform.warmUp" placeholder="Please select warmUp">
+          <el-option label="0" :value="0"></el-option>
+          <el-option label="5" :value="1*5"></el-option>
+          <el-option label="10" :value="2*5"></el-option>
+          <el-option label="15" :value="3*5"></el-option>
+          <el-option label="20" :value="4*5"></el-option>
+          <el-option label="25" :value="5*5"></el-option>
+          <el-option label="30" :value="6*5"></el-option>
         </el-select>
       </el-form-item>
     </el-form>
@@ -174,7 +188,7 @@
           </el-col>
           <el-col :span="1"></el-col>
           <el-col :span="4">
-              被测服务器硬件描述信息
+              压测名称
               <div class="pdt10">
                 <el-input
                   v-model="clickrow.servType"
@@ -385,8 +399,11 @@ export default({
     }
     // 定义验证规则
     const startformrules = {
+      lang: [
+        { required: true, message: '请选择被测服务语言名称', trigger: 'change' }
+      ],
       servType: [
-        { required: true, message: '请填写被测服务器硬件描述信息', trigger: 'blur' },
+        { required: true, message: '请填写压测名称', trigger: 'blur' },
         { type: 'string',"min": 1, message: 'The content type is string', trigger: 'blur' }
       ],
       threads: [
@@ -411,6 +428,14 @@ export default({
       ],
       pkgLen: [
         { required: true, message: '请选择压测包大小', trigger: 'change' },
+        { type: 'number', trigger: 'change',validator: integer0 }
+      ],
+      memo: [
+        { required: false, message: '请填写备注', trigger: 'blur' },
+        { type: 'string',"min": 1, message: 'The content type is string', trigger: 'blur' }
+      ],
+      warmUp: [
+        { required: false, message: '请选择预热时间(s)', trigger: 'change' },
         { type: 'number', trigger: 'change',validator: integer0 }
       ]
     }
