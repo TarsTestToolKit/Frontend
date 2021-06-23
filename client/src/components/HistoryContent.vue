@@ -734,7 +734,8 @@ export default({
         try {
           const response = await axios.get('/api/getTestDetail',{
             params: {
-              testID: row.testID
+              testID: row.testID,
+              timestamp:0
             }
           });
           
