@@ -92,7 +92,7 @@
   </div>
   <!-- 开始测试表单 -->
   <el-dialog title="压测参数配置" v-model="doPerfTestdialogFormVisible.data" center top="8vh" width="640px">
-    <el-form :model="startform" ref="PerfTestReqruleForm" :rules="startformrules" label-position="right">
+    <el-form status-icon :model="startform" ref="PerfTestReqruleForm" :rules="startformrules" label-position="right">
       <el-form-item label="被测服务语言" :label-width="formLabelWidth" prop="lang">
         <el-select v-model="startform.lang" placeholder="Please select lang">
           <el-option label="golang" value="golang"></el-option>
@@ -874,7 +874,7 @@ export default({
                   return true
               }
               console.log(response_new)
-              if(response_new.data.perfDetail!=[]){
+              if(response_new.status===200&&response_new.data.perfDetail!=[]){
                 let timestamparray:Array<number>=[]
                 response_new.data.perfDetail.every((val: any, idx: any, array: any) => {
                   console.log(val.timestamp)
