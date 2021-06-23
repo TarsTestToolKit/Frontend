@@ -12,9 +12,10 @@ const pageConf = [
 ];
 exports.pageConf = pageConf;
 const apiConf = [
-    ["post", "/testFunc", TestController_1.default, TestController_1.default.testFunc],
-    ["post", "/testPerf", TestController_1.default, TestController_1.default.testPerf],
-    ["get", "/histories", TestController_1.default, TestController_1.default.histories],
-    ["get", "/detail", TestController_1.default, TestController_1.default.detail]
+    ["post", "/doFuncTest", TestController_1.default, TestController_1.default.doFuncTest],
+    ["post", "/doPerfTest", TestController_1.default, TestController_1.default.doPerfTest],
+    ["get", "/getTestHistories", TestController_1.default, TestController_1.default.getTestHistories],
+    ["get", "/getTestDetail", TestController_1.default, TestController_1.default.getTestDetail],
+    ["post", "/isPerfExists", TestController_1.default, TestController_1.default.isPerfExists]
 ];
 exports.apiConf = apiConf;

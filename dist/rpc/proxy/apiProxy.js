@@ -236,6 +236,8 @@ var apitars;
             this.reqFreq = 0;
             this.keepAlive = 0;
             this.pkgLen = 0;
+            this.memo = "";
+            this.warmUp = 0;
             this._proto_struct_name_ = "";
             this._classname = "apitars.PerfTestReq";
         }
@@ -251,6 +253,8 @@ var apitars;
             tmp.reqFreq = is.readUInt32(5, true, 0);
             tmp.keepAlive = is.readUInt32(6, true, 0);
             tmp.pkgLen = is.readUInt32(7, true, 0);
+            tmp.memo = is.readString(8, false, "");
+            tmp.warmUp = is.readUInt32(9, false, 0);
             return tmp;
         }
         _writeTo(os) {
@@ -262,6 +266,8 @@ var apitars;
             os.writeUInt32(5, this.reqFreq);
             os.writeUInt32(6, this.keepAlive);
             os.writeUInt32(7, this.pkgLen);
+            os.writeString(8, this.memo);
+            os.writeUInt32(9, this.warmUp);
         }
         _equal() {
             assert.fail("this structure not define key operation");
@@ -281,7 +287,9 @@ var apitars;
                 connCnt: this.connCnt,
                 reqFreq: this.reqFreq,
                 keepAlive: this.keepAlive,
-                pkgLen: this.pkgLen
+                pkgLen: this.pkgLen,
+                memo: this.memo,
+                warmUp: this.warmUp
             };
         }
         readFromObject(json) {
@@ -293,6 +301,8 @@ var apitars;
             _hasOwnProperty.call(json, "reqFreq") && (this.reqFreq = json.reqFreq);
             _hasOwnProperty.call(json, "keepAlive") && (this.keepAlive = json.keepAlive);
             _hasOwnProperty.call(json, "pkgLen") && (this.pkgLen = json.pkgLen);
+            _hasOwnProperty.call(json, "memo") && (this.memo = json.memo);
+            _hasOwnProperty.call(json, "warmUp") && (this.warmUp = json.warmUp);
             return this;
         }
         toBinBuffer() {
@@ -779,6 +789,8 @@ var apitars;
             this.reqFreq = 0;
             this.pkgLen = 0;
             this.finished = 0;
+            this.memo = "";
+            this.warmUp = 0;
             this._proto_struct_name_ = "";
             this._classname = "apitars.TestHistory";
         }
@@ -798,6 +810,8 @@ var apitars;
             tmp.reqFreq = is.readUInt32(9, true, 0);
             tmp.pkgLen = is.readUInt32(10, true, 0);
             tmp.finished = is.readUInt32(11, true, 0);
+            tmp.memo = is.readString(12, false, "");
+            tmp.warmUp = is.readUInt32(13, false, 0);
             return tmp;
         }
         _writeTo(os) {
@@ -813,6 +827,8 @@ var apitars;
             os.writeUInt32(9, this.reqFreq);
             os.writeUInt32(10, this.pkgLen);
             os.writeUInt32(11, this.finished);
+            os.writeString(12, this.memo);
+            os.writeUInt32(13, this.warmUp);
         }
         _equal() {
             assert.fail("this structure not define key operation");
@@ -836,7 +852,9 @@ var apitars;
                 keepAlive: this.keepAlive,
                 reqFreq: this.reqFreq,
                 pkgLen: this.pkgLen,
-                finished: this.finished
+                finished: this.finished,
+                memo: this.memo,
+                warmUp: this.warmUp
             };
         }
         readFromObject(json) {
@@ -851,7 +869,9 @@ var apitars;
             _hasOwnProperty.call(json, "keepAlive") && (this.keepAlive = json.keepAlive);
             _hasOwnProperty.call(json, "reqFreq") && (this.reqFreq = json.reqFreq);
             _hasOwnProperty.call(json, "pkgLen") && (this.pkgLen = json.pkgLen);
-            _hasOwnProperty.call(json, "finished") && (this.pkgLen = json.finished);
+            _hasOwnProperty.call(json, "finished") && (this.finished = json.finished);
+            _hasOwnProperty.call(json, "memo") && (this.memo = json.memo);
+            _hasOwnProperty.call(json, "warmUp") && (this.warmUp = json.warmUp);
             return this;
         }
         toBinBuffer() {
@@ -936,6 +956,107 @@ var apitars;
     }
     QueryTestHistoryResp._classname = "apitars.QueryTestHistoryResp";
     apitars.QueryTestHistoryResp = QueryTestHistoryResp;
+    class IsPerfExistsReq {
+        constructor() {
+            this.servType = "";
+            this._proto_struct_name_ = "";
+            this._classname = "apitars.IsPerfExistsReq";
+        }
+        static _write(os, tag, val) { os.writeStruct(tag, val); }
+        static _read(is, tag, def) { return is.readStruct(tag, true, def); }
+        static _readFrom(is) {
+            const tmp = new IsPerfExistsReq;
+            tmp.servType = is.readString(0, true, "");
+            return tmp;
+        }
+        _writeTo(os) {
+            os.writeString(0, this.servType);
+        }
+        _equal() {
+            assert.fail("this structure not define key operation");
+        }
+        _genKey() {
+            if (!this._proto_struct_name_) {
+                this._proto_struct_name_ = "STRUCT" + Math.random();
+            }
+            return this._proto_struct_name_;
+        }
+        toObject() {
+            return {
+                servType: this.servType
+            };
+        }
+        readFromObject(json) {
+            _hasOwnProperty.call(json, "servType") && (this.servType = json.servType);
+            return this;
+        }
+        toBinBuffer() {
+            const os = new TarsStream.TarsOutputStream();
+            this._writeTo(os);
+            return os.getBinBuffer();
+        }
+        static new() {
+            return new IsPerfExistsReq();
+        }
+        static create(is) {
+            return apitars.IsPerfExistsReq._readFrom(is);
+        }
+    }
+    IsPerfExistsReq._classname = "apitars.IsPerfExistsReq";
+    apitars.IsPerfExistsReq = IsPerfExistsReq;
+    class IsPerfExistsResp {
+        constructor() {
+            this.code = 0;
+            this.msg = "";
+            this._proto_struct_name_ = "";
+            this._classname = "apitars.IsPerfExistsResp";
+        }
+        static _write(os, tag, val) { os.writeStruct(tag, val); }
+        static _read(is, tag, def) { return is.readStruct(tag, true, def); }
+        static _readFrom(is) {
+            const tmp = new IsPerfExistsResp;
+            tmp.code = is.readUInt32(0, true, 0);
+            tmp.msg = is.readString(1, true, "");
+            return tmp;
+        }
+        _writeTo(os) {
+            os.writeUInt32(0, this.code);
+            os.writeString(1, this.msg);
+        }
+        _equal() {
+            assert.fail("this structure not define key operation");
+        }
+        _genKey() {
+            if (!this._proto_struct_name_) {
+                this._proto_struct_name_ = "STRUCT" + Math.random();
+            }
+            return this._proto_struct_name_;
+        }
+        toObject() {
+            return {
+                code: this.code,
+                msg: this.msg
+            };
+        }
+        readFromObject(json) {
+            _hasOwnProperty.call(json, "code") && (this.code = json.code);
+            _hasOwnProperty.call(json, "msg") && (this.msg = json.msg);
+            return this;
+        }
+        toBinBuffer() {
+            const os = new TarsStream.TarsOutputStream();
+            this._writeTo(os);
+            return os.getBinBuffer();
+        }
+        static new() {
+            return new IsPerfExistsResp();
+        }
+        static create(is) {
+            return apitars.IsPerfExistsResp._readFrom(is);
+        }
+    }
+    IsPerfExistsResp._classname = "apitars.IsPerfExistsResp";
+    apitars.IsPerfExistsResp = IsPerfExistsResp;
     class apiProxy {
         setTimeout(iTimeout) { this._worker.timeout = iTimeout; }
         getTimeout() { return this._worker.timeout; }
@@ -975,6 +1096,15 @@ var apitars;
             }
             else {
                 return this._worker.tars_invoke("getTestHistories", apiProxy.getTestHistories.tarsEncoder(req), options, apiProxy.getTestHistories).then(apiProxy.getTestHistories.tarsDecoder, apiProxy.getTestHistories.errorResponser);
+            }
+        }
+        isPerfExists(req, options) {
+            const version = this._worker.version;
+            if (version === TarsStream.Tup.TUP_SIMPLE || version === TarsStream.Tup.TUP_COMPLEX) {
+                return this._worker.tup_invoke("isPerfExists", apiProxy.isPerfExists.tupEncoder(req, version), options, apiProxy.isPerfExists).then(apiProxy.isPerfExists.tupDecoder, apiProxy.isPerfExists.errorResponser);
+            }
+            else {
+                return this._worker.tars_invoke("isPerfExists", apiProxy.isPerfExists.tarsEncoder(req), options, apiProxy.isPerfExists).then(apiProxy.isPerfExists.tarsDecoder, apiProxy.isPerfExists.errorResponser);
             }
         }
     }
@@ -1196,6 +1326,61 @@ var apitars;
         },
         errorResponser(data) {
             throw _makeError(data, "Call api::getTestHistories failed");
+        }
+    });
+    apiProxy.isPerfExists = _castFunctionInfo({
+        name: "isPerfExists",
+        return: "apitars.IsPerfExistsResp",
+        arguments: [{
+                name: "req",
+                class: "apitars.IsPerfExistsReq",
+                direction: "in"
+            }],
+        tarsEncoder(req) {
+            const os = new TarsStream.TarsOutputStream();
+            os.writeStruct(1, req);
+            return os.getBinBuffer();
+        },
+        tarsDecoder(data) {
+            try {
+                var is = new TarsStream.TarsInputStream(data.response.sBuffer);
+                return {
+                    request: data.request,
+                    response: {
+                        costtime: data.request.costtime,
+                        return: is.readStruct(0, true, apitars.IsPerfExistsResp),
+                        arguments: undefined
+                    }
+                };
+            }
+            catch (e) {
+                throw _makeError(data, e.message, TarsRpc.error.CLIENT.DECODE_ERROR);
+            }
+        },
+        tupEncoder(req, __$PROTOCOL$VERSION) {
+            const tup = new TarsStream.UniAttribute();
+            tup.tupVersion = __$PROTOCOL$VERSION;
+            tup.writeStruct("req", req);
+            return tup;
+        },
+        tupDecoder(data) {
+            try {
+                const tup = data.response.tup;
+                return {
+                    request: data.request,
+                    response: {
+                        costtime: data.request.costtime,
+                        return: tup.readStruct("", apitars.IsPerfExistsResp, new apitars.IsPerfExistsResp),
+                        arguments: undefined
+                    }
+                };
+            }
+            catch (e) {
+                throw _makeError(data, e.message, TarsRpc.error.CLIENT.DECODE_ERROR);
+            }
+        },
+        errorResponser(data) {
+            throw _makeError(data, "Call api::isPerfExists failed");
         }
     });
     apitars.apiProxy = apiProxy;

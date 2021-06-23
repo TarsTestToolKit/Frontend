@@ -7,7 +7,7 @@ const rpc_1 = __importDefault(require("../../rpc"));
 const apiProxy_1 = require("../../rpc/proxy/apiProxy");
 class TestController {
     //函数测试
-    static async testFunc(ctx) {
+    static async doFuncTest(ctx) {
         try {
             let ret = await rpc_1.default.apiPrx.doFuncTest();
             ctx.body = ret.response.return.toObject();
@@ -17,7 +17,7 @@ class TestController {
         }
     }
     //性能测试
-    static async testPerf(ctx) {
+    static async doPerfTest(ctx) {
         let ctx_body = ctx.request.body;
         try {
             let req = new apiProxy_1.apitars.PerfTestReq();
@@ -37,7 +37,7 @@ class TestController {
         }
     }
     //获取历史数据
-    static async histories(ctx) {
+    static async getTestHistories(ctx) {
         try {
             let req = new apiProxy_1.apitars.QueryTestHistoryReq();
             req.page = Number(ctx.query.page);
@@ -51,7 +51,7 @@ class TestController {
         }
     }
     //获取详细信息
-    static async detail(ctx) {
+    static async getTestDetail(ctx) {
         try {
             let testID = Number(ctx.query.testID);
             //let testID=-1
@@ -62,6 +62,19 @@ class TestController {
         catch (e) {
             ctx.body = e.response.error;
             //||{code: -1, msg: 'rpc error'+ e};
+        }
+    }
+    //查询压测是否已存在
+    static async isPerfExists(ctx) {
+        let ctx_body = ctx.request.body;
+        try {
+            let req = new apiProxy_1.apitars.IsPerfExistsReq();
+            req.servType = ctx_body.servType;
+            let ret = await rpc_1.default.apiPrx.isPerfExists(req);
+            ctx.body = ret.response.return.toObject();
+        }
+        catch (e) {
+            ctx.body = e.response.error;
         }
     }
 }
