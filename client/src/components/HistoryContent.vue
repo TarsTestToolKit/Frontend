@@ -177,7 +177,7 @@
         <el-scrollbar class="tabcontent">
         <el-row style="padding-top:20px;">
           <el-col :span="2"></el-col>
-          <el-col :span="4">
+          <el-col :span="3">
               被测服务语言
               <div class="pdt10">
                 <el-input
@@ -187,7 +187,7 @@
               </div>
           </el-col>
           <el-col :span="1"></el-col>
-          <el-col :span="4">
+          <el-col :span="3">
               压测名称
               <div class="pdt10">
                 <el-input
@@ -197,7 +197,7 @@
               </div>
           </el-col>
           <el-col :span="1"></el-col>
-          <el-col :span="4">
+          <el-col :span="3">
               服务端线程数
               <div class="pdt10">
                 <el-input
@@ -207,14 +207,7 @@
               </div>
           </el-col>
           <el-col :span="1"></el-col>
-          <el-col :span="4">
-              <!-- 服务器核数
-              <div class="pdt10">
-                <el-input
-                  v-model="clickrow.cores"
-                  :disabled="true">
-                </el-input>
-              </div> -->
+          <el-col :span="3">
               节点连接数
               <div class="pdt10">
                 <el-input
@@ -224,11 +217,7 @@
               </div>
           </el-col>
           <el-col :span="1"></el-col>
-          <el-col :span="2"></el-col>
-        </el-row>
-        <el-row style="padding-top:20px;padding-bottom:20px;">
-          <el-col :span="2"></el-col>
-          <el-col :span="4">
+          <el-col :span="3">
               请求速率(个/秒)
               <div class="pdt10">
                 <el-input
@@ -236,9 +225,13 @@
                   :disabled="true">
                 </el-input>
               </div>
+              </div>
           </el-col>
-          <el-col :span="1"></el-col>
-          <el-col :span="4">
+          <el-col :span="2"></el-col>
+        </el-row>
+        <el-row style="padding-top:20px;padding-bottom:20px;">
+          <el-col :span="2"></el-col>
+          <el-col :span="3">
               压测时长(s)
               <div class="pdt10">
                 <el-input
@@ -248,7 +241,7 @@
               </div>
           </el-col>
           <el-col :span="1"></el-col>
-          <el-col :span="4">
+          <el-col :span="3">
               压测包大小
               <div class="pdt10">
                 <el-input
@@ -258,10 +251,29 @@
               </div>
           </el-col>
           <el-col :span="1"></el-col>
-          <el-col :span="4">
-              
+          <el-col :span="3">
+              备注
+              <div class="pdt10">
+                <el-input
+                  v-model="clickrow.memo"
+                  :disabled="true">
+                </el-input>
+              </div>
           </el-col>
           <el-col :span="1"></el-col>
+          <el-col :span="3">
+              预热时间(s)
+              <div class="pdt10">
+                <el-input
+                  v-model="clickrow.warmUp"
+                  :disabled="true">
+                </el-input>
+              </div>
+          </el-col>
+          <el-col :span="1"></el-col>
+          <el-col :span="3">
+              
+          </el-col>
           <el-col :span="2"></el-col>
         </el-row>
         <el-table :data="tabledetailData.perfDetail" border :header-cell-style="{background:'#F9FAFC'}" :default-sort="{prop: 'timestamp', order: 'ascending'}">
@@ -340,7 +352,9 @@ interface PerfTestReqModelRef {
   connCnt?: number,
   reqFreq?: number,
   keepAlive?: number,
-  pkgLen?: number
+  pkgLen?: number,
+  memo?:string,
+  warmUp?:number
 }
 //历史记录
 interface GetTestHistoriesModelRef {
@@ -376,7 +390,9 @@ export default({
       //cores: 10,
       connCnt: 10,
       reqFreq: 10,
-      keepAlive: 60
+      keepAlive: 60,
+      memo:'',
+      warmUp:0
     })
     //正整数验证
     const integer= async(rule: any, value: string, callback: any): Promise<void> => {
@@ -469,6 +485,8 @@ export default({
       reqFreq: "",
       keepAlive: "",
       pkgLen: "",
+      memo: "",
+      warmUp: "",
       startTime:0,
       endTime:0
     })
@@ -616,7 +634,9 @@ export default({
                 connCnt: startform.connCnt,
                 reqFreq: startform.reqFreq,
                 keepAlive: startform.keepAlive,
-                pkgLen:startform.pkgLen
+                pkgLen:startform.pkgLen,
+                memo: startform.memo,
+                warmUp:startform.warmUp
               });
               if(response.data.code!==0){
                 ElNotification({
@@ -634,6 +654,8 @@ export default({
                   reqFreq: startform.reqFreq,
                   keepAlive: startform.keepAlive,
                   pkgLen:startform.pkgLen,
+                  memo: startform.memo,
+                  warmUp:startform.warmUp,
                   testID:response.data.testID,
                   startTime:moment().unix(),
                   endTime:moment().add(Number(startform.keepAlive),'second').unix()
@@ -703,6 +725,8 @@ export default({
         if(row.pkgLen===5*1024*1024){
           clickrow.pkgLen="5M"
         }
+        clickrow.memo=row.memo
+        clickrow.warmUp=row.warmUp
         clickrow.startTime=row.startTime
         clickrow.endTime=row.endTime
         loading.status=true
