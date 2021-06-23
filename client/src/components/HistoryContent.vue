@@ -548,7 +548,7 @@ export default({
       DoFuncTestresult.code=-1
       loading.status=true
       try {
-        const response = await axios.get('/api/getTestHistories', {
+        const response = await axios.get('/api/history', {
           params: {
             page: currentpage,
             pageSize:currentpagesize
