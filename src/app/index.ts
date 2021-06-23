@@ -11,7 +11,7 @@ const pageConf: Array<confType> = [
 const apiConf: Array<confType> = [
     ["post", "/doFuncTest", TestController, TestController.doFuncTest],
     ["post", "/doPerfTest", TestController, TestController.doPerfTest],
-    ["get", "/history", TestController, TestController.history],
+    ["get", "/getTestHistories", TestController, TestController.getTestHistories],
     ["get", "/getTestDetail", TestController, TestController.getTestDetail],
     ["post", "/isPerfExists", TestController, TestController.isPerfExists]
 ];

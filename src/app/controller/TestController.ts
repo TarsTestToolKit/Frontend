@@ -32,7 +32,7 @@ export default class TestController {
         }
     }
     //获取历史数据
-    public static async history(ctx: Koa.Context) {
+    public static async getTestHistories(ctx: Koa.Context) {
         try {
             let req = new apitars.QueryTestHistoryReq();
             req.page = Number(ctx.query.page);

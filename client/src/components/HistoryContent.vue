@@ -225,7 +225,6 @@
                   :disabled="true">
                 </el-input>
               </div>
-              </div>
           </el-col>
           <el-col :span="2"></el-col>
         </el-row>
@@ -548,7 +547,7 @@ export default({
       DoFuncTestresult.code=-1
       loading.status=true
       try {
-        const response = await axios.get('/api/history', {
+        const response = await axios.get('/api/getTestHistories', {
           params: {
             page: currentpage,
             pageSize:currentpagesize
