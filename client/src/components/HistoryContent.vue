@@ -510,12 +510,13 @@ export default({
             page: currentpage,
             pageSize:currentpagesize
           }});
-        if(response.data.code===-1){
+        if(response.data.code<=-1){
           ElNotification({
             title: 'error',
             message: response.data.msg,
             type: 'error'
-          });
+          })
+          
         }else{
           GetTestHistoriesResult.code=response.data.code
           GetTestHistoriesResult.msg=response.data.msg
