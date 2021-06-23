@@ -414,14 +414,23 @@ export default({
           callback(new Error('Please enter a positive integer or zero'));
         }
     }
+    const isPerfExists= async(rule: any, value: string, callback: any): Promise<void> => {
+        if (!value) {
+          return callback(new Error('压测名称不能为空'));
+        }else{
+          callback();
+        }
+
+    }
     // 定义验证规则
     const startformrules = {
       lang: [
         { required: true, message: '请选择被测服务语言名称', trigger: 'change' }
       ],
       servType: [
-        { required: true, message: '请填写压测名称', trigger: 'blur' },
-        { type: 'string',"min": 1, message: 'The content type is string', trigger: 'blur' }
+        { required: true,validator: isPerfExists, trigger: 'blur' }
+        // { required: true, message: '请填写压测名称', trigger: 'blur' },
+        // { type: 'string',"min": 1, message: 'The content type is string', trigger: 'blur' }
       ],
       threads: [
         { required: true, message: '请填写服务端线程数', trigger: 'blur' },
