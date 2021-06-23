@@ -55,6 +55,8 @@
               <el-table-column prop="reqFreq" label="请求速率(个/秒)"> </el-table-column>
               <el-table-column prop="keepAlive" label="压测时长(s)"> </el-table-column>
               <el-table-column prop="pkgLen" label="压测包大小" :formatter="formatpkgLen"> </el-table-column>
+              <el-table-column prop="memo" label="备注"> </el-table-column>
+              <el-table-column prop="warmUp" label="预热时间(s)"> </el-table-column>
               <el-table-column prop="finished" label="状态">
                 <template #default="scope">
                     <el-tag
