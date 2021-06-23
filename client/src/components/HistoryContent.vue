@@ -873,6 +873,7 @@ export default({
                   }
                   return true
               }
+              if(response_new.data.perfDetail!=[]){
               let timestamparray:Array<number>=[]
               response_new.data.perfDetail.every((val: any, idx: any, array: any) => {
                 console.log(val.timestamp)
@@ -898,7 +899,7 @@ export default({
                   return true; // Continues
                 });
               }
-              
+              }
               //增量更新性CPU、内存数据
               if(tabledetailData.resUsage.length===0){
                 tabledetailData.resUsage=response_new.data.resUsage
