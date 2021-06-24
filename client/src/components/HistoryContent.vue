@@ -427,10 +427,9 @@ export default({
 
     }
     const  isPerfExistsFun = async (servType:any) => {
-        const response = await axios.get('/api/isPerfExists', {
-          params: {
+        const response = await axios.post('/api/isPerfExists', {
             servType: servType
-        }});
+        });
         if(response.data.code===0){
           return true
         }else{
