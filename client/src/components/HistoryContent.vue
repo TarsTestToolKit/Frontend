@@ -25,11 +25,11 @@
     </el-steps>
     <el-table v-if="DoFuncTestresult.code!=-1" :data="DoFuncTestresult.rows" border :header-cell-style="{background:'#F9FAFC'}">
       <el-table-column type="index" width="50" label="序号"></el-table-column>
-      <el-table-column property="startTime" :formatter="formatdate" label="开始时间"></el-table-column>
-      <el-table-column property="endTime" :formatter="formatdate" label="结束时间"></el-table-column>
+      <el-table-column property="startTime" :formatter="msformatdate" label="开始时间"></el-table-column>
+      <el-table-column property="endTime" :formatter="msformatdate" label="结束时间"></el-table-column>
       <el-table-column property="from" label="发起方"></el-table-column>
       <el-table-column property="to" label="接收方"></el-table-column>
-      <el-table-column label="时长(s)">
+      <el-table-column label="时长(ms)">
         <template #default="scope">
           {{scope.row.endTime-scope.row.startTime}}
         </template>
@@ -1060,6 +1060,11 @@ export default({
         if(cellValue == undefined){return ''};
         return moment(parseInt(cellValue)*1000).format("YYYY-MM-DD HH:mm:ss")
     }
+    //Table用 毫秒时间戳转换为日期
+    const msformatdate=(row: any, column: any, cellValue: any, index: any)=>{
+        if(cellValue == undefined){return ''};
+        return moment(parseInt(cellValue)).format("YYYY-MM-DD HH:mm:ss")
+    }
     // 时间戳转日期
     const formatprosdate=(timestampvalue:any)=>{
       if(timestampvalue == undefined){return ''};
@@ -1493,6 +1498,7 @@ export default({
       handleClick,
       handleClose,
       formatdate,
+      msformatdate,
       formatprosdate,
       rendercpu,
       rendercpu_update,
