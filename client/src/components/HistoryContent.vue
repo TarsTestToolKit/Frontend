@@ -18,7 +18,7 @@
     
     
   </div>
-  <el-dialog title="测试结果" v-model="FunctionaldialogTableVisible.data" width="60%">
+  <el-dialog title="测试结果" v-model="FunctionaldialogTableVisible.data" width="70%">
     <el-table v-if="DoFuncTestresult.code!=-1" :data="DoFuncTestresult.rows" border :header-cell-style="{background:'#F9FAFC'}">
       <el-table-column type="index" width="50"></el-table-column>
       <el-table-column property="startTime" :formatter="formatdate" label="开始时间"></el-table-column>
