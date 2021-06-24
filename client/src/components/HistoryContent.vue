@@ -418,9 +418,24 @@ export default({
         if (!value) {
           return callback(new Error('压测名称不能为空'));
         }else{
-          callback();
+          if(isPerfExistsFun(value)){
+            callback()
+          }else{
+            callback(new Error('压测名称已重复'))
+          }
         }
 
+    }
+    const  isPerfExistsFun = async (servType:any) => {
+        const response = await axios.get('/api/isPerfExists', {
+          params: {
+            servType: servType
+        }});
+        if(response.data.code===0){
+          return true
+        }else{
+          return false
+        }
     }
     // 定义验证规则
     const startformrules = {
@@ -428,7 +443,7 @@ export default({
         { required: true, message: '请选择被测服务语言名称', trigger: 'change' }
       ],
       servType: [
-        { required: true,validator: isPerfExists, trigger: 'blur' }
+        { required: true,validator: isPerfExists, trigger: 'change' }
         // { required: true, message: '请填写压测名称', trigger: 'blur' },
         // { type: 'string',"min": 1, message: 'The content type is string', trigger: 'blur' }
       ],
