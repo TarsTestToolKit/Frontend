@@ -19,8 +19,8 @@
     
   </div>
   <el-dialog title="测试结果" v-model="FunctionaldialogTableVisible.data" width="70%">
-    <el-steps :active="2" simple style="margin-top: 20px">
-      <el-step :title="DoFuncTestresult.startTime" icon="el-icon-loading"></el-step>
+    <el-steps :active="2" simple>
+      <el-step :title="DoFuncTestresult.startTime" icon="el-icon-video-play"></el-step>
       <el-step :title="DoFuncTestresult.endTime" icon="el-icon-finished"></el-step>
     </el-steps>
     <el-table v-if="DoFuncTestresult.code!=-1" :data="DoFuncTestresult.rows" border :header-cell-style="{background:'#F9FAFC'}">
@@ -352,6 +352,8 @@ import { Area,Line,Pie } from '@antv/g2plot';
 //函数测试接口定义
 interface DoFuncTestModelRef {
   code: number,
+  startTime: number,
+  endTime: number,
   msg: string,
   rows:any
 }
@@ -388,6 +390,8 @@ export default({
     // 定义函数测试结果
     const DoFuncTestresult: DoFuncTestModelRef = reactive<DoFuncTestModelRef>({
       code: -1,
+      startTime:0,
+      endTime:0,
       msg: '',
       rows: ''
     })
@@ -626,6 +630,8 @@ export default({
         const response = await axios.post('/api/doFuncTest');
         DoFuncTestresult.code=response.data.code
         DoFuncTestresult.msg=response.data.msg
+        DoFuncTestresult.startTime=response.data.startTime
+        DoFuncTestresult.endTime=response.data.endTime
         DoFuncTestresult.rows=response.data.rows
       } catch (error) {
         ElNotification({
