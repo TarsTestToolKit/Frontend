@@ -1573,4 +1573,7 @@ export default({
   .pdt10{
     padding-top: 10px;
   }
+  .el-step__line-inner{
+    border-style: none;
+  }
 </style>
