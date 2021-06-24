@@ -25,6 +25,11 @@
       <el-table-column property="endTime" :formatter="formatdate" label="结束时间"></el-table-column>
       <el-table-column property="from" label="发起方"></el-table-column>
       <el-table-column property="to" label="接收方"></el-table-column>
+      <el-table-column label="时长(s)">
+        <template #default="scope">
+          {{scope.row.endTime-scope.row.startTime}}
+        </template>
+      </el-table-column>
       <el-table-column property="isSucc" label="结果">
         <template #default="scope">
           <el-tag
