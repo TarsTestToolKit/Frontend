@@ -23,6 +23,7 @@
       <el-step :title="msformatdate(0,0,DoFuncTestresult.startTime,0)" icon="el-icon-video-play"></el-step>
       <el-step :title="msformatdate(0,0,DoFuncTestresult.endTime,0)" icon="el-icon-finished"></el-step>
     </el-steps>
+    <el-collapse-transition>
     <el-table v-if="DoFuncTestresult.code!=-1" :data="DoFuncTestresult.rows" border :header-cell-style="{background:'#F9FAFC'}">
       <el-table-column type="index" width="50" label="序号"></el-table-column>
       <el-table-column property="startTime" :formatter="msformatdate" label="开始时间"></el-table-column>
@@ -43,6 +44,7 @@
         </template>
       </el-table-column>
     </el-table>
+    </el-collapse-transition>
   </el-dialog>
   <div v-loading="loading.status">
       <!-- 无数据时 -->
@@ -347,7 +349,7 @@
 import axios from 'axios'
 import moment from 'moment'
 import {  getCurrentInstance,reactive,Ref,ref} from "vue";
-import { ElNotification,ElLoading  } from 'element-plus';
+import { ElNotification,ElLoading,ElCollapseTransition  } from 'element-plus';
 import { Area,Line,Pie } from '@antv/g2plot';
 //函数测试接口定义
 interface DoFuncTestModelRef {
