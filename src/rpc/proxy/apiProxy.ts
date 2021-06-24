@@ -130,8 +130,8 @@ export namespace apitars {
             tmp.from = is.readString(0, true, "");
             tmp.to = is.readString(1, true, "");
             tmp.isSucc = is.readBoolean(2, true, true);
-            tmp.startTime = is.readUInt32(3, true, 0);
-            tmp.endTime = is.readUInt32(4, true, 0);
+            tmp.startTime = is.readInt64(3, true, 0);
+            tmp.endTime = is.readInt64(4, true, 0);
             return tmp;
         }
 
@@ -139,8 +139,8 @@ export namespace apitars {
             os.writeString(0, this.from);
             os.writeString(1, this.to);
             os.writeBoolean(2, this.isSucc);
-            os.writeUInt32(3, this.startTime);
-            os.writeUInt32(4, this.endTime);
+            os.writeInt64(3, this.startTime);
+            os.writeInt64(4, this.endTime);
         }
 
         protected _equal() {
@@ -215,8 +215,8 @@ export namespace apitars {
             tmp.code = is.readUInt32(0, true, 0);
             tmp.msg = is.readString(1, true, "");
             tmp.rows = is.readList(2, false, TarsStream.List(apitars.FuncTestDetail));
-            tmp.startTime = is.readUInt32(3, true, 0);
-            tmp.endTime = is.readUInt32(4, true, 0);
+            tmp.startTime = is.readInt64(3, true, 0);
+            tmp.endTime = is.readInt64(4, true, 0);
             return tmp;
         }
 
@@ -224,8 +224,8 @@ export namespace apitars {
             os.writeUInt32(0, this.code);
             os.writeString(1, this.msg);
             os.writeList(2, this.rows);
-            os.writeUInt32(3, this.startTime);
-            os.writeUInt32(4, this.endTime);
+            os.writeInt64(3, this.startTime);
+            os.writeInt64(4, this.endTime);
         }
 
         protected _equal() {

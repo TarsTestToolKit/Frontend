@@ -19,8 +19,8 @@ module apitars
         0 require string from;   // 发起请求的语言，如:cpp,java
         1 require string to;     // 接收请求的语言
         2 require bool   isSucc; // 请求是否成功
-        3 require unsigned int startTime; // 开始时间(毫秒级时间戳)
-        4 require unsigned int endTime;   // 结束时间(毫秒级时间戳)
+        3 require long startTime; // 开始时间(毫秒级时间戳)
+        4 require long endTime;   // 结束时间(毫秒级时间戳)
     };
 
     // 功能性测试响应
@@ -29,8 +29,8 @@ module apitars
         0 require  unsigned int           code; // 返回码，0为成功，非0为失败
         1 require  string                 msg;  // 返回码解释信息
         2 optional vector<FuncTestDetail> rows; // 测试详情
-        3 require unsigned int startTime;       // 开始时间(毫秒级时间戳)
-        4 require unsigned int endTime;         // 结束时间(毫秒级时间戳)
+        3 require long startTime;       // 开始时间(毫秒级时间戳)
+        4 require long endTime;         // 结束时间(毫秒级时间戳)
     };
 
     // 发起压测请求结构
