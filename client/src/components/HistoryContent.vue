@@ -899,16 +899,12 @@ export default({
                   }
                   return true
               }
-              console.log(response_new)
               if(response_new.status===200&&response_new.data.perfDetail!=[]){
                 let timestamparray:Array<number>=[]
                 response_new.data.perfDetail.every((val: any, idx: any, array: any) => {
-                  console.log(val.timestamp)
                       timestamparray.push(val.timestamp)
                       return true; // Continues
                 });
-                console.log(timestamparray)
-                console.log(Math.max(...timestamparray))
                 //maxtimestamp
                 title.maxtimestamp=Math.max(...timestamparray)
                 //运行时间百分百
