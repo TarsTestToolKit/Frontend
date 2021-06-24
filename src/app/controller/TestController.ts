@@ -25,6 +25,8 @@ export default class TestController {
             req.reqFreq = ctx_body.reqFreq;
             req.keepAlive = ctx_body.keepAlive;
             req.pkgLen = ctx_body.pkgLen;
+            req.warmUp = ctx_body.warmUp;
+            req.memo = ctx_body.memo;
             let ret = await rpc.apiPrx.doPerfTest(req);
             ctx.body = ret.response.return.toObject();
         }catch(e) {
