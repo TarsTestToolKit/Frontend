@@ -430,6 +430,7 @@ export default({
         const response = await axios.post('/api/isPerfExists', {
             servType: servType
         });
+        console.log(response)
         if(response.data.code===0){
           return true
         }else{
