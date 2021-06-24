@@ -24,6 +24,7 @@
       <el-step :title="msformatdate(0,0,DoFuncTestresult.endTime,0)" icon="el-icon-finished"></el-step>
     </el-steps>
     <el-collapse-transition>
+       <div :v-show="FunctionaldialogTableVisible.data">
     <el-table v-if="DoFuncTestresult.code!=-1" :data="DoFuncTestresult.rows" border :header-cell-style="{background:'#F9FAFC'}">
       <el-table-column type="index" width="50" label="序号"></el-table-column>
       <el-table-column property="startTime" :formatter="msformatdate" label="开始时间"></el-table-column>
@@ -44,6 +45,7 @@
         </template>
       </el-table-column>
     </el-table>
+       </div>
     </el-collapse-transition>
   </el-dialog>
   <div v-loading="loading.status">
