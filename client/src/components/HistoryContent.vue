@@ -20,8 +20,8 @@
   </div>
   <el-dialog title="测试结果" v-model="FunctionaldialogTableVisible.data" width="70%">
     <el-steps :active="2" simple>
-      <el-step :title="DoFuncTestresult.startTime" icon="el-icon-video-play"></el-step>
-      <el-step :title="DoFuncTestresult.endTime" icon="el-icon-finished"></el-step>
+      <el-step :title="msformatdate(0,0,DoFuncTestresult.startTime,0)" icon="el-icon-video-play"></el-step>
+      <el-step :title="msformatdate(0,0,DoFuncTestresult.endTime,0)" icon="el-icon-finished"></el-step>
     </el-steps>
     <el-table v-if="DoFuncTestresult.code!=-1" :data="DoFuncTestresult.rows" border :header-cell-style="{background:'#F9FAFC'}">
       <el-table-column type="index" width="50" label="序号"></el-table-column>
