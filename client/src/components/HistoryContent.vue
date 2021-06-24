@@ -130,9 +130,6 @@
           <el-option label="5M" :value="5*1024*1024"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="备注" :label-width="formLabelWidth" prop="memo">
-        <el-input v-model="startform.memo" autocomplete="off"></el-input>
-      </el-form-item>
       <el-form-item label="预热时间(s)" :label-width="formLabelWidth" prop="warmUp">
         <el-select v-model="startform.warmUp" placeholder="Please select warmUp">
           <el-option label="0" :value="0"></el-option>
@@ -143,6 +140,9 @@
           <el-option label="25" :value="5*5"></el-option>
           <el-option label="30" :value="6*5"></el-option>
         </el-select>
+      </el-form-item>
+      <el-form-item label="备注" :label-width="formLabelWidth" prop="memo">
+        <el-input type="textarea" v-model="startform.memo" autocomplete="off"></el-input>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -253,20 +253,20 @@
           </el-col>
           <el-col :span="1"></el-col>
           <el-col :span="3">
-              备注
+              预热时间(s)
               <div class="pdt10">
                 <el-input
-                  v-model="clickrow.memo"
+                  v-model="clickrow.warmUp"
                   :disabled="true">
                 </el-input>
               </div>
           </el-col>
           <el-col :span="1"></el-col>
           <el-col :span="3">
-              预热时间(s)
+              备注
               <div class="pdt10">
                 <el-input
-                  v-model="clickrow.warmUp"
+                  v-model="clickrow.memo"
                   :disabled="true">
                 </el-input>
               </div>
