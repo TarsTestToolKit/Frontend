@@ -19,7 +19,7 @@
     
   </div>
   <el-dialog title="测试结果" v-model="FunctionaldialogTableVisible.data" width="70%">
-    <el-steps :active="2" align-center>
+    <el-steps :active="2" align-center finish-status="success">
       <el-step title="启动" :description="DoFuncTestresult.startTime"></el-step>
       <el-step title="结束" :description="DoFuncTestresult.endTime"></el-step>
     </el-steps>
