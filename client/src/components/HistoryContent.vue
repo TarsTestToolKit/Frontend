@@ -19,9 +19,9 @@
     
   </div>
   <el-dialog title="测试结果" v-model="FunctionaldialogTableVisible.data" width="70%">
-    <el-steps :active="2" align-center finish-status="success">
-      <el-step :title="DoFuncTestresult.startTime+启动"></el-step>
-      <el-step :title="DoFuncTestresult.endTime+结束"></el-step>
+    <el-steps :active="2" simple style="margin-top: 20px">
+      <el-step :title="DoFuncTestresult.startTime" icon="el-icon-loading"></el-step>
+      <el-step :title="DoFuncTestresult.endTime" icon="el-icon-finished"></el-step>
     </el-steps>
     <el-table v-if="DoFuncTestresult.code!=-1" :data="DoFuncTestresult.rows" border :header-cell-style="{background:'#F9FAFC'}">
       <el-table-column type="index" width="50" label="序号"></el-table-column>
