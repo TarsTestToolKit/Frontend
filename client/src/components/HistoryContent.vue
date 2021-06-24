@@ -1069,7 +1069,7 @@ export default({
     //Table用 毫秒时间戳转换为日期
     const msformatdate=(row: any, column: any, cellValue: any, index: any)=>{
         if(cellValue == undefined){return ''};
-        return moment(parseInt(cellValue)).format("YYYY-MM-DD HH:mm:ss")
+        return moment(parseInt(cellValue)).format("YYYY-MM-DD HH:mm:ss.SSS")
     }
     // 时间戳转日期
     const formatprosdate=(timestampvalue:any)=>{
