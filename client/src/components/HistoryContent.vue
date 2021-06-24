@@ -142,7 +142,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="备注" :label-width="formLabelWidth" prop="memo">
-        <el-input type="textarea" v-model="startform.memo" autocomplete="off"></el-input>
+        <el-input type="textarea" v-model="startform.memo" autocomplete="off" :width="formLabelWidth"></el-input>
       </el-form-item>
     </el-form>
     <template #footer>
