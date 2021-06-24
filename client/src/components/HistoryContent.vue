@@ -418,7 +418,7 @@ export default({
         if (!value) {
           return callback(new Error('压测名称不能为空'));
         }else{
-          if(isPerfExistsFun(value)){
+          if(await isPerfExistsFun(value)===0){
             callback()
           }else{
             callback(new Error('压测名称已重复'))
@@ -430,12 +430,7 @@ export default({
         const response = await axios.post('/api/isPerfExists', {
             servType: servType
         });
-        console.log(response)
-        if(response.data.code===0){
-          return true
-        }else{
-          return false
-        }
+        return response.data.code
     }
     // 定义验证规则
     const startformrules = {
