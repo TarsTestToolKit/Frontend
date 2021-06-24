@@ -18,7 +18,7 @@
     
     
   </div>
-  <el-dialog title="测试结果" v-model="FunctionaldialogTableVisible.data" width="70%">
+  <el-dialog title="测试结果" v-model="FunctionaldialogTableVisible.data" width="80%">
     <el-steps :active="2" simple>
       <el-step :title="msformatdate(0,0,DoFuncTestresult.startTime,0)" icon="el-icon-video-play"></el-step>
       <el-step :title="msformatdate(0,0,DoFuncTestresult.endTime,0)" icon="el-icon-finished"></el-step>
