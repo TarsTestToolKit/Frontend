@@ -117,6 +117,8 @@ export namespace apitars {
         from: string = "";
         to: string = "";
         isSucc: boolean = true;
+        startTime: number = 0;
+        endTime: number = 0;
 
         protected _proto_struct_name_ = "";
         protected _classname = "apitars.FuncTestDetail";
@@ -128,6 +130,8 @@ export namespace apitars {
             tmp.from = is.readString(0, true, "");
             tmp.to = is.readString(1, true, "");
             tmp.isSucc = is.readBoolean(2, true, true);
+            tmp.startTime = is.readUInt32(3, true, 0);
+            tmp.endTime = is.readUInt32(4, true, 0);
             return tmp;
         }
 
@@ -135,6 +139,8 @@ export namespace apitars {
             os.writeString(0, this.from);
             os.writeString(1, this.to);
             os.writeBoolean(2, this.isSucc);
+            os.writeUInt32(3, this.startTime);
+            os.writeUInt32(4, this.endTime);
         }
 
         protected _equal() {
@@ -152,7 +158,9 @@ export namespace apitars {
             return {
                 from: this.from,
                 to: this.to,
-                isSucc: this.isSucc
+                isSucc: this.isSucc,
+                startTime: this.startTime,
+                endTime: this.endTime
             };
         }
 
@@ -160,6 +168,8 @@ export namespace apitars {
             _hasOwnProperty.call(json, "from") && (this.from = json.from);
             _hasOwnProperty.call(json, "to") && (this.to = json.to);
             _hasOwnProperty.call(json, "isSucc") && (this.isSucc = json.isSucc);
+            _hasOwnProperty.call(json, "startTime") && (this.startTime = json.startTime);
+            _hasOwnProperty.call(json, "endTime") && (this.endTime = json.endTime);
             return this;
         }
 
@@ -183,6 +193,8 @@ export namespace apitars {
             from: string;
             to: string;
             isSucc: boolean;
+            startTime: number;
+            endTime: number;
         }
     }
 
@@ -190,6 +202,8 @@ export namespace apitars {
         code: number = 0;
         msg: string = "";
         rows: TarsStream.List<apitars.FuncTestDetail> = new TarsStream.List(apitars.FuncTestDetail);
+        startTime: number = 0;
+        endTime: number = 0;
 
         protected _proto_struct_name_ = "";
         protected _classname = "apitars.FuncTestResp";
@@ -201,6 +215,8 @@ export namespace apitars {
             tmp.code = is.readUInt32(0, true, 0);
             tmp.msg = is.readString(1, true, "");
             tmp.rows = is.readList(2, false, TarsStream.List(apitars.FuncTestDetail));
+            tmp.startTime = is.readUInt32(3, true, 0);
+            tmp.endTime = is.readUInt32(4, true, 0);
             return tmp;
         }
 
@@ -208,6 +224,8 @@ export namespace apitars {
             os.writeUInt32(0, this.code);
             os.writeString(1, this.msg);
             os.writeList(2, this.rows);
+            os.writeUInt32(3, this.startTime);
+            os.writeUInt32(4, this.endTime);
         }
 
         protected _equal() {
@@ -225,7 +243,9 @@ export namespace apitars {
             return {
                 code: this.code,
                 msg: this.msg,
-                rows: this.rows.toObject()
+                rows: this.rows.toObject(),
+                startTime: this.startTime,
+                endTime: this.endTime
             };
         }
 
@@ -233,6 +253,8 @@ export namespace apitars {
             _hasOwnProperty.call(json, "code") && (this.code = json.code);
             _hasOwnProperty.call(json, "msg") && (this.msg = json.msg);
             _hasOwnProperty.call(json, "rows") && (this.rows.readFromObject(json.rows!));
+            _hasOwnProperty.call(json, "startTime") && (this.startTime = json.startTime);
+            _hasOwnProperty.call(json, "endTime") && (this.endTime = json.endTime);
             return this;
         }
 
@@ -256,6 +278,8 @@ export namespace apitars {
             code: number;
             msg: string;
             rows?: Array<apitars.FuncTestDetail.Object>;
+            startTime: number;
+            endTime: number;
         }
     }
 
