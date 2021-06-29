@@ -290,7 +290,7 @@
           </el-col>
           <el-col :span="2"></el-col>
         </el-row>
-        <el-table :data="tabledetailData.perfDetail" border :header-cell-style="{background:'#F9FAFC'}" :default-sort="{prop: 'timestamp', order: 'ascending'}">
+        <el-table :data="tabledetailData.perfDetail" border :header-cell-style="{background:'#F9FAFC'}" :default-sort="{prop: 'timestamp', order: 'descending'}">
             <el-table-column property="timestamp" label="时间" :formatter="formatdate" sortable :sort-orders="['ascending', 'descending']"></el-table-column>
             <el-table-column property="totalReq" label="总请求量"></el-table-column>
             <el-table-column property="succ" label="成功数"></el-table-column>
