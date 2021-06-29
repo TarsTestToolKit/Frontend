@@ -636,7 +636,7 @@ export default({
           DoFuncTestresult.startTime=response.data.startTime
           DoFuncTestresult.endTime=response.data.endTime
           DoFuncTestresult.rows=response.data.rows
-        }, 1000);
+        }, 500);
       } catch (error) {
         ElNotification({
           title: 'error',
