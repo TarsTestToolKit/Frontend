@@ -53,8 +53,8 @@ export default class TestController {
             let testID = Number(ctx.query.testID);
             //let testID=-1
             let timestamp = Number(ctx.query.timestamp);
-            let showWarmUp:boolean = Number(ctx.query.showWarmUp)===0?false:true;
-            let ret = await rpc.apiPrx.getTestDetail(testID,timestamp,showWarmUp);
+            //let showWarmUp:boolean = Number(ctx.query.showWarmUp)===0?false:true;
+            let ret = await rpc.apiPrx.getTestDetail(testID,timestamp,false);
             ctx.body = ret.response.return.toObject();
         }catch(e) {
             ctx.body = e.response;
