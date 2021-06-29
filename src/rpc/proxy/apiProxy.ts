@@ -1461,11 +1461,16 @@ export namespace apitars {
                 name: "timestamp",
                 class: "int64",
                 direction: "in"
+            }, {
+                name: "showWarmUp",
+                class: "bool",
+                direction: "in"
             }],
-            tarsEncoder(testID: number, timestamp: number) {
+            tarsEncoder(testID: number, timestamp: number, showWarmUp: boolean) {
                 const os = new TarsStream.TarsOutputStream();
                 os.writeUInt32(1, testID);
                 os.writeUInt32(2, timestamp);
+                os.writeBoolean(3, showWarmUp);
                 return os.getBinBuffer();
             },
             tarsDecoder(data: TarsRpc.RpcResponse) {
@@ -1483,11 +1488,12 @@ export namespace apitars {
                     throw _makeError(data, e.message, TarsRpc.error.CLIENT.DECODE_ERROR);
                 }
             },
-            tupEncoder(testID: number, timestamp: number, __$PROTOCOL$VERSION: number) {
+            tupEncoder(testID: number, timestamp: number, showWarmUp: boolean, __$PROTOCOL$VERSION: number) {
                 const tup = new TarsStream.UniAttribute();
                 tup.tupVersion = __$PROTOCOL$VERSION;
                 tup.writeUInt32("testID", testID);
                 tup.writeUInt32("timestamp", timestamp);
+                tup.writeBoolean("showWarmUp", showWarmUp);
                 return tup;
             },
             tupDecoder(data: TarsRpc.RpcResponse) {
@@ -1510,12 +1516,12 @@ export namespace apitars {
             }
         })
 
-        getTestDetail(testID: number, timestamp: number, options?: TarsRpc.InvokeProperty) {
+        getTestDetail(testID: number, timestamp: number, showWarmUp: boolean, options?: TarsRpc.InvokeProperty) {
             const version = this._worker.version;
             if (version === TarsStream.Tup.TUP_SIMPLE || version === TarsStream.Tup.TUP_COMPLEX) {
-                return this._worker.tup_invoke("getTestDetail", apiProxy.getTestDetail.tupEncoder(testID, timestamp, version), options, apiProxy.getTestDetail).then(apiProxy.getTestDetail.tupDecoder, apiProxy.getTestDetail.errorResponser);
+                return this._worker.tup_invoke("getTestDetail", apiProxy.getTestDetail.tupEncoder(testID, timestamp, showWarmUp, version), options, apiProxy.getTestDetail).then(apiProxy.getTestDetail.tupDecoder, apiProxy.getTestDetail.errorResponser);
             } else {
-                return this._worker.tars_invoke("getTestDetail", apiProxy.getTestDetail.tarsEncoder(testID, timestamp), options, apiProxy.getTestDetail).then(apiProxy.getTestDetail.tarsDecoder, apiProxy.getTestDetail.errorResponser);
+                return this._worker.tars_invoke("getTestDetail", apiProxy.getTestDetail.tarsEncoder(testID, timestamp, showWarmUp), options, apiProxy.getTestDetail).then(apiProxy.getTestDetail.tarsDecoder, apiProxy.getTestDetail.errorResponser);
             }
         }
 

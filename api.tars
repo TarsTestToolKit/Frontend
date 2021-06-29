@@ -160,7 +160,7 @@ module apitars
     {
         FuncTestResp doFuncTest(); // 执行功能性测试接口
         PerfTestResp doPerfTest(PerfTestReq req); // 执行压测接口
-        TestDetailResp getTestDetail(unsigned int testID, unsigned int timestamp); // 获取压测详情接口
+        TestDetailResp getTestDetail(unsigned int testID, unsigned int timestamp, bool showWarmUp); // 获取压测详情接口
         QueryTestHistoryResp getTestHistories(QueryTestHistoryReq req); // 历史测试列表信息查询
         IsPerfExistsResp isPerfExists(IsPerfExistsReq req); // 查询压测是否已存在
     };

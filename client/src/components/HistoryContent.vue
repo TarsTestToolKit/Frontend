@@ -775,7 +775,8 @@ export default({
           const response = await axios.get('/api/getTestDetail',{
             params: {
               testID: row.testID,
-              timestamp:0
+              timestamp:0,
+              showWarmUp:false
             }
           });
           
@@ -892,7 +893,8 @@ export default({
               const response_new = await axios.get('/api/getTestDetail',{
                 params: {
                   testID: row.testID,
-                  timestamp:title.maxtimestamp
+                  timestamp:title.maxtimestamp,
+                  showWarmUp:false
                 }
               });
               //返回code为0，结束定时器
