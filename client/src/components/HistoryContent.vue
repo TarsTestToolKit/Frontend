@@ -776,7 +776,7 @@ export default({
             params: {
               testID: row.testID,
               timestamp:0,
-              showWarmUp:0
+              showWarmUp:false
             }
           });
           
@@ -894,7 +894,7 @@ export default({
                 params: {
                   testID: row.testID,
                   timestamp:title.maxtimestamp,
-                  showWarmUp:0
+                  showWarmUp:false
                 }
               });
               //返回code为0，结束定时器
