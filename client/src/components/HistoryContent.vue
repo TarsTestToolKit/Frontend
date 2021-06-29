@@ -18,7 +18,7 @@
     
     
   </div>
-  <el-dialog title="测试结果" v-model="FunctionaldialogTableVisible.data" width="80%" destroy-on-close="true">
+  <el-dialog title="测试结果" v-model="FunctionaldialogTableVisible.data" width="80%" :before-close="handleClosefuntest">
     <el-steps :active="2" simple>
       <el-step :title="msformatdate(0,0,DoFuncTestresult.startTime,0)" icon="el-icon-video-play"></el-step>
       <el-step :title="msformatdate(0,0,DoFuncTestresult.endTime,0)" icon="el-icon-finished"></el-step>
@@ -1055,6 +1055,16 @@ export default({
       GetTestHistories(paginationData.currentpage,paginationData.currentpagesize)
       done();
     }
+    //函数测试页面关闭回调
+    const handleClosefuntest=(done: () => void)=>{
+      FunctionaldialogTableVisible.data=false
+      DoFuncTestresult.code=-1
+      DoFuncTestresult.startTime=0
+      DoFuncTestresult.endTime=0
+      DoFuncTestresult.msg=''
+      DoFuncTestresult.rows=''
+      done();
+    }
     //分页：改变每页显示条数
     const handleSizeChange=(val:any)=> {
       paginationData.currentpagesize=val
@@ -1507,6 +1517,7 @@ export default({
       resetForm,
       handleClick,
       handleClose,
+      handleClosefuntest,
       formatdate,
       msformatdate,
       formatprosdate,
