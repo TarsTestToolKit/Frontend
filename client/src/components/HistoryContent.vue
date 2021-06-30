@@ -782,7 +782,7 @@ export default({
               showWarmUp:0
             }
           });
-          if(response.data.error.message==="warming up"){
+          if(response.data.hasOwnProperty("error")&&response.data.error.hasOwnProperty("message")&&response.data.error.message==="warming up"){
             title.type="warning"
             title.loading=true
             title.text="warming"
