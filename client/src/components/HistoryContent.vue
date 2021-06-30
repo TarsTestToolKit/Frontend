@@ -783,9 +783,9 @@ export default({
             }
           });
           if(response.data.error.message==="warming up"){
-            title.type="info"
+            title.type="warning"
             title.loading=true
-            title.text="warming up"
+            title.text="warming"
             wait(parseInt(response.data.costtime)*1000);
           }
           if(response.data.code===1&&response.data.msg==="succ"){
