@@ -782,8 +782,11 @@ export default({
               showWarmUp:0
             }
           });
-          if(response.data.costtime){
-            await wait(response.data.costtime*1000);
+          if(response.data.error.message==="warming up"){
+            title.type="info"
+            title.loading=true
+            title.text="warming up"
+            wait(parseInt(response.data.costtime)*1000);
           }
           if(response.data.code===1&&response.data.msg==="succ"){
             title.type="danger"
