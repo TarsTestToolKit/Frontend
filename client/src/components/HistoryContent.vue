@@ -772,7 +772,7 @@ export default({
         clickrow.startTime=row.startTime
         clickrow.endTime=row.endTime
         loading.status=true
-        await wait(row.warmUp*1000);
+        
         try {
           
           const response = await axios.get('/api/getTestDetail',{
@@ -782,7 +782,9 @@ export default({
               showWarmUp:0
             }
           });
-          
+          if(response.data.costtime){
+            await wait(response.data.costtime*1000);
+          }
           if(response.data.code===1&&response.data.msg==="succ"){
             title.type="danger"
             title.loading=true
