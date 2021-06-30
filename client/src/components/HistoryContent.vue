@@ -780,7 +780,11 @@ export default({
             }
           });
           
-          if(response.data.code===1&&response.data.msg==="succ"){
+          if(response.data.error.code===5002&&response.data.error.msg==="warming up"){
+            title.type="warning"
+            title.loading=true
+            title.text="warming up"
+          }else if(response.data.code===1&&response.data.msg==="succ"){
             title.type="danger"
             title.loading=true
             title.text="running"
