@@ -735,6 +735,7 @@ export default({
     const resetForm = () => {
         PerfTestReqruleForm.value?.resetFields();
     }
+    let wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
     //详情按钮
     const handleClick=async(index: any, row: any) =>{
         tabledetail.status=true
@@ -771,7 +772,9 @@ export default({
         clickrow.startTime=row.startTime
         clickrow.endTime=row.endTime
         loading.status=true
+        await wait(row.warmUp*1000);
         try {
+          
           const response = await axios.get('/api/getTestDetail',{
             params: {
               testID: row.testID,
@@ -780,11 +783,7 @@ export default({
             }
           });
           
-          if(response.data.error.code===5002&&response.data.error.msg==="warming up"){
-            title.type="warning"
-            title.loading=true
-            title.text="warming up"
-          }else if(response.data.code===1&&response.data.msg==="succ"){
+          if(response.data.code===1&&response.data.msg==="succ"){
             title.type="danger"
             title.loading=true
             title.text="running"
