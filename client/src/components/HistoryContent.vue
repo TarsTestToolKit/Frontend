@@ -786,7 +786,27 @@ export default({
             title.type="warning"
             title.loading=true
             title.text="warming"
-            wait(parseInt(response.data.costtime)*1000);
+            tabledetail.intervalId=window.setInterval(async() => {
+              //获取指定testID的详情接口
+              const response_new = await axios.get('/api/getTestDetail',{
+                params: {
+                  testID: row.testID,
+                  timestamp:0,
+                  showWarmUp:0
+                }
+              });
+              if(response_new.data.error.message==="warming up"){
+                //清除定时器，并初始化
+                return true
+              }else{
+                if(tabledetail.intervalId!==-1){
+                  clearInterval(tabledetail.intervalId);
+                  tabledetail.intervalId=-1
+                }
+                
+              }
+            }, 5000);
+            
           }
           if(response.data.code===1&&response.data.msg==="succ"){
             title.type="danger"
