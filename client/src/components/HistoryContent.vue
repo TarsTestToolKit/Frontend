@@ -536,7 +536,9 @@ export default({
     // 详情按钮加载状态
     const tabledetail = reactive({ 
       status: false ,
-      intervalId:-1
+      warmingstatus:false,
+      intervalId:-1,
+      warmingintervalId:-1
     })
     // 历史记录
     const tableData:any = reactive({ 
@@ -738,7 +740,10 @@ export default({
     let wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
     //详情按钮
     const handleClick=async(index: any, row: any) =>{
-        tabledetail.status=true
+        if(tabledetail.warmingstatus===false){
+          tabledetail.status=true
+          loading.status=true
+        }
         title.data="测试ID:"+row.testID;
         clickrow.testID=row.testID
         clickrow.lang=row.lang
@@ -771,7 +776,7 @@ export default({
         clickrow.warmUp=row.warmUp
         clickrow.startTime=row.startTime
         clickrow.endTime=row.endTime
-        loading.status=true
+        
         
         try {
           
@@ -782,37 +787,70 @@ export default({
               showWarmUp:0
             }
           });
-          if(response.data.hasOwnProperty("error")&&response.data.error.hasOwnProperty("message")&&response.data.error.message==="warming up"){
-            title.type="warning"
-            title.loading=true
-            title.text="warming"
-            tabledetail.intervalId=window.setInterval(async() => {
-              //获取指定testID的详情接口
-              const response_new = await axios.get('/api/getTestDetail',{
-                params: {
-                  testID: row.testID,
-                  timestamp:0,
-                  showWarmUp:0
-                }
-              });
-              if(response_new.data.error.message==="warming up"){
-                //清除定时器，并初始化
-                return true
-              }else{
-                if(tabledetail.intervalId!==-1){
-                  clearInterval(tabledetail.intervalId);
-                  tabledetail.intervalId=-1
+          if(response.data.hasOwnProperty("error")&&response.data.error.hasOwnProperty("message")){
+            if(tabledetailData.perfDetail){
+              tabledetailData.perfDetail=[]
+            }
+            if(response.data.error.message==="warming up"){
+              title.type="primary"
+              title.loading=true
+              title.text="warming"
+              tabledetail.warmingstatus=true
+              tabledetail.warmingintervalId=window.setInterval(async() => {
+                //获取指定testID的详情接口
+                const response_warming = await axios.get('/api/getTestDetail',{
+                  params: {
+                    testID: row.testID,
+                    timestamp:0,
+                    showWarmUp:0
+                  }
+                });
+                
+                //console.log(response_warming)
+                if(response_warming.data.hasOwnProperty("error")&&response_warming.data.error.hasOwnProperty("message")){
+                  if(tabledetailData.perfDetail){
+                    tabledetailData.perfDetail=[]
+                  }
+                  if(response_warming.data.error.message==="warming up"){
+                    title.type="primary"
+                    title.loading=true
+                    title.text="warming"
+                    tabledetail.warmingstatus=true
+                    //运行时间百分百
+                    title.percentage=Math.ceil(Number(moment(response_warming.headers.data).valueOf()/1000)-Number(clickrow.startTime))/Number(clickrow.keepAlive)*100
+                    //进度条颜色
+                    title.percentagestatus=""
+                    //剩余时间
+                    title.remaintime=Number(clickrow.endTime)-Number(moment(response_warming.headers.data).valueOf()/1000)
+                    title.remaintime=Math.ceil(title.remaintime)
+                    return 0
+                  }
+                }else if(response_warming.data.code===1&&response_warming.data.msg==="succ"){
+                  tabledetail.warmingstatus=false
+                  //运行时间百分百
+                  title.percentage=Math.ceil(Number(moment(response_warming.headers.data).valueOf()/1000)-Number(clickrow.startTime))/Number(clickrow.keepAlive)*100
+                  //进度条颜色
+                  title.percentagestatus="exception"
+                  //剩余时间
+                  title.remaintime=Math.ceil(Number(clickrow.endTime)-Number(moment(response_warming.headers.data).valueOf()/1000))
+                  if(tabledetail.warmingintervalId!==-1){
+                    clearInterval(tabledetail.warmingintervalId);
+                    tabledetail.warmingintervalId=-1
+                    tabledetail.warmingstatus=false
+                  }
+                  handleClick(0,row)
                 }
                 
-              }
-            }, 5000);
-            
-          }
-          if(response.data.code===1&&response.data.msg==="succ"){
+              }, 5000);
+              return 0
+            }
+          }else if(response.data.code===1&&response.data.msg==="succ"){
+            tabledetail.warmingstatus=false
             title.type="danger"
             title.loading=true
             title.text="running"
           }else if(response.data.code===0){
+            tabledetail.warmingstatus=false
             title.type="success"
             title.loading=false
             title.text="finished"
@@ -824,7 +862,87 @@ export default({
               clearInterval(tabledetail.intervalId);
               tabledetail.intervalId=-1
             }
-            
+            GetTestHistoriesdetailResult.code=response.data.code
+            GetTestHistoriesdetailResult.msg=response.data.msg
+            GetTestHistoriesdetailResult.perfDetail=response.data.perfDetail
+            GetTestHistoriesdetailResult.resUsage=response.data.resUsage
+            tabledetailData.perfDetail=response.data.perfDetail
+            tabledetailData.resUsage=response.data.resUsage
+            tabledetailData.cpu=response.data.resUsage.cpu
+            tabledetailData.mem=response.data.resUsage.mem
+            let datatem = response.data.resUsage
+            //定义内存局部变量mem_data
+            let mem_data: { type: string;sort: any; timestamp: any; value: any; }[]=new Array()
+            //加工处理后台接口返回内存数据
+            datatem.every((val: any, idx: any, array: any) => {
+                // val: 当前值
+                // idx：当前index
+                // array: Array
+                // 内存数据转换单位为GB
+                let total_num: number = val.mem.total/1024/1024/1024; 
+                let total_str: string = total_num.toFixed(2);
+                let used_num: number = val.mem.used/1024/1024/1024; 
+                let used_str: string = used_num.toFixed(2);
+                mem_data.push(
+                  {
+                    "type": "total ( GB )",
+                    "sort":val.timestamp,
+                    "timestamp": formatprosdate(val.timestamp),
+                    "value": parseFloat(total_str)
+                  }
+                )
+                mem_data.push(
+                  {
+                    "type": "used ( GB )",
+                    "sort":val.timestamp,
+                    "timestamp": formatprosdate(val.timestamp),
+                    "value": parseFloat(used_str)
+                  }
+                )
+                return true; // Continues
+            });
+            //渲染内存多折线图
+            rendermem(mem_data,array_biao)
+            //渲染pie饼图
+            renderpie(tabledetailData.perfDetail,array_biao)
+            //加工处理后台接口返回CPU数据
+            if(datatem[0].cpu.length>0){
+              let cpu_data1=new Array()
+              for(let i=0;i<=datatem[0].cpu.length-1;i++){
+                let cpu_data_temp=new Array()
+                datatem.every((val: any, idx: any, array: any) => {
+                    cpu_data_temp.push(
+                      {
+                        "type":"free",
+                        "sort":val.timestamp,
+                        "timestamp": formatprosdate(val.timestamp),
+                        "value": (1-val.cpu[i].percent)*100
+                      }
+                    )
+                    cpu_data_temp.push(
+                      {
+                        "type":"used",
+                        "sort":val.timestamp,
+                        "timestamp": formatprosdate(val.timestamp),
+                        "value": (val.cpu[i].percent)*100
+                      }
+                    )
+                    
+                    if(idx+1==datatem.length){
+                      cpu_data1.push(cpu_data_temp.sort((a, b) =>{
+                        return a.sort - b.sort
+                      } ))
+                    }
+                    return true; // Continues
+                });
+              }
+              cpu_data.data=cpu_data1
+              //1秒后渲染CPU百分比面积图
+              setTimeout(() => {
+                rendercpu(cpu_data1,array_biao)
+              }, 1000);
+            }
+            return 0
           }else if(response.data.code===-1||(response.data.code===1&&response.data.message!=="")){
             ElNotification({
               title: 'error',
@@ -832,162 +950,35 @@ export default({
               type: 'error'
             });
             tabledetail.status=false
+            tabledetail.warmingstatus=false
+            return 0
           }
-          GetTestHistoriesdetailResult.code=response.data.code
-          GetTestHistoriesdetailResult.msg=response.data.msg
-          GetTestHistoriesdetailResult.perfDetail=response.data.perfDetail
-          GetTestHistoriesdetailResult.resUsage=response.data.resUsage
-          tabledetailData.perfDetail=response.data.perfDetail
-          tabledetailData.resUsage=response.data.resUsage
-          tabledetailData.cpu=response.data.resUsage.cpu
-          tabledetailData.mem=response.data.resUsage.mem
-          let datatem = response.data.resUsage
-          //定义内存局部变量mem_data
-          let mem_data: { type: string;sort: any; timestamp: any; value: any; }[]=new Array()
-          //加工处理后台接口返回内存数据
-          datatem.every((val: any, idx: any, array: any) => {
-              // val: 当前值
-              // idx：当前index
-              // array: Array
-              // 内存数据转换单位为GB
-              let total_num: number = val.mem.total/1024/1024/1024; 
-              let total_str: string = total_num.toFixed(2);
-              let used_num: number = val.mem.used/1024/1024/1024; 
-              let used_str: string = used_num.toFixed(2);
-              mem_data.push(
-                {
-                  "type": "total ( GB )",
-                  "sort":val.timestamp,
-                  "timestamp": formatprosdate(val.timestamp),
-                  "value": parseFloat(total_str)
-                }
-              )
-              mem_data.push(
-                {
-                  "type": "used ( GB )",
-                  "sort":val.timestamp,
-                  "timestamp": formatprosdate(val.timestamp),
-                  "value": parseFloat(used_str)
-                }
-              )
-              return true; // Continues
-          });
-          //渲染内存多折线图
-          rendermem(mem_data,array_biao)
-          //渲染pie饼图
-          renderpie(tabledetailData.perfDetail,array_biao)
-          //加工处理后台接口返回CPU数据
-          if(datatem[0].cpu.length>0){
-            let cpu_data1=new Array()
-            for(let i=0;i<=datatem[0].cpu.length-1;i++){
-              let cpu_data_temp=new Array()
-              datatem.every((val: any, idx: any, array: any) => {
-                  cpu_data_temp.push(
-                    {
-                      "type":"free",
-                      "sort":val.timestamp,
-                      "timestamp": formatprosdate(val.timestamp),
-                      "value": (1-val.cpu[i].percent)*100
-                    }
-                  )
-                  cpu_data_temp.push(
-                    {
-                      "type":"used",
-                      "sort":val.timestamp,
-                      "timestamp": formatprosdate(val.timestamp),
-                      "value": (val.cpu[i].percent)*100
-                    }
-                  )
-                  
-                  if(idx+1==datatem.length){
-                    cpu_data1.push(cpu_data_temp.sort((a, b) =>{
-                      return a.sort - b.sort
-                    } ))
-                  }
-                  return true; // Continues
-              });
-            }
-            cpu_data.data=cpu_data1
-            //1秒后渲染CPU百分比面积图
-            setTimeout(() => {
-              rendercpu(cpu_data1,array_biao)
-            }, 1000);
-          }
+          
           //如果在running中
           if(response.data.code===1&&response.data.msg==="succ"){
-            //创建定时器，每5000ms获取一次数据
-            tabledetail.intervalId=window.setInterval(async() => {
-              //获取指定testID的详情接口
-              const response_new = await axios.get('/api/getTestDetail',{
-                params: {
-                  testID: row.testID,
-                  timestamp:title.maxtimestamp,
-                  showWarmUp:0
-                }
-              });
-              //返回code为0，结束定时器
-              if(response_new.data.code===0&&response_new.data.msg==="succ"){
-                  //详情页标题，状态按钮type
-                  title.type="success"
-                  //详情页标题，状态按钮loading
-                  title.loading=false
-                  //详情页标题，状态按钮text
-                  title.text="finished"
-                  title.percentage=100
-                  title.percentagestatus="success"
-                  title.maxtimestamp=0
-                  //清空定时器
-                  if(tabledetail.intervalId!==-1){
-                    clearInterval(tabledetail.intervalId);
-                    tabledetail.intervalId=-1
-                  }
-                  return true
-              }
-              if(response_new.status===200&&response_new.data.perfDetail!=[]){
-                let timestamparray:Array<number>=[]
-                response_new.data.perfDetail.every((val: any, idx: any, array: any) => {
-                      timestamparray.push(val.timestamp)
-                      return true; // Continues
-                });
-                //maxtimestamp
-                title.maxtimestamp=Math.max(...timestamparray)
-                //运行时间百分百
-                title.percentage=(Math.max(...timestamparray)-Number(clickrow.startTime))/Number(clickrow.keepAlive)*100
-                //进度条颜色
-                title.percentagestatus="exception"
-                //剩余时间
-                title.remaintime=Number(clickrow.endTime)-Math.max(...timestamparray)
-                //增量更新性能数据
-                if(tabledetailData.perfDetail.length===0){
-                  tabledetailData.perfDetail=response_new.data.perfDetail
-                }else{
-                  response_new.data.perfDetail.every((val: any, idx: any, array: any) => {
-                    tabledetailData.perfDetail.push(val)
-                    return true; // Continues
-                  });
-                }
-              }
-              //增量更新性CPU、内存数据
-              if(tabledetailData.resUsage.length===0){
-                tabledetailData.resUsage=response_new.data.resUsage
-              }else{
-                response_new.data.resUsage.every((val: any, idx: any, array: any) => {
-                    tabledetailData.resUsage.push(val)
-                    return true; // Continues
-                });
-              }
-              //更新图数据
-              //定义内存局部变量mem_data_new
-              let mem_data_new: { type: string;sort: any; timestamp: any; value: any; }[]=new Array()
-              let datatem_new = response_new.data.resUsage
-               //加工处理后台接口返回内存数据
-              datatem_new.every((val: any, idx: any, array: any) => {
+            if(array_biao.data.length===0){
+              GetTestHistoriesdetailResult.code=response.data.code
+              GetTestHistoriesdetailResult.msg=response.data.msg
+              GetTestHistoriesdetailResult.perfDetail=response.data.perfDetail
+              GetTestHistoriesdetailResult.resUsage=response.data.resUsage
+              tabledetailData.perfDetail=response.data.perfDetail
+              tabledetailData.resUsage=response.data.resUsage
+              tabledetailData.cpu=response.data.resUsage.cpu
+              tabledetailData.mem=response.data.resUsage.mem
+              let datatem = response.data.resUsage
+              //定义内存局部变量mem_data
+              let mem_data: { type: string;sort: any; timestamp: any; value: any; }[]=new Array()
+              //加工处理后台接口返回内存数据
+              datatem.every((val: any, idx: any, array: any) => {
+                  // val: 当前值
+                  // idx：当前index
+                  // array: Array
                   // 内存数据转换单位为GB
                   let total_num: number = val.mem.total/1024/1024/1024; 
                   let total_str: string = total_num.toFixed(2);
                   let used_num: number = val.mem.used/1024/1024/1024; 
                   let used_str: string = used_num.toFixed(2);
-                  mem_data_new.push(
+                  mem_data.push(
                     {
                       "type": "total ( GB )",
                       "sort":val.timestamp,
@@ -995,7 +986,7 @@ export default({
                       "value": parseFloat(total_str)
                     }
                   )
-                  mem_data_new.push(
+                  mem_data.push(
                     {
                       "type": "used ( GB )",
                       "sort":val.timestamp,
@@ -1005,16 +996,16 @@ export default({
                   )
                   return true; // Continues
               });
-              //更新内存多折线图
-              rendermem_update(mem_data_new,array_biao)
-              //更新饼图数据
-              renderpie_update(tabledetailData.perfDetail,array_biao)
-              //更新CPU数据
-              if(datatem_new[0].cpu.length>0){
-                let cpu_data1_new=new Array()
-                for(let i=0;i<=datatem_new[0].cpu.length-1;i++){
+              //渲染内存多折线图
+              rendermem(mem_data,array_biao)
+              //渲染pie饼图
+              renderpie(tabledetailData.perfDetail,array_biao)
+              //加工处理后台接口返回CPU数据
+              if(datatem[0].cpu.length>0){
+                let cpu_data1=new Array()
+                for(let i=0;i<=datatem[0].cpu.length-1;i++){
                   let cpu_data_temp=new Array()
-                  datatem_new.every((val: any, idx: any, array: any) => {
+                  datatem.every((val: any, idx: any, array: any) => {
                       cpu_data_temp.push(
                         {
                           "type":"free",
@@ -1032,20 +1023,171 @@ export default({
                         }
                       )
                       
-                      if(idx+1==datatem_new.length){
-                        cpu_data1_new.push(cpu_data_temp.sort((a, b) =>{
+                      if(idx+1==datatem.length){
+                        cpu_data1.push(cpu_data_temp.sort((a, b) =>{
                           return a.sort - b.sort
                         } ))
                       }
                       return true; // Continues
                   });
                 }
-                cpu_data.data=cpu_data1_new
-                //更新CPU百分比面积图
+                cpu_data.data=cpu_data1
+                //1秒后渲染CPU百分比面积图
                 setTimeout(() => {
-                  rendercpu_update(cpu_data1_new,array_biao)
+                  rendercpu(cpu_data1,array_biao)
                 }, 1000);
               }
+            }
+            //创建定时器，每5000ms获取一次数据
+            tabledetail.intervalId=window.setInterval(async() => {
+              //获取指定testID的详情接口
+              if(tabledetailData.perfDetail.length>0){
+                let timestamparray1:Array<number>=[]
+                tabledetailData.perfDetail.every((val: any, idx: any, array: any) => {
+                      timestamparray1.push(val.timestamp)
+                      return true; // Continues
+                });
+                title.maxtimestamp=Math.max(...timestamparray1)
+              }
+              const response_new = await axios.get('/api/getTestDetail',{
+                params: {
+                  testID: row.testID,
+                  timestamp:title.maxtimestamp,
+                  //timestamp:title.maxtimestamp,
+                  showWarmUp:0
+                }
+              });
+              
+              //返回code为0，结束定时器
+              if(response_new.data.code===0&&response_new.data.msg==="succ"){
+                  //详情页标题，状态按钮type
+                  title.type="success"
+                  //详情页标题，状态按钮loading
+                  title.loading=false
+                  //详情页标题，状态按钮text
+                  title.text="finished"
+                  title.percentage=100
+                  title.percentagestatus="success"
+                  title.maxtimestamp=0
+                  //清空定时器
+                  if(tabledetail.intervalId!==-1){
+                    clearInterval(tabledetail.intervalId);
+                    tabledetail.intervalId=-1
+                  }
+                  return 0
+              }
+              if(response_new.status===200&&response_new.data.perfDetail.length>0&&array_biao.data.length>0){
+                let timestamparray:Array<number>=[]
+                response_new.data.perfDetail.every((val: any, idx: any, array: any) => {
+                      timestamparray.push(val.timestamp)
+                      return true; // Continues
+                });
+                
+
+                //maxtimestamp
+                //title.maxtimestamp=Math.max(...timestamparray)===-Infinity?0:Math.max(...timestamparray)
+                if(timestamparray!=[]){
+                  title.maxtimestamp=Math.max(...timestamparray)
+                }else{
+                  title.maxtimestamp=0
+                }
+                //运行时间百分百
+                title.percentage=(Math.max(...timestamparray)-Number(clickrow.startTime))/Number(clickrow.keepAlive)*100
+                //进度条颜色
+                title.percentagestatus="exception"
+                //剩余时间
+                title.remaintime=Number(clickrow.endTime)-Math.max(...timestamparray)
+                //增量更新性能数据
+                if(tabledetailData.perfDetail.length===0){
+                  tabledetailData.perfDetail=response_new.data.perfDetail
+                }else{
+                  response_new.data.perfDetail.every((val: any, idx: any, array: any) => {
+                    tabledetailData.perfDetail.push(val)
+                    return true; // Continues
+                  });
+                }
+                //增量更新性CPU、内存数据
+                if(tabledetailData.resUsage.length===0){
+                  tabledetailData.resUsage=response_new.data.resUsage
+                }else{
+                  response_new.data.resUsage.every((val: any, idx: any, array: any) => {
+                      tabledetailData.resUsage.push(val)
+                      return true; // Continues
+                  });
+                }
+                //更新图数据
+                //定义内存局部变量mem_data_new
+                let mem_data_new: { type: string;sort: any; timestamp: any; value: any; }[]=new Array()
+                let datatem_new = response_new.data.resUsage
+                //加工处理后台接口返回内存数据
+                datatem_new.every((val: any, idx: any, array: any) => {
+                    // 内存数据转换单位为GB
+                    let total_num: number = val.mem.total/1024/1024/1024; 
+                    let total_str: string = total_num.toFixed(2);
+                    let used_num: number = val.mem.used/1024/1024/1024; 
+                    let used_str: string = used_num.toFixed(2);
+                    mem_data_new.push(
+                      {
+                        "type": "total ( GB )",
+                        "sort":val.timestamp,
+                        "timestamp": formatprosdate(val.timestamp),
+                        "value": parseFloat(total_str)
+                      }
+                    )
+                    mem_data_new.push(
+                      {
+                        "type": "used ( GB )",
+                        "sort":val.timestamp,
+                        "timestamp": formatprosdate(val.timestamp),
+                        "value": parseFloat(used_str)
+                      }
+                    )
+                    return true; // Continues
+                });
+                //更新内存多折线图
+                rendermem_update(mem_data_new,array_biao)
+                //更新饼图数据
+                renderpie_update(tabledetailData.perfDetail,array_biao)
+                //更新CPU数据
+                if(datatem_new[0].cpu.length>0){
+                  let cpu_data1_new=new Array()
+                  for(let i=0;i<=datatem_new[0].cpu.length-1;i++){
+                    let cpu_data_temp=new Array()
+                    datatem_new.every((val: any, idx: any, array: any) => {
+                        cpu_data_temp.push(
+                          {
+                            "type":"free",
+                            "sort":val.timestamp,
+                            "timestamp": formatprosdate(val.timestamp),
+                            "value": (1-val.cpu[i].percent)*100
+                          }
+                        )
+                        cpu_data_temp.push(
+                          {
+                            "type":"used",
+                            "sort":val.timestamp,
+                            "timestamp": formatprosdate(val.timestamp),
+                            "value": (val.cpu[i].percent)*100
+                          }
+                        )
+                        
+                        if(idx+1==datatem_new.length){
+                          cpu_data1_new.push(cpu_data_temp.sort((a, b) =>{
+                            return a.sort - b.sort
+                          } ))
+                        }
+                        return true; // Continues
+                    });
+                  }
+                  cpu_data.data=cpu_data1_new
+                  //更新CPU百分比面积图
+                  setTimeout(() => {
+                    rendercpu_update(cpu_data1_new,array_biao)
+                  }, 1000);
+                }
+              }
+              
+              
               
             }, 5000);
           }
@@ -1064,11 +1206,13 @@ export default({
     //详情页面：关闭按钮
     const handleClose=(done: () => void)=>{
       //循环销毁图表实例，并初始化
-      array_biao.data.every((val: any, idx: any, array: any) => {
-        val.value.destroy();
-        return true;
-      });
-      array_biao.data=[]
+      if(array_biao.data.length>0){
+        array_biao.data.every((val: any, idx: any, array: any) => {
+          val.value.destroy();
+          return true;
+        });
+        array_biao.data=[]
+      }
       title.data=""
       title.type="primary"
       title.text="loading"
@@ -1076,10 +1220,23 @@ export default({
       title.percentage=0
       title.percentagestatus="exception"
       title.maxtimestamp=0
+      title.remaintime=0
       //清除定时器，并初始化
       if(tabledetail.intervalId!==-1){
         clearInterval(tabledetail.intervalId);
         tabledetail.intervalId=-1
+      }
+      tabledetail.status=false
+      tabledetailData.perfDetail=[]
+      tabledetailData.resUsage=[]
+      tabledetailData.cpu=[]
+      tabledetailData.mem=[]
+      loading.status=false
+      tabledetail.warmingstatus=false
+      if(tabledetail.warmingintervalId!==-1){
+        clearInterval(tabledetail.warmingintervalId);
+        tabledetail.warmingintervalId=-1
+        tabledetail.warmingstatus=false
       }
       //刷新历史记录页面数据
       GetTestHistories(paginationData.currentpage,paginationData.currentpagesize)
@@ -1120,6 +1277,14 @@ export default({
       if(timestampvalue == undefined){return ''};
         return moment(parseInt(timestampvalue)*1000).format("YYYY-MM-DD HH:mm:ss")
     }
+    //数组对象去重
+    const arrUnique = (arr:any, key:any) => {
+        let obj: {[key: string]: boolean;} = {};
+        return arr.reduce((pre:any, item:any) => {
+            obj[item[key]] ? '' : obj[item[key]] = true && pre.push(item);
+            return pre;
+        }, []);
+    };
     //渲染CPU图表
     const rendercpu=(cpu_data: any[],array_biao: any)=>{
         cpu_data.forEach((val, index) => {
@@ -1551,6 +1716,7 @@ export default({
       formatdate,
       msformatdate,
       formatprosdate,
+      arrUnique,
       rendercpu,
       rendercpu_update,
       rendermem,
