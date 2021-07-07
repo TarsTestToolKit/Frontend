@@ -29,6 +29,8 @@ class TestController {
             req.reqFreq = ctx_body.reqFreq;
             req.keepAlive = ctx_body.keepAlive;
             req.pkgLen = ctx_body.pkgLen;
+            req.warmUp = ctx_body.warmUp;
+            req.memo = ctx_body.memo;
             let ret = await rpc_1.default.apiPrx.doPerfTest(req);
             ctx.body = ret.response.return.toObject();
         }
@@ -56,11 +58,18 @@ class TestController {
             let testID = Number(ctx.query.testID);
             //let testID=-1
             let timestamp = Number(ctx.query.timestamp);
-            let ret = await rpc_1.default.apiPrx.getTestDetail(testID, timestamp);
+            let showWarmUp = false;
+            if (Number(ctx.query.showWarmUp) === 0) {
+                showWarmUp = false;
+            }
+            else if (Number(ctx.query.showWarmUp) === 1) {
+                showWarmUp = true;
+            }
+            let ret = await rpc_1.default.apiPrx.getTestDetail(testID, timestamp, showWarmUp);
             ctx.body = ret.response.return.toObject();
         }
         catch (e) {
-            ctx.body = e.response.error;
+            ctx.body = e.response;
             //||{code: -1, msg: 'rpc error'+ e};
         }
     }

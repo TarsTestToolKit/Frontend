@@ -115,6 +115,8 @@ var apitars;
             this.from = "";
             this.to = "";
             this.isSucc = true;
+            this.startTime = 0;
+            this.endTime = 0;
             this._proto_struct_name_ = "";
             this._classname = "apitars.FuncTestDetail";
         }
@@ -125,12 +127,16 @@ var apitars;
             tmp.from = is.readString(0, true, "");
             tmp.to = is.readString(1, true, "");
             tmp.isSucc = is.readBoolean(2, true, true);
+            tmp.startTime = is.readInt64(3, true, 0);
+            tmp.endTime = is.readInt64(4, true, 0);
             return tmp;
         }
         _writeTo(os) {
             os.writeString(0, this.from);
             os.writeString(1, this.to);
             os.writeBoolean(2, this.isSucc);
+            os.writeInt64(3, this.startTime);
+            os.writeInt64(4, this.endTime);
         }
         _equal() {
             assert.fail("this structure not define key operation");
@@ -145,13 +151,17 @@ var apitars;
             return {
                 from: this.from,
                 to: this.to,
-                isSucc: this.isSucc
+                isSucc: this.isSucc,
+                startTime: this.startTime,
+                endTime: this.endTime
             };
         }
         readFromObject(json) {
             _hasOwnProperty.call(json, "from") && (this.from = json.from);
             _hasOwnProperty.call(json, "to") && (this.to = json.to);
             _hasOwnProperty.call(json, "isSucc") && (this.isSucc = json.isSucc);
+            _hasOwnProperty.call(json, "startTime") && (this.startTime = json.startTime);
+            _hasOwnProperty.call(json, "endTime") && (this.endTime = json.endTime);
             return this;
         }
         toBinBuffer() {
@@ -173,6 +183,8 @@ var apitars;
             this.code = 0;
             this.msg = "";
             this.rows = new TarsStream.List(apitars.FuncTestDetail);
+            this.startTime = 0;
+            this.endTime = 0;
             this._proto_struct_name_ = "";
             this._classname = "apitars.FuncTestResp";
         }
@@ -183,12 +195,16 @@ var apitars;
             tmp.code = is.readUInt32(0, true, 0);
             tmp.msg = is.readString(1, true, "");
             tmp.rows = is.readList(2, false, TarsStream.List(apitars.FuncTestDetail));
+            tmp.startTime = is.readInt64(3, true, 0);
+            tmp.endTime = is.readInt64(4, true, 0);
             return tmp;
         }
         _writeTo(os) {
             os.writeUInt32(0, this.code);
             os.writeString(1, this.msg);
             os.writeList(2, this.rows);
+            os.writeInt64(3, this.startTime);
+            os.writeInt64(4, this.endTime);
         }
         _equal() {
             assert.fail("this structure not define key operation");
@@ -203,13 +219,17 @@ var apitars;
             return {
                 code: this.code,
                 msg: this.msg,
-                rows: this.rows.toObject()
+                rows: this.rows.toObject(),
+                startTime: this.startTime,
+                endTime: this.endTime
             };
         }
         readFromObject(json) {
             _hasOwnProperty.call(json, "code") && (this.code = json.code);
             _hasOwnProperty.call(json, "msg") && (this.msg = json.msg);
             _hasOwnProperty.call(json, "rows") && (this.rows.readFromObject(json.rows));
+            _hasOwnProperty.call(json, "startTime") && (this.startTime = json.startTime);
+            _hasOwnProperty.call(json, "endTime") && (this.endTime = json.endTime);
             return this;
         }
         toBinBuffer() {
@@ -1080,13 +1100,13 @@ var apitars;
                 return this._worker.tars_invoke("doPerfTest", apiProxy.doPerfTest.tarsEncoder(req), options, apiProxy.doPerfTest).then(apiProxy.doPerfTest.tarsDecoder, apiProxy.doPerfTest.errorResponser);
             }
         }
-        getTestDetail(testID, timestamp, options) {
+        getTestDetail(testID, timestamp, showWarmUp, options) {
             const version = this._worker.version;
             if (version === TarsStream.Tup.TUP_SIMPLE || version === TarsStream.Tup.TUP_COMPLEX) {
-                return this._worker.tup_invoke("getTestDetail", apiProxy.getTestDetail.tupEncoder(testID, timestamp, version), options, apiProxy.getTestDetail).then(apiProxy.getTestDetail.tupDecoder, apiProxy.getTestDetail.errorResponser);
+                return this._worker.tup_invoke("getTestDetail", apiProxy.getTestDetail.tupEncoder(testID, timestamp, showWarmUp, version), options, apiProxy.getTestDetail).then(apiProxy.getTestDetail.tupDecoder, apiProxy.getTestDetail.errorResponser);
             }
             else {
-                return this._worker.tars_invoke("getTestDetail", apiProxy.getTestDetail.tarsEncoder(testID, timestamp), options, apiProxy.getTestDetail).then(apiProxy.getTestDetail.tarsDecoder, apiProxy.getTestDetail.errorResponser);
+                return this._worker.tars_invoke("getTestDetail", apiProxy.getTestDetail.tarsEncoder(testID, timestamp, showWarmUp), options, apiProxy.getTestDetail).then(apiProxy.getTestDetail.tarsDecoder, apiProxy.getTestDetail.errorResponser);
             }
         }
         getTestHistories(req, options) {
@@ -1223,11 +1243,16 @@ var apitars;
                 name: "timestamp",
                 class: "int64",
                 direction: "in"
+            }, {
+                name: "showWarmUp",
+                class: "bool",
+                direction: "in"
             }],
-        tarsEncoder(testID, timestamp) {
+        tarsEncoder(testID, timestamp, showWarmUp) {
             const os = new TarsStream.TarsOutputStream();
             os.writeUInt32(1, testID);
             os.writeUInt32(2, timestamp);
+            os.writeBoolean(3, showWarmUp);
             return os.getBinBuffer();
         },
         tarsDecoder(data) {
@@ -1246,11 +1271,12 @@ var apitars;
                 throw _makeError(data, e.message, TarsRpc.error.CLIENT.DECODE_ERROR);
             }
         },
-        tupEncoder(testID, timestamp, __$PROTOCOL$VERSION) {
+        tupEncoder(testID, timestamp, showWarmUp, __$PROTOCOL$VERSION) {
             const tup = new TarsStream.UniAttribute();
             tup.tupVersion = __$PROTOCOL$VERSION;
             tup.writeUInt32("testID", testID);
             tup.writeUInt32("timestamp", timestamp);
+            tup.writeBoolean("showWarmUp", showWarmUp);
             return tup;
         },
         tupDecoder(data) {
