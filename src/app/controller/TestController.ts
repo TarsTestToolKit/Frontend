@@ -54,7 +54,7 @@ export default class TestController {
             //let testID=-1
             let timestamp = Number(ctx.query.timestamp);
             
-            let showWarmUp:boolean = false
+            let showWarmUp = false
             if(Number(ctx.query.showWarmUp)===0){
                 showWarmUp = false
             }else if(Number(ctx.query.showWarmUp)===1){
