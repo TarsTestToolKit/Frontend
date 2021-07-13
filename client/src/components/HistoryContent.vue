@@ -737,7 +737,6 @@ export default({
     const resetForm = () => {
         PerfTestReqruleForm.value?.resetFields();
     }
-    let wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
     //详情按钮
     const handleClick=async(index: any, row: any) =>{
         if(tabledetail.warmingstatus===false){
@@ -879,26 +878,28 @@ export default({
                 // idx：当前index
                 // array: Array
                 // 内存数据转换单位为GB
-                let total_num: number = val.mem.total/1024/1024/1024; 
-                let total_str: string = total_num.toFixed(2);
-                let used_num: number = val.mem.used/1024/1024/1024; 
-                let used_str: string = used_num.toFixed(2);
-                mem_data.push(
-                  {
-                    "type": "total ( GB )",
-                    "sort":val.timestamp,
-                    "timestamp": formatprosdate(val.timestamp),
-                    "value": parseFloat(total_str)
-                  }
-                )
-                mem_data.push(
-                  {
-                    "type": "used ( GB )",
-                    "sort":val.timestamp,
-                    "timestamp": formatprosdate(val.timestamp),
-                    "value": parseFloat(used_str)
-                  }
-                )
+                if(val.timestamp>=clickrow.startTime+clickrow.warmUp){
+                    let total_num: number = val.mem.total/1024/1024/1024; 
+                    let total_str: string = total_num.toFixed(2);
+                    let used_num: number = val.mem.used/1024/1024/1024; 
+                    let used_str: string = used_num.toFixed(2);
+                    mem_data.push(
+                      {
+                        "type": "total ( GB )",
+                        "sort":val.timestamp,
+                        "timestamp": formatprosdate(val.timestamp),
+                        "value": parseFloat(total_str)
+                      }
+                    )
+                    mem_data.push(
+                      {
+                        "type": "used ( GB )",
+                        "sort":val.timestamp,
+                        "timestamp": formatprosdate(val.timestamp),
+                        "value": parseFloat(used_str)
+                      }
+                    )
+                }
                 return true; // Continues
             });
             //渲染内存多折线图
@@ -911,6 +912,7 @@ export default({
               for(let i=0;i<=datatem[0].cpu.length-1;i++){
                 let cpu_data_temp=new Array()
                 datatem.every((val: any, idx: any, array: any) => {
+                  if(val.timestamp>=clickrow.startTime+clickrow.warmUp){
                     cpu_data_temp.push(
                       {
                         "type":"free",
@@ -933,6 +935,7 @@ export default({
                         return a.sort - b.sort
                       } ))
                     }
+                  }
                     return true; // Continues
                 });
               }
@@ -974,6 +977,7 @@ export default({
                   // idx：当前index
                   // array: Array
                   // 内存数据转换单位为GB
+                if(val.timestamp>=clickrow.startTime+clickrow.warmUp){
                   let total_num: number = val.mem.total/1024/1024/1024; 
                   let total_str: string = total_num.toFixed(2);
                   let used_num: number = val.mem.used/1024/1024/1024; 
@@ -994,6 +998,7 @@ export default({
                       "value": parseFloat(used_str)
                     }
                   )
+                }
                   return true; // Continues
               });
               //渲染内存多折线图
@@ -1006,6 +1011,7 @@ export default({
                 for(let i=0;i<=datatem[0].cpu.length-1;i++){
                   let cpu_data_temp=new Array()
                   datatem.every((val: any, idx: any, array: any) => {
+                    if(val.timestamp>=clickrow.startTime+clickrow.warmUp){
                       cpu_data_temp.push(
                         {
                           "type":"free",
@@ -1028,6 +1034,7 @@ export default({
                           return a.sort - b.sort
                         } ))
                       }
+                    }
                       return true; // Continues
                   });
                 }
@@ -1122,6 +1129,7 @@ export default({
                 //加工处理后台接口返回内存数据
                 datatem_new.every((val: any, idx: any, array: any) => {
                     // 内存数据转换单位为GB
+                  if(val.timestamp>=clickrow.startTime+clickrow.warmUp){
                     let total_num: number = val.mem.total/1024/1024/1024; 
                     let total_str: string = total_num.toFixed(2);
                     let used_num: number = val.mem.used/1024/1024/1024; 
@@ -1142,6 +1150,7 @@ export default({
                         "value": parseFloat(used_str)
                       }
                     )
+                  }
                     return true; // Continues
                 });
                 //更新内存多折线图
@@ -1154,6 +1163,7 @@ export default({
                   for(let i=0;i<=datatem_new[0].cpu.length-1;i++){
                     let cpu_data_temp=new Array()
                     datatem_new.every((val: any, idx: any, array: any) => {
+                      if(val.timestamp>=clickrow.startTime+clickrow.warmUp){
                         cpu_data_temp.push(
                           {
                             "type":"free",
@@ -1176,6 +1186,7 @@ export default({
                             return a.sort - b.sort
                           } ))
                         }
+                      }
                         return true; // Continues
                     });
                   }
